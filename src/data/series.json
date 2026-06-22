@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "tokyo-2026",
+    "title": "Tokyo",
+    "year": "2026",
+    "description": "Passing gestures, hard light, and the quiet order hidden inside the city.",
+    "coverImage": "/images/tokyo-crossing.svg"
+  },
+
+  {
+    "slug": "kamakura-enoshima-2026",
+    "title": "Kamakura / Enoshima",
+    "year": "2026",
+    "description": "A short journey between railway lines, salt air, and the edge of the sea.",
+    "coverImage": "/images/enoshima-tide.svg"
+  },
+
+  {
+    "slug": "hakone-2026",
+    "title": "Hakone",
+    "year": "2026",
+    "description": "Mist, water, and fragments of landscape held between arrival and departure.",
+    "coverImage": "/images/hakone-mist.svg"
+  },
+
+  {
+    "slug": "shanghai-street-notes",
+    "title": "Shanghai Street Notes",
+    "year": "2025–26",
+    "description": "An ongoing notebook of ordinary light and unplanned encounters close to home.",
+    "coverImage": "/images/shanghai-shadow.svg"
+  }
+]

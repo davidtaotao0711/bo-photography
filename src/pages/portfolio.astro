@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import site from '../data/site.json';
+
+const entries = [
+  { title: 'Street', href: '/portfolio/street', note: 'Unplanned gestures and everyday light.', number: '01' },
+  { title: 'Portrait', href: '/portfolio/portrait', note: 'Faces, presence, and quiet exchange.', number: '02' },
+  { title: 'Natural', href: '/portfolio/natural', note: 'Weather, distance, and the shape of land.', number: '03' },
+  { title: 'Series', href: '/series', note: 'Longer stories, edited as small books.', number: '04' },
+];
+---
+
+<BaseLayout title={`Portfolio — ${site.name}`}>
+  <section class="index-hero page-shell">
+    <p class="eyebrow">{site.name} / Archive</p>
+    <h1>Portfolio</h1>
+    <p class="index-hero__sub">Select a category</p>
+  </section>
+  <section class="portfolio-index page-shell" aria-label="Portfolio categories">
+    {entries.map((entry) => (
+      <a class="index-row" href={entry.href}>
+        <span class="index-row__number">{entry.number}</span>
+        <h2>{entry.title}</h2>
+        <p>{entry.note}</p>
+        <span class="index-row__arrow" aria-hidden="true">↗</span>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

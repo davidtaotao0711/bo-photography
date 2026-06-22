@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import photos from '../../data/photos.json';
+import site from '../../data/site.json';
+
+export function getStaticPaths() {
+  return photos.map((photo) => ({ params: { id: photo.id }, props: { photo } }));
+}
+
+const { photo } = Astro.props;
+const categoryUrl = `/portfolio/${photo.category}`;
+---
+
+<BaseLayout title={`${photo.title} — ${site.name}`} description={photo.alt}>
+  <article class="photo-detail page-shell">
+    <a class="back-link" href={categoryUrl}>← {photo.category}</a>
+    <figure class:list={["photo-detail__figure", `photo-detail__figure--${photo.orientation}`]}>
+      <img src={photo.image} alt={photo.alt} />
+      <figcaption>
+        <h1>{photo.title}</h1>
+        <p>{photo.location} · {photo.date.slice(0, 4)}</p>
+      </figcaption>
+    </figure>
+  </article>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+interface Series { slug: string; title: string; year: string; coverImage: string; description: string }
+interface Props { item: Series; index: number }
+const { item, index } = Astro.props;
+---
+
+<article class:list={["series-card", { "series-card--offset": index % 2 === 1 }]}> 
+  <a href={`/series/${item.slug}`}>
+    <div class="series-card__image"><img src={item.coverImage} alt="" loading="lazy" /></div>
+    <div class="series-card__text">
+      <p>{String(index + 1).padStart(2, '0')}</p>
+      <h2>{item.title}</h2>
+      <p>{item.year}</p>
+    </div>
+  </a>
+</article>

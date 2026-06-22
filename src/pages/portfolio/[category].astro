@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PhotoCard from '../../components/PhotoCard.astro';
+import photos from '../../data/photos.json';
+import site from '../../data/site.json';
+
+export function getStaticPaths() {
+  return ['street', 'portrait', 'natural'].map((category) => ({ params: { category } }));
+}
+
+const { category } = Astro.params;
+const title = category ? category.charAt(0).toUpperCase() + category.slice(1) : '';
+const items = photos.filter((photo) => photo.category === category);
+---
+
+<BaseLayout title={`${title} — ${site.name}`}>
+  <section class="category-head page-shell">
+    <a class="back-link" href="/portfolio">← Portfolio</a>
+    <div>
+      <p class="eyebrow">Category</p>
+      <h1>{title}</h1>
+    </div>
+    <p class="category-head__count">{items.length} photographs</p>
+  </section>
+  <section class="gallery page-shell">
+    {items.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 3} />)}
+  </section>
+</BaseLayout>

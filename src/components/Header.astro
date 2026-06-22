@@ -1,0 +1,15 @@
+---
+import site from '../data/site.json';
+
+interface Props { transparent?: boolean }
+const { transparent = false } = Astro.props;
+const path = Astro.url.pathname;
+---
+
+<header class:list={["site-header", { "site-header--overlay": transparent }]}> 
+  <a class="wordmark" href="/" aria-label={`${site.name} home`}>{site.name.toUpperCase()}</a>
+  <nav aria-label="Primary navigation">
+    <a href="/portfolio" aria-current={path.startsWith('/portfolio') || path.startsWith('/series') ? 'page' : undefined}>Portfolio</a>
+    <a href="/about" aria-current={path.startsWith('/about') ? 'page' : undefined}>About</a>
+  </nav>
+</header>

@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SeriesCard from '../../components/SeriesCard.astro';
+import series from '../../data/series.json';
+import site from '../../data/site.json';
+---
+
+<BaseLayout title={`Series — ${site.name}`}>
+  <section class="index-hero page-shell">
+    <p class="eyebrow">Long-form work</p>
+    <h1>Series</h1>
+    <p class="index-hero__sub">Small books of place and time</p>
+  </section>
+  <section class="series-list page-shell">
+    {series.map((item, index) => <SeriesCard item={item} index={index} />)}
+  </section>
+</BaseLayout>

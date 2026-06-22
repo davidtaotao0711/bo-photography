@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoCard from '../components/PhotoCard.astro';
+import photos from '../data/photos.json';
+import site from '../data/site.json';
+const featured = photos.filter((photo) => photo.featured).slice(0, 12);
+---
+
+<BaseLayout transparentHeader>
+  <section class="home-hero">
+    <img src="/images/shanghai-shadow.svg" alt="A solitary figure crossing a sunlit wall in Shanghai" loading="eager" />
+    <div class="home-hero__wash"></div>
+    <div class="home-hero__content">
+      <p class="eyebrow">Street / Portrait / Natural</p>
+      <h1>{site.tagline}</h1>
+      <div class="home-hero__footer">
+        <p>Based in {site.location}</p>
+        <a class="button button--light" href="/portfolio">View Portfolio</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="selected page-shell">
+    <header class="section-intro">
+      <p class="eyebrow">Selected Work</p>
+      <h2>Photographs from<br />near and elsewhere.</h2>
+    </header>
+    <div class="selected-grid">
+      {featured.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 2} />)}
+    </div>
+    <div class="section-end"><a class="text-link" href="/portfolio">View all work <span>↗</span></a></div>
+  </section>
+</BaseLayout>

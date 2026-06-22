@@ -1,0 +1,25 @@
+---
+interface Photo {
+  id: string;
+  title: string;
+  image: string;
+  alt: string;
+  orientation: string;
+  location: string;
+}
+interface Props { photo: Photo; eager?: boolean; number?: number }
+const { photo, eager = false, number } = Astro.props;
+const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
+---
+
+<article class:list={["photo-card", `photo-card--${photo.orientation}`]}>
+  <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>
+    <div class="photo-card__image">
+      <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    </div>
+    <div class="photo-card__meta">
+      <span>{label}</span>
+      <span>{photo.location}</span>
+    </div>
+  </a>
+</article>

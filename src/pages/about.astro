@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import site from '../data/site.json';
+---
+
+<BaseLayout title={`About — ${site.name}`} description={site.about}>
+  <section class="about page-shell">
+    <header>
+      <p class="eyebrow">About</p>
+      <h1>{site.name}</h1>
+    </header>
+    <div class="about__portrait"><img src="/images/window-study.svg" alt={`${site.name} in soft window light`} /></div>
+    <div class="about__copy">
+      <p class="about__lead">{site.about}</p>
+      <div class="about__links">
+        <div><span>Email</span><a href={`mailto:${site.email}`}>{site.email}</a></div>
+        <div>
+          <span>Social</span>
+          {site.instagram && <a href={site.instagram} rel="noreferrer">Instagram ↗</a>}
+          {site.xiaohongshu && <a href={site.xiaohongshu} rel="noreferrer">Xiaohongshu ↗</a>}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
