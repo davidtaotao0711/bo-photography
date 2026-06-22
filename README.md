@@ -70,7 +70,7 @@ src/styles/global.css       全站基础样式与响应式布局
 ```text
 public/images/street/              街头摄影
 public/images/portrait/            人像摄影
-public/images/natural/             自然风景
+public/images/scenes/              场景与自然风景（进入网站的 Natural 分类）
 public/images/series/tokyo-2026/   某个系列的照片，最后一层是系列 slug
 ```
 
@@ -82,7 +82,9 @@ public/images/series/tokyo-2026/   某个系列的照片，最后一层是系列
 npm run import:photos
 ```
 
-脚本会扫描这些文件夹，只把尚未登记的图片追加到 `src/data/photos.json`，重复运行不会重复添加。它还会自动整理 JSON 格式，并依次生成 `No. 13`、`No. 14` 这样的编号。
+脚本会扫描 `street`、`portrait`、`scenes` 和 Series 文件夹，只把尚未登记的图片追加到 `src/data/photos.json`，重复运行不会重复添加。`scenes` 文件夹中的照片会自动使用 `category: "natural"`，显示在网站的 Natural 页面。为了兼容以前的文件，脚本也会继续扫描旧的 `public/images/natural/` 文件夹。
+
+每张新照片会自动生成 `id`、顺序编号 `title`、`category`、`image`、`featured: false`、`alt` 等字段，并自动整理 JSON 格式。已经存在相同图片路径的文件不会重复添加。
 
 导入后的照片默认不在首页精选中，横竖方向默认为横图，日期默认为当前年份。建议随后打开 `src/data/photos.json`，检查并补充 `location`、`date`、`alt`，并把竖图的 `orientation` 改成 `portrait`；需要放到首页时，再把 `featured` 改成 `true`。
 

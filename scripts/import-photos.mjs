@@ -10,6 +10,12 @@ const photosFile = path.join(projectRoot, 'src', 'data', 'photos.json');
 
 const supportedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const validCategories = new Set(['street', 'portrait', 'natural']);
+const categoryDirectories = [
+  { directory: 'street', category: 'street' },
+  { directory: 'portrait', category: 'portrait' },
+  { directory: 'scenes', category: 'natural' },
+  { directory: 'natural', category: 'natural' },
+];
 const altPrefixes = {
   street: 'Street photograph',
   portrait: 'Portrait photograph',
@@ -81,12 +87,12 @@ function getNextNumber(photos) {
 async function collectCandidates(photos) {
   const candidates = [];
 
-  for (const category of validCategories) {
-    const directory = path.join(imagesDirectory, category);
+  for (const source of categoryDirectories) {
+    const directory = path.join(imagesDirectory, source.directory);
     const files = await findImages(directory);
 
     for (const filePath of files) {
-      candidates.push({ filePath, category, series: '' });
+      candidates.push({ filePath, category: source.category, series: '' });
     }
   }
 
