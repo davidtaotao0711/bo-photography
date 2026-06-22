@@ -9,17 +9,17 @@ const imagesDirectory = path.join(publicDirectory, 'images');
 const photosFile = path.join(projectRoot, 'src', 'data', 'photos.json');
 
 const supportedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
-const validCategories = new Set(['street', 'portrait', 'natural']);
+const validCategories = new Set(['street', 'portrait', 'scenes']);
 const categoryDirectories = [
   { directory: 'street', category: 'street' },
   { directory: 'portrait', category: 'portrait' },
-  { directory: 'scenes', category: 'natural' },
-  { directory: 'natural', category: 'natural' },
+  { directory: 'scenes', category: 'scenes' },
+  { directory: 'natural', category: 'scenes' },
 ];
 const altPrefixes = {
   street: 'Street photograph',
   portrait: 'Portrait photograph',
-  natural: 'Natural landscape photograph',
+  scenes: 'Scene photograph',
 };
 
 function normalizeImagePath(imagePath) {

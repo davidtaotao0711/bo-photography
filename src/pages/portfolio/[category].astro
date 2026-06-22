@@ -5,7 +5,7 @@ import photos from '../../data/photos.json';
 import site from '../../data/site.json';
 
 export function getStaticPaths() {
-  return ['street', 'portrait', 'natural'].map((category) => ({ params: { category } }));
+  return ['street', 'portrait', 'scenes'].map((category) => ({ params: { category } }));
 }
 
 const { category } = Astro.params;

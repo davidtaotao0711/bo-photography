@@ -14,7 +14,7 @@
   {
     "id": "enoshima-tide",
     "title": "No. 04",
-    "category": "natural",
+    "category": "scenes",
     "series": "kamakura-enoshima-2026",
     "location": "Enoshima",
     "date": "2026-03-11",
@@ -26,7 +26,7 @@
   {
     "id": "hakone-mist",
     "title": "No. 05",
-    "category": "natural",
+    "category": "scenes",
     "series": "hakone-2026",
     "location": "Hakone",
     "date": "2026-03-14",
@@ -50,7 +50,7 @@
   {
     "id": "reed-field",
     "title": "No. 09",
-    "category": "natural",
+    "category": "scenes",
     "series": "hakone-2026",
     "location": "Hakone",
     "date": "2026-03-15",
@@ -74,7 +74,7 @@
   {
     "id": "lake-edge",
     "title": "No. 12",
-    "category": "natural",
+    "category": "scenes",
     "series": "hakone-2026",
     "location": "Hakone",
     "date": "2026-03-16",

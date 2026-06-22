@@ -70,7 +70,7 @@ src/styles/global.css       全站基础样式与响应式布局
 ```text
 public/images/street/              街头摄影
 public/images/portrait/            人像摄影
-public/images/scenes/              场景与自然风景（进入网站的 Natural 分类）
+public/images/scenes/              场景与自然风景
 public/images/series/tokyo-2026/   某个系列的照片，最后一层是系列 slug
 ```
 
@@ -82,7 +82,7 @@ public/images/series/tokyo-2026/   某个系列的照片，最后一层是系列
 npm run import:photos
 ```
 
-脚本会扫描 `street`、`portrait`、`scenes` 和 Series 文件夹，只把尚未登记的图片追加到 `src/data/photos.json`，重复运行不会重复添加。`scenes` 文件夹中的照片会自动使用 `category: "natural"`，显示在网站的 Natural 页面。为了兼容以前的文件，脚本也会继续扫描旧的 `public/images/natural/` 文件夹。
+脚本会扫描 `street`、`portrait`、`scenes` 和 Series 文件夹，只把尚未登记的图片追加到 `src/data/photos.json`，重复运行不会重复添加。`scenes` 文件夹中的照片会自动使用 `category: "scenes"`，显示在网站的 Scenes 页面。为了兼容以前的文件，脚本也会继续扫描旧的 `public/images/natural/` 文件夹，并将其中的新照片归入 Scenes。
 
 每张新照片会自动生成 `id`、顺序编号 `title`、`category`、`image`、`featured: false`、`alt` 等字段，并自动整理 JSON 格式。已经存在相同图片路径的文件不会重复添加。
 
@@ -159,7 +159,7 @@ npm run import:photos
 ```
 
 - `id` 必须唯一，会用于单图页地址。
-- `category` 只能使用 `street`、`portrait` 或 `natural`。
+- `category` 只能使用 `street`、`portrait` 或 `scenes`。
 - `series` 填系列的 `slug`；不属于系列时可填空字符串。
 - `orientation` 使用 `portrait` 或 `landscape`，会影响排版比例。
 - `alt` 应简短、具体地描述画面，供无障碍阅读和搜索引擎使用。
