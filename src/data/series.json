@@ -4,7 +4,7 @@
     "title": "Tokyo",
     "year": "2026",
     "description": "Passing gestures, hard light, and the quiet order hidden inside the city.",
-    "coverImage": "/images/tokyo-crossing.svg"
+    "coverImage": "/images/home/002.jpg"
   },
 
   {
@@ -12,7 +12,7 @@
     "title": "Kamakura / Enoshima",
     "year": "2026",
     "description": "A short journey between railway lines, salt air, and the edge of the sea.",
-    "coverImage": "/images/enoshima-tide.svg"
+    "coverImage": "/images/home/004.jpg"
   },
 
   {
@@ -20,7 +20,7 @@
     "title": "Hakone",
     "year": "2026",
     "description": "Mist, water, and fragments of landscape held between arrival and departure.",
-    "coverImage": "/images/hakone-mist.svg"
+    "coverImage": "/images/home/005.jpg"
   },
 
   {
@@ -28,6 +28,6 @@
     "title": "Shanghai Street Notes",
     "year": "2025–26",
     "description": "An ongoing notebook of ordinary light and unplanned encounters close to home.",
-    "coverImage": "/images/shanghai-shadow.svg"
+    "coverImage": "/images/home/008.jpg"
   }
 ]
