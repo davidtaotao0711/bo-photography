@@ -39,8 +39,8 @@ p, h1, h2, figure { margin: 0; }
 .section-intro { display: grid; grid-template-columns: 1fr 2fr; align-items: start; margin-bottom: clamp(5rem, 10vw, 9rem); }
 .section-intro h2 { font-family: var(--serif); font-size: clamp(2.6rem, 5.7vw, 6rem); font-weight: 400; line-height: .98; letter-spacing: -.035em; }
 .selected-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
-.selected-grid .photo-card:nth-child(4n + 1) { grid-column: 1 / span 7; }
-.selected-grid .photo-card:nth-child(4n + 2) { grid-column: 9 / span 4; margin-top: 15vw; }
+.selected-grid .photo-card:nth-child(4n + 1) { grid-column: 1 / span 4; }
+.selected-grid .photo-card:nth-child(4n + 2) { grid-column: 6 / span 7; margin-top: 8vw; }
 .selected-grid .photo-card:nth-child(4n + 3) { grid-column: 2 / span 4; margin-top: 4vw; }
 .selected-grid .photo-card:nth-child(4n + 4) { grid-column: 7 / span 6; }
 .selected-grid .photo-card[data-photo-id="home-006"] { grid-column: 2 / span 5; }
