@@ -96,18 +96,6 @@
     "alt": "A quiet room lit through large windows"
   },
   {
-    "id": "home-001",
-    "title": "No. 09",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/home/001.jpg",
-    "featured": true,
-    "orientation": "portrait",
-    "alt": "Soft pink grasses in natural light"
-  },
-  {
     "id": "street-01",
     "title": "No. 13",
     "category": "street",

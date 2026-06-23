@@ -12,7 +12,7 @@ const { photo, eager = false, number } = Astro.props;
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
 ---
 
-<article class:list={["photo-card", `photo-card--${photo.orientation}`]}>
+<article class:list={["photo-card", `photo-card--${photo.orientation}`]} data-photo-id={photo.id}>
   <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>
     <div class="photo-card__image">
       <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />

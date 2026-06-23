@@ -43,6 +43,7 @@ p, h1, h2, figure { margin: 0; }
 .selected-grid .photo-card:nth-child(4n + 2) { grid-column: 9 / span 4; margin-top: 15vw; }
 .selected-grid .photo-card:nth-child(4n + 3) { grid-column: 2 / span 4; margin-top: 4vw; }
 .selected-grid .photo-card:nth-child(4n + 4) { grid-column: 7 / span 6; }
+.selected-grid .photo-card[data-photo-id="home-006"] { grid-column: 2 / span 5; }
 .photo-card a { display: block; }
 .photo-card__image { overflow: hidden; background: #e8e8e3; }
 .photo-card__image img { aspect-ratio: 4 / 3; object-fit: cover; transition: transform 450ms cubic-bezier(.2,.7,.2,1); }
@@ -128,6 +129,7 @@ p, h1, h2, figure { margin: 0; }
   .selected-grid { display: block; }
   .selected-grid .photo-card { width: 100%; margin: 0 0 4.5rem; }
   .selected-grid .photo-card--portrait { width: 78%; margin-inline: auto; }
+  .selected-grid .photo-card[data-photo-id="home-006"] { width: 100%; margin-inline: 0; }
   .index-hero { min-height: 43vh; align-content: end; gap: 1.5rem; }
   .index-hero h1, .index-hero__sub { grid-column: 1; margin-left: 0; }
   .index-hero h1 { font-size: clamp(4.5rem, 24vw, 8rem); }
