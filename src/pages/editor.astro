@@ -296,7 +296,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
                 <button class="position-control ${offsetX || offsetY ? 'is-active' : ''}" type="button" data-action="reset-position" aria-label="位置归零，当前水平 ${offsetX}%，垂直 ${offsetY}%" title="点击恢复原位">⌖ ${offsetX}, ${offsetY}</button>
                 <button class="size-control" type="button" data-action="size" aria-label="切换照片尺寸，当前 ${layoutWidth}%" title="点击切换尺寸">↔ ${layoutWidth}%</button>
                 <button class="resize-handle" type="button" data-action="resize" aria-label="拖动以等比缩放照片" title="拖动以等比缩放"></button>` : '';
-          const orderControls = isOrientationLayout ? '' : `<div class="move-actions">
+          const orderControls = `<div class="move-actions">
                   <button type="button" data-action="up" aria-label="向前移动">↑</button>
                   <button type="button" data-action="down" aria-label="向后移动">↓</button>
                 </div>`;
@@ -337,11 +337,16 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 
       function movePhoto(id, direction) {
         const visible = getVisiblePhotos();
-        const index = visible.findIndex((photo) => photo.id === id);
+        const current = visible.find((photo) => photo.id === id);
+        if (!current) return;
+        const orderedPhotos = ['street', 'scenes'].includes(viewFilter.value)
+          ? visible.filter((photo) => photo.orientation === current.orientation)
+          : visible;
+        const index = orderedPhotos.findIndex((photo) => photo.id === id);
         const nextIndex = index + direction;
-        if (index < 0 || nextIndex < 0 || nextIndex >= visible.length) return;
+        if (index < 0 || nextIndex < 0 || nextIndex >= orderedPhotos.length) return;
         snapshot();
-        const ids = visible.map((photo) => photo.id);
+        const ids = orderedPhotos.map((photo) => photo.id);
         [ids[index], ids[nextIndex]] = [ids[nextIndex], ids[index]];
         replaceVisibleOrder(ids);
         setDirty(true);
@@ -744,13 +749,14 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .photo-grid[data-view='featured'] .editor-card:nth-child(1) { grid-column: 1 / span 4; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(2) { grid-column: 6 / span 7; margin-top: 8vw; }
   .photo-grid[data-view='featured'] .editor-card[data-id='home-006'] { grid-column: 2 / span 5; }
-  .photo-grid[data-view='portrait'] .editor-card { grid-column: span 6; justify-self: center; }
+  .photo-grid[data-view='portrait'] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); }
+  .photo-grid[data-view='portrait'] .editor-card { grid-column: auto; justify-self: center; }
   .photo-grid--rows { display: block; }
   .editor-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); margin-bottom: clamp(5rem, 10vw, 10rem); }
   .editor-row--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .editor-row--landscape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .editor-row .editor-card { grid-column: auto; justify-self: center; }
-  .photo-grid[data-view='portrait'] > .editor-card:nth-child(3n+2) { margin-top: 5vw; }
+  .photo-grid[data-view='portrait'] > .editor-card:nth-child(3n+2) { margin-top: clamp(3rem, 9vw, 9rem); }
   .editor-card__image { position: relative; overflow: hidden; background: #e4e2dc; cursor: grab; touch-action: none; }
   .editor-card.is-positioning { z-index: 6; transition: none; }
   .editor-card.is-positioning .editor-card__image { cursor: grabbing; box-shadow: 0 1.2rem 3rem rgba(0,0,0,.18); }
