@@ -51,7 +51,7 @@ p, h1, h2, figure { margin: 0; }
 .photo-card__image img { aspect-ratio: 4 / 3; object-fit: cover; transition: transform 450ms cubic-bezier(.2,.7,.2,1); }
 .photo-card--portrait .photo-card__image img { aspect-ratio: 3 / 4; }
 .photo-card a:hover img { transform: scale(1.015); }
-.photo-card__meta { padding-top: .75rem; display: flex; justify-content: space-between; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .13em; }
+.photo-card__meta { height: 23px; padding-top: .75rem; overflow: hidden; display: flex; justify-content: space-between; color: var(--muted); font-size: .62rem; line-height: 11px; text-transform: uppercase; letter-spacing: .13em; white-space: nowrap; }
 .section-end { margin-top: clamp(5rem, 10vw, 9rem); display: flex; justify-content: flex-end; }
 .text-link { display: inline-flex; gap: 2rem; padding-bottom: .5rem; border-bottom: 1px solid var(--ink); font-size: .68rem; text-transform: uppercase; letter-spacing: .14em; }
 

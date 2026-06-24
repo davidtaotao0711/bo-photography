@@ -13,9 +13,9 @@
     "layoutWidth": 106,
     "layoutOffsetX": 27,
     "layoutOffsetY": 5,
-    "categoryLayoutWidth": 88,
-    "categoryLayoutOffsetX": 15,
-    "categoryLayoutOffsetY": -7
+    "categoryLayoutWidth": 100,
+    "categoryLayoutOffsetX": -1,
+    "categoryLayoutOffsetY": 0
   },
   {
     "id": "home-002",

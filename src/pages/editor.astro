@@ -775,9 +775,9 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .editor-card__meta span { display: flex; flex-direction: column; gap: .18rem; }
   .editor-card__meta span:last-child { flex: 0 0 auto; text-align: right; }
   .editor-card__meta strong { overflow: hidden; max-width: 18ch; color: var(--ink); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
-  .photo-grid[data-view='featured'] .editor-card__meta { height: 23px; overflow: hidden; font-size: .62rem; line-height: 11px; letter-spacing: .13em; }
-  .photo-grid[data-view='featured'] .editor-card__meta span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .photo-grid[data-view='featured'] .editor-card__meta strong { display: none; }
+  .photo-grid:not([data-view='all']) .editor-card__meta { height: 23px; overflow: hidden; font-size: .62rem; line-height: 11px; letter-spacing: .13em; }
+  .photo-grid:not([data-view='all']) .editor-card__meta span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .photo-grid:not([data-view='all']) .editor-card__meta strong { display: none; }
   .empty-state { padding: 10rem 0; text-align: center; color: var(--muted); }
   dialog { width: min(44rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); padding: 0; border: 0; color: var(--ink); background: #f7f5ef; box-shadow: 0 2rem 6rem rgba(0,0,0,.28); }
   dialog::backdrop { background: rgba(20,20,18,.62); backdrop-filter: blur(4px); }
