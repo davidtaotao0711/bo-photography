@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PhotoCard from '../../components/PhotoCard.astro';
 import photos from '../../data/photos.json';
 import site from '../../data/site.json';
+import { buildOrientationRows } from '../../utils/photo-layout.js';
 
 export function getStaticPaths() {
   return ['street', 'portrait', 'scenes'].map((category) => ({ params: { category } }));
@@ -11,6 +12,14 @@ export function getStaticPaths() {
 const { category } = Astro.params;
 const title = category ? category.charAt(0).toUpperCase() + category.slice(1) : '';
 const items = photos.filter((photo) => photo.category === category);
+const useOrientationRows = category === 'street' || category === 'scenes';
+let displayNumber = 0;
+const rows = useOrientationRows
+  ? buildOrientationRows(items).map((row) => ({
+      ...row,
+      items: row.items.map((photo) => ({ photo, number: ++displayNumber })),
+    }))
+  : [];
 ---
 
 <BaseLayout title={`${title} — ${site.name}`}>
@@ -22,7 +31,11 @@ const items = photos.filter((photo) => photo.category === category);
     </div>
     <p class="category-head__count">{items.length} photographs</p>
   </section>
-  <section class="gallery page-shell">
-    {items.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 3} />)}
+  <section class:list={["gallery", "page-shell", { "gallery--rows": useOrientationRows }]}>
+    {useOrientationRows ? rows.map((row) => (
+      <div class:list={["gallery-row", `gallery-row--${row.orientation}`]}>
+        {row.items.map(({ photo, number }) => <PhotoCard photo={photo} number={number} eager={number <= 3} useCustomLayout={false} />)}
+      </div>
+    )) : items.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 3} useCustomLayout={false} />)}
   </section>
 </BaseLayout>

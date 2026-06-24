@@ -29,7 +29,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         <div class="sidebar-heading">
           <p class="eyebrow">Layout studio</p>
           <h1>排版<br />编辑器</h1>
-          <p>直接拖动照片自由安排位置，使用箭头调整顺序。所有操作只发生在你的电脑上。</p>
+          <p>首页精选可自由拖动排版；Street 与 Scenes 自动按照片方向整齐成行。所有操作只发生在你的电脑上。</p>
         </div>
 
         <div class="field-group">
@@ -57,10 +57,11 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         <div class="help">
           <p class="eyebrow">使用方法</p>
           <ol>
-            <li>按住照片画面自由移动位置</li>
+            <li>在首页精选中按住照片自由移动</li>
             <li>使用上下箭头改变前后顺序</li>
             <li>点尺寸按钮或拖右下角缩放</li>
             <li>点击照片编辑属性</li>
+            <li>Street / Scenes 自动按 3 竖或 2 横成行</li>
             <li>保存并覆盖 photos.json</li>
           </ol>
           <p class="note">首页只展示排在最前面的 12 张精选照片。</p>
@@ -147,6 +148,8 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
     <div id="toast" role="status" aria-live="polite"></div>
 
     <script>
+      import { buildOrientationRows } from '../utils/photo-layout.js';
+
       const initialNode = document.querySelector('#initial-photos');
       const initialPhotos = JSON.parse(initialNode?.textContent || '[]');
       let photoData = structuredClone(initialPhotos);
@@ -211,6 +214,12 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
       function syncCanvasScale() {
         if (!canvasViewport || !canvasStage) return;
         canvasStage.style.zoom = '1';
+        if (window.innerWidth <= 620) {
+          canvasStage.style.width = '100%';
+        } else {
+          const sitePadding = Math.min(72, Math.max(20, window.innerWidth * 0.04));
+          canvasStage.style.width = `${document.documentElement.clientWidth - sitePadding * 2}px`;
+        }
         const designWidth = canvasStage.offsetWidth;
         const availableWidth = canvasViewport.clientWidth;
         const scale = window.innerWidth <= 620 || !designWidth ? 1 : Math.min(1, availableWidth / designWidth);
@@ -220,44 +229,58 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 
       function render() {
         const visible = getVisiblePhotos();
+        const isFreeLayout = viewFilter.value === 'featured';
+        const isOrientationLayout = viewFilter.value === 'street' || viewFilter.value === 'scenes';
+        const orientationRows = isOrientationLayout ? buildOrientationRows(visible) : [];
+        const displayPhotos = isOrientationLayout ? orientationRows.flatMap((row) => row.items) : visible;
         const filterLabel = viewFilter.options[viewFilter.selectedIndex]?.textContent || '';
-        $('#view-title').textContent = `${filterLabel} · 拖动画面自由定位`;
+        $('#view-title').textContent = isFreeLayout ? `${filterLabel} · 拖动画面自由定位` : `${filterLabel} · 自动响应式排版`;
         $('#visible-count').textContent = String(visible.length);
         $('#featured-count').textContent = String(photoData.filter((photo) => photo.featured).length);
         $('#total-count').textContent = String(photoData.length);
         $('#empty-state').hidden = visible.length > 0;
         grid.hidden = visible.length === 0;
         grid.dataset.view = viewFilter.value;
+        grid.classList.toggle('photo-grid--rows', isOrientationLayout);
 
         let featuredPosition = 0;
-        grid.innerHTML = visible.map((photo, index) => {
-          const layoutWidth = getLayoutWidth(photo);
-          const offsetX = getLayoutOffset(photo, 'x');
-          const offsetY = getLayoutOffset(photo, 'y');
+        const cards = displayPhotos.map((photo, index) => {
+          const layoutWidth = isFreeLayout ? getLayoutWidth(photo) : 100;
+          const offsetX = isFreeLayout ? getLayoutOffset(photo, 'x') : 0;
+          const offsetY = isFreeLayout ? getLayoutOffset(photo, 'y') : 0;
           if (photo.featured) featuredPosition += 1;
           const publishBadge = viewFilter.value === 'featured' && featuredPosition > 12
             ? '<span class="card-badge card-badge--muted">首页不展示</span>'
             : `<span class="card-badge">${String(index + 1).padStart(2, '0')}</span>`;
+          const layoutControls = isFreeLayout ? `
+                <button class="position-control ${offsetX || offsetY ? 'is-active' : ''}" type="button" data-action="reset-position" aria-label="位置归零，当前水平 ${offsetX}%，垂直 ${offsetY}%" title="点击恢复原位">⌖ ${offsetX}, ${offsetY}</button>
+                <button class="size-control" type="button" data-action="size" aria-label="切换照片尺寸，当前 ${layoutWidth}%" title="点击切换尺寸">↔ ${layoutWidth}%</button>
+                <button class="resize-handle" type="button" data-action="resize" aria-label="拖动以等比缩放照片" title="拖动以等比缩放"></button>` : '';
+          const orderControls = isOrientationLayout ? '' : `<div class="move-actions">
+                  <button type="button" data-action="up" aria-label="向前移动">↑</button>
+                  <button type="button" data-action="down" aria-label="向后移动">↓</button>
+                </div>`;
           return `
             <article class="editor-card editor-card--${escapeHtml(photo.orientation)}" data-id="${escapeHtml(photo.id)}" style="--card-width: ${layoutWidth}%; --offset-x: ${offsetX}%; --offset-y: ${offsetY}%">
               <div class="editor-card__image">
                 <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt)}" loading="lazy" />
                 ${publishBadge}
                 <button class="favorite ${photo.featured ? 'is-active' : ''}" type="button" data-action="featured" aria-label="${photo.featured ? '取消首页精选' : '加入首页精选'}" title="首页精选">★</button>
-                <button class="position-control ${offsetX || offsetY ? 'is-active' : ''}" type="button" data-action="reset-position" aria-label="位置归零，当前水平 ${offsetX}%，垂直 ${offsetY}%" title="点击恢复原位">⌖ ${offsetX}, ${offsetY}</button>
-                <button class="size-control" type="button" data-action="size" aria-label="切换照片尺寸，当前 ${layoutWidth}%" title="点击切换尺寸">↔ ${layoutWidth}%</button>
-                <div class="move-actions">
-                  <button type="button" data-action="up" aria-label="向前移动">↑</button>
-                  <button type="button" data-action="down" aria-label="向后移动">↓</button>
-                </div>
-                <button class="resize-handle" type="button" data-action="resize" aria-label="拖动以等比缩放照片" title="拖动以等比缩放"></button>
+                ${layoutControls}
+                ${orderControls}
               </div>
               <button class="editor-card__meta" type="button" data-action="edit">
                 <span><strong>${escapeHtml(photo.title || photo.id)}</strong>${escapeHtml(photo.location || '未填写地点')}</span>
-                <span>${photo.orientation === 'portrait' ? '竖图' : '横图'} · 编辑</span>
+                <span>${isOrientationLayout ? '自动行布局' : `${photo.orientation === 'portrait' ? '竖图' : '横图'} · 编辑`}</span>
               </button>
             </article>`;
-        }).join('');
+        });
+        if (isOrientationLayout) {
+          let cardIndex = 0;
+          grid.innerHTML = orientationRows.map((row) => `<div class="editor-row editor-row--${row.orientation}">${row.items.map(() => cards[cardIndex++]).join('')}</div>`).join('');
+        } else {
+          grid.innerHTML = cards.join('');
+        }
         window.requestAnimationFrame(syncCanvasScale);
       }
 
@@ -287,6 +310,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
       function openInspector(id) {
         const photo = photoData.find((item) => item.id === id);
         if (!photo) return;
+        const layoutLocked = viewFilter.value !== 'featured';
         $('#form-original-id').value = photo.id;
         $('#form-id').value = photo.id;
         $('#form-title').value = photo.title || '';
@@ -295,6 +319,9 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         $('#form-layout-width').value = String(getLayoutWidth(photo));
         $('#form-offset-x').value = String(getLayoutOffset(photo, 'x'));
         $('#form-offset-y').value = String(getLayoutOffset(photo, 'y'));
+        $('#form-layout-width').disabled = layoutLocked;
+        $('#form-offset-x').disabled = layoutLocked;
+        $('#form-offset-y').disabled = layoutLocked;
         $('#form-location').value = photo.location || '';
         $('#form-date').value = photo.date || '';
         $('#form-series').value = photo.series || '';
@@ -497,7 +524,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
       grid.addEventListener('pointerdown', (event) => {
         const image = event.target.closest('.editor-card__image');
         const card = event.target.closest('.editor-card');
-        if (!image || !card || event.target.closest('button')) return;
+        if (viewFilter.value !== 'featured' || !image || !card || event.target.closest('button')) return;
         event.preventDefault();
         const photo = photoData.find((item) => item.id === card.dataset.id);
         if (!photo) return;
@@ -639,15 +666,21 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   #save-status[data-state='dirty']::before { background: #d38b32; }
   .canvas-viewport { width: 100%; overflow: hidden; }
   .canvas-stage { width: calc(100vw - 2 * clamp(1.25rem, 4vw, 4.5rem)); transform-origin: top left; }
-  .photo-grid { width: 100%; padding-top: clamp(3rem, 6vw, 6rem); display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
+  .photo-grid { width: 100%; display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
   .editor-card { width: var(--card-width, 100%); min-width: 0; overflow: visible; grid-column: span 4; justify-self: center; transform: translate(var(--offset-x, 0), var(--offset-y, 0)); transition: opacity 150ms, transform 150ms, width 120ms ease; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(4n+1) { grid-column: 1 / span 7; }
-  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+2) { grid-column: 9 / span 4; margin-top: 9vw; }
-  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+3) { grid-column: 2 / span 4; }
+  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+2) { grid-column: 9 / span 4; margin-top: 15vw; }
+  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+3) { grid-column: 2 / span 4; margin-top: 4vw; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(4n+4) { grid-column: 7 / span 6; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(1) { grid-column: 1 / span 4; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(2) { grid-column: 6 / span 7; margin-top: 8vw; }
   .photo-grid[data-view='featured'] .editor-card[data-id='home-006'] { grid-column: 2 / span 5; }
+  .photo-grid[data-view='portrait'] .editor-card { width: 100%; grid-column: span 6; transform: none; justify-self: stretch; }
+  .photo-grid--rows { display: block; }
+  .editor-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); margin-bottom: clamp(5rem, 10vw, 10rem); }
+  .editor-row--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .editor-row--landscape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .editor-row .editor-card { width: 100%; grid-column: auto; transform: none; justify-self: stretch; }
   .photo-grid:not([data-view='featured']) .editor-card:nth-child(3n+2) { margin-top: 5vw; }
   .editor-card__image { position: relative; overflow: hidden; background: #e4e2dc; cursor: grab; touch-action: none; }
   .editor-card.is-positioning { z-index: 6; transition: none; }
@@ -671,6 +704,9 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .editor-card__meta span { display: flex; flex-direction: column; gap: .18rem; }
   .editor-card__meta span:last-child { flex: 0 0 auto; text-align: right; }
   .editor-card__meta strong { overflow: hidden; max-width: 18ch; color: var(--ink); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+  .photo-grid[data-view='featured'] .editor-card__meta { height: 23px; overflow: hidden; font-size: .62rem; line-height: 11px; letter-spacing: .13em; }
+  .photo-grid[data-view='featured'] .editor-card__meta span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .photo-grid[data-view='featured'] .editor-card__meta strong { display: none; }
   .empty-state { padding: 10rem 0; text-align: center; color: var(--muted); }
   dialog { width: min(44rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); padding: 0; border: 0; color: var(--ink); background: #f7f5ef; box-shadow: 0 2rem 6rem rgba(0,0,0,.28); }
   dialog::backdrop { background: rgba(20,20,18,.62); backdrop-filter: blur(4px); }
@@ -718,7 +754,10 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
     .photo-grid .editor-card,
     .photo-grid[data-view='featured'] .editor-card:nth-child(n),
     .photo-grid:not([data-view='featured']) .editor-card:nth-child(n) { grid-column: auto; margin-top: 0; }
-    .photo-grid .editor-card { margin-bottom: 4.5rem; }
+    .editor-row { display: block; margin: 0; }
+    .photo-grid .editor-card { width: 100% !important; margin-bottom: 4.5rem; transform: none !important; justify-self: stretch !important; }
+    .photo-grid .editor-card--portrait { width: 82% !important; margin-inline: auto; }
+    .photo-grid[data-view='featured'] .editor-card--portrait { width: 78% !important; }
     .move-actions { opacity: 1; }
     .editor-card__meta > span:last-child { display: none; }
     .form-grid { grid-template-columns: 1fr; }

@@ -10,19 +10,19 @@ interface Photo {
   layoutOffsetX?: number;
   layoutOffsetY?: number;
 }
-interface Props { photo: Photo; eager?: boolean; number?: number }
-const { photo, eager = false, number } = Astro.props;
+interface Props { photo: Photo; eager?: boolean; number?: number; useCustomLayout?: boolean }
+const { photo, eager = false, number, useCustomLayout = true } = Astro.props;
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
 const layoutWidth = Number.isFinite(photo.layoutWidth)
   ? Math.min(200, Math.max(45, Number(photo.layoutWidth)))
   : null;
 const offsetX = Number.isFinite(photo.layoutOffsetX) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetX))) : 0;
 const offsetY = Number.isFinite(photo.layoutOffsetY) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetY))) : 0;
-const layoutStyle = [
+const layoutStyle = useCustomLayout ? [
   layoutWidth ? `width: ${layoutWidth}%` : '',
   layoutWidth ? 'justify-self: center' : '',
   offsetX || offsetY ? `transform: translate(${offsetX}%, ${offsetY}%)` : '',
-].filter(Boolean).join('; ');
+].filter(Boolean).join('; ') : '';
 ---
 
 <article

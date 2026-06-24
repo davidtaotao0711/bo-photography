@@ -71,9 +71,15 @@ p, h1, h2, figure { margin: 0; }
 .category-head h1 { margin-top: 1.1rem; font-family: var(--serif); font-size: clamp(5rem, 13vw, 12rem); font-weight: 400; line-height: .8; letter-spacing: -.06em; }
 .back-link { align-self: start; width: max-content; font-size: .66rem; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); }
 .category-head__count { align-self: end; justify-self: end; color: var(--muted); font-size: .68rem; text-transform: uppercase; letter-spacing: .13em; }
-.gallery { padding-bottom: clamp(8rem, 15vw, 14rem); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); align-items: start; }
-.gallery .photo-card:nth-child(3n + 2) { margin-top: clamp(3rem, 9vw, 9rem); }
-.gallery .photo-card--portrait { width: 78%; justify-self: center; }
+.gallery { padding-bottom: clamp(8rem, 15vw, 14rem); }
+.gallery:not(.gallery--rows) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); align-items: start; }
+.gallery:not(.gallery--rows) > .photo-card:nth-child(3n + 2) { margin-top: clamp(3rem, 9vw, 9rem); }
+.gallery:not(.gallery--rows) > .photo-card--portrait { width: 78%; justify-self: center; }
+.gallery--rows { display: flex; flex-direction: column; gap: clamp(5rem, 10vw, 10rem); }
+.gallery-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); }
+.gallery-row--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.gallery-row--landscape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gallery-row .photo-card { width: 100%; transform: none; justify-self: stretch; }
 
 .photo-detail { padding-top: 4rem; padding-bottom: 9rem; }
 .photo-detail__figure { margin: 5rem auto 0; max-width: 82vw; }
@@ -129,9 +135,9 @@ p, h1, h2, figure { margin: 0; }
   .section-intro, .index-hero, .category-head, .series-detail__head, .about { grid-template-columns: 1fr; }
   .section-intro { gap: 2rem; }
   .selected-grid { display: block; }
-  .selected-grid .photo-card { width: 100%; margin: 0 0 4.5rem; }
-  .selected-grid .photo-card--portrait { width: 78%; margin-inline: auto; }
-  .selected-grid .photo-card[data-photo-id="home-006"] { width: 100%; margin-inline: 0; }
+  .selected-grid .photo-card { width: 100% !important; margin: 0 0 4.5rem; transform: none !important; justify-self: stretch !important; }
+  .selected-grid .photo-card--portrait { width: 78% !important; margin-inline: auto; }
+  .selected-grid .photo-card[data-photo-id="home-006"] { width: 100% !important; margin-inline: 0; }
   .index-hero { min-height: 43vh; align-content: end; gap: 1.5rem; }
   .index-hero h1, .index-hero__sub { grid-column: 1; margin-left: 0; }
   .index-hero h1 { font-size: clamp(4.5rem, 24vw, 8rem); }
@@ -139,16 +145,19 @@ p, h1, h2, figure { margin: 0; }
   .index-row p { display: none; }
   .category-head { min-height: 40vh; padding-top: 3rem; }
   .category-head__count { justify-self: start; }
-  .gallery { grid-template-columns: 1fr; gap: 4.5rem; }
-  .gallery .photo-card:nth-child(3n + 2) { margin-top: 0; }
-  .gallery .photo-card--portrait { width: 82%; }
+  .gallery:not(.gallery--rows) { grid-template-columns: 1fr; gap: 4.5rem; }
+  .gallery:not(.gallery--rows) > .photo-card:nth-child(3n + 2) { margin-top: 0; }
+  .gallery .photo-card { width: 100% !important; transform: none !important; justify-self: stretch !important; margin: 0 0 4.5rem; }
+  .gallery .photo-card--portrait { width: 82% !important; margin-inline: auto; }
+  .gallery--rows { display: block; }
+  .gallery-row { display: block; }
   .photo-detail__figure, .photo-detail__figure--portrait { max-width: 100%; }
   .series-list { grid-template-columns: 1fr; gap: 5rem; }
   .series-card--offset { margin-top: 0; }
   .series-detail__head .back-link { grid-row: auto; margin-bottom: 5rem; }
   .series-flow { display: block; }
-  .series-flow__item { width: 100%; margin: 0 0 5rem; }
-  .series-flow__item.is-portrait { width: 78%; margin-inline: auto; }
+  .series-flow__item { width: 100% !important; margin: 0 0 5rem; transform: none !important; justify-self: stretch !important; }
+  .series-flow__item.is-portrait { width: 78% !important; margin-inline: auto; }
   .series-detail__end { padding-top: 4rem; }
   .about { gap: 3rem; }
   .about__portrait { margin: 1rem 0 0 14vw; }
