@@ -79,7 +79,7 @@ p, h1, h2, figure { margin: 0; }
 .gallery-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); }
 .gallery-row--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .gallery-row--landscape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.gallery-row .photo-card { width: 100%; transform: none; justify-self: stretch; }
+.gallery-row .photo-card { justify-self: center; }
 
 .photo-detail { padding-top: 4rem; padding-bottom: 9rem; }
 .photo-detail__figure { margin: 5rem auto 0; max-width: 82vw; }

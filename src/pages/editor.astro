@@ -29,7 +29,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         <div class="sidebar-heading">
           <p class="eyebrow">Layout studio</p>
           <h1>排版<br />编辑器</h1>
-          <p>首页精选可自由拖动排版；Street 与 Scenes 自动按照片方向整齐成行。所有操作只发生在你的电脑上。</p>
+          <p>首页与各分类页都可以独立拖动、缩放和调整照片。所有操作只发生在你的电脑上。</p>
         </div>
 
         <div class="field-group">
@@ -57,11 +57,12 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         <div class="help">
           <p class="eyebrow">使用方法</p>
           <ol>
-            <li>在首页精选中按住照片自由移动</li>
+            <li>在首页或分类中按住照片自由移动</li>
             <li>使用上下箭头改变前后顺序</li>
             <li>点尺寸按钮或拖右下角缩放</li>
             <li>点击照片编辑属性</li>
-            <li>Street / Scenes 自动按 3 竖或 2 横成行</li>
+            <li>Street / Scenes 保持 3 竖或 2 横成行</li>
+            <li>删除只移除网站记录，不删除磁盘原图</li>
             <li>保存并覆盖 photos.json</li>
           </ol>
           <p class="note">首页只展示排在最前面的 12 张精选照片。</p>
@@ -138,8 +139,11 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         </div>
         <p id="form-error" class="form-error" role="alert"></p>
         <div class="dialog-actions">
-          <button class="text-button" value="cancel" type="submit">取消</button>
-          <button class="button button--primary" id="apply-photo" type="button">应用修改</button>
+          <button class="text-button text-button--danger" id="delete-photo" type="button">删除照片</button>
+          <div>
+            <button class="text-button" value="cancel" type="submit">取消</button>
+            <button class="button button--primary" id="apply-photo" type="button">应用修改</button>
+          </div>
         </div>
       </form>
     </dialog>
@@ -201,14 +205,49 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         });
       }
 
-      function getLayoutWidth(photo) {
-        const width = Number(photo.layoutWidth);
-        return Number.isFinite(width) ? Math.min(200, Math.max(45, Math.round(width))) : 100;
+      function getLayoutScope() {
+        if (viewFilter.value === 'featured') return 'home';
+        if (['street', 'portrait', 'scenes'].includes(viewFilter.value)) return 'category';
+        return null;
       }
 
-      function getLayoutOffset(photo, axis) {
-        const offset = Number(photo[axis === 'x' ? 'layoutOffsetX' : 'layoutOffsetY']);
+      function getLayoutProperty(scope, type) {
+        if (scope === 'category') {
+          if (type === 'width') return 'categoryLayoutWidth';
+          return axisProperty('categoryLayoutOffset', type);
+        }
+        if (type === 'width') return 'layoutWidth';
+        return axisProperty('layoutOffset', type);
+      }
+
+      function axisProperty(prefix, axis) {
+        return `${prefix}${axis === 'x' ? 'X' : 'Y'}`;
+      }
+
+      function getDefaultLayoutWidth(photo, scope) {
+        return scope === 'category' && photo.category === 'portrait' ? 78 : 100;
+      }
+
+      function getLayoutWidth(photo, scope = getLayoutScope()) {
+        const width = Number(photo[getLayoutProperty(scope, 'width')]);
+        return Number.isFinite(width)
+          ? Math.min(200, Math.max(45, Math.round(width)))
+          : getDefaultLayoutWidth(photo, scope);
+      }
+
+      function getLayoutOffset(photo, axis, scope = getLayoutScope()) {
+        const offset = Number(photo[getLayoutProperty(scope, axis)]);
         return Number.isFinite(offset) ? Math.min(80, Math.max(-80, Math.round(offset))) : 0;
+      }
+
+      function setLayoutWidth(photo, value, scope = getLayoutScope()) {
+        if (!scope) return;
+        photo[getLayoutProperty(scope, 'width')] = Math.min(200, Math.max(45, Math.round(value)));
+      }
+
+      function setLayoutOffset(photo, axis, value, scope = getLayoutScope()) {
+        if (!scope) return;
+        photo[getLayoutProperty(scope, axis)] = Math.min(80, Math.max(-80, Math.round(value)));
       }
 
       function syncCanvasScale() {
@@ -229,12 +268,13 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 
       function render() {
         const visible = getVisiblePhotos();
-        const isFreeLayout = viewFilter.value === 'featured';
+        const layoutScope = getLayoutScope();
+        const isFreeLayout = Boolean(layoutScope);
         const isOrientationLayout = viewFilter.value === 'street' || viewFilter.value === 'scenes';
         const orientationRows = isOrientationLayout ? buildOrientationRows(visible) : [];
         const displayPhotos = isOrientationLayout ? orientationRows.flatMap((row) => row.items) : visible;
         const filterLabel = viewFilter.options[viewFilter.selectedIndex]?.textContent || '';
-        $('#view-title').textContent = isFreeLayout ? `${filterLabel} · 拖动画面自由定位` : `${filterLabel} · 自动响应式排版`;
+        $('#view-title').textContent = isFreeLayout ? `${filterLabel} · 独立拖动与缩放` : `${filterLabel} · 数据总览`;
         $('#visible-count').textContent = String(visible.length);
         $('#featured-count').textContent = String(photoData.filter((photo) => photo.featured).length);
         $('#total-count').textContent = String(photoData.length);
@@ -245,9 +285,9 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 
         let featuredPosition = 0;
         const cards = displayPhotos.map((photo, index) => {
-          const layoutWidth = isFreeLayout ? getLayoutWidth(photo) : 100;
-          const offsetX = isFreeLayout ? getLayoutOffset(photo, 'x') : 0;
-          const offsetY = isFreeLayout ? getLayoutOffset(photo, 'y') : 0;
+          const layoutWidth = isFreeLayout ? getLayoutWidth(photo, layoutScope) : 100;
+          const offsetX = isFreeLayout ? getLayoutOffset(photo, 'x', layoutScope) : 0;
+          const offsetY = isFreeLayout ? getLayoutOffset(photo, 'y', layoutScope) : 0;
           if (photo.featured) featuredPosition += 1;
           const publishBadge = viewFilter.value === 'featured' && featuredPosition > 12
             ? '<span class="card-badge card-badge--muted">首页不展示</span>'
@@ -266,12 +306,13 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
                 <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt)}" loading="lazy" />
                 ${publishBadge}
                 <button class="favorite ${photo.featured ? 'is-active' : ''}" type="button" data-action="featured" aria-label="${photo.featured ? '取消首页精选' : '加入首页精选'}" title="首页精选">★</button>
+                <button class="delete-control" type="button" data-action="delete" aria-label="删除照片" title="从网站中删除">×</button>
                 ${layoutControls}
                 ${orderControls}
               </div>
               <button class="editor-card__meta" type="button" data-action="edit">
                 <span><strong>${escapeHtml(photo.title || photo.id)}</strong>${escapeHtml(photo.location || '未填写地点')}</span>
-                <span>${isOrientationLayout ? '自动行布局' : `${photo.orientation === 'portrait' ? '竖图' : '横图'} · 编辑`}</span>
+                <span>${isOrientationLayout ? '方向分行 · 可编辑' : `${photo.orientation === 'portrait' ? '竖图' : '横图'} · 编辑`}</span>
               </button>
             </article>`;
         });
@@ -310,15 +351,17 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
       function openInspector(id) {
         const photo = photoData.find((item) => item.id === id);
         if (!photo) return;
-        const layoutLocked = viewFilter.value !== 'featured';
+        const layoutScope = getLayoutScope();
+        const layoutLocked = !layoutScope;
+        inspector.dataset.layoutScope = layoutScope || '';
         $('#form-original-id').value = photo.id;
         $('#form-id').value = photo.id;
         $('#form-title').value = photo.title || '';
         $('#form-category').value = photo.category;
         $('#form-orientation').value = photo.orientation;
-        $('#form-layout-width').value = String(getLayoutWidth(photo));
-        $('#form-offset-x').value = String(getLayoutOffset(photo, 'x'));
-        $('#form-offset-y').value = String(getLayoutOffset(photo, 'y'));
+        $('#form-layout-width').value = String(getLayoutWidth(photo, layoutScope));
+        $('#form-offset-x').value = String(getLayoutOffset(photo, 'x', layoutScope));
+        $('#form-offset-y').value = String(getLayoutOffset(photo, 'y', layoutScope));
         $('#form-layout-width').disabled = layoutLocked;
         $('#form-offset-x').disabled = layoutLocked;
         $('#form-offset-y').disabled = layoutLocked;
@@ -345,6 +388,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         }
         const index = photoData.findIndex((photo) => photo.id === oldId);
         if (index < 0) return;
+        const layoutScope = inspector.dataset.layoutScope || null;
         snapshot();
         photoData[index] = {
           ...photoData[index],
@@ -357,15 +401,29 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
           image: $('#form-image').value.trim(),
           featured: $('#form-featured').checked,
           orientation: $('#form-orientation').value,
-          layoutWidth: Math.min(200, Math.max(45, Number($('#form-layout-width').value))),
-          layoutOffsetX: Math.min(80, Math.max(-80, Number($('#form-offset-x').value))),
-          layoutOffsetY: Math.min(80, Math.max(-80, Number($('#form-offset-y').value))),
           alt: $('#form-alt').value.trim(),
         };
+        if (layoutScope) {
+          setLayoutWidth(photoData[index], Number($('#form-layout-width').value), layoutScope);
+          setLayoutOffset(photoData[index], 'x', Number($('#form-offset-x').value), layoutScope);
+          setLayoutOffset(photoData[index], 'y', Number($('#form-offset-y').value), layoutScope);
+        }
         inspector.close();
         setDirty(true);
         render();
         showToast('照片设置已应用');
+      }
+
+      function deletePhoto(id) {
+        const photo = photoData.find((item) => item.id === id);
+        if (!photo) return;
+        if (!window.confirm(`确定从网站中删除“${photo.title || photo.id}”吗？\n\n这会移除 photos.json 中的记录，但不会删除磁盘里的原图文件。`)) return;
+        snapshot();
+        photoData = photoData.filter((item) => item.id !== id);
+        if (inspector.open) inspector.close();
+        setDirty(true, '照片已移除，保存后生效');
+        render();
+        showToast('照片已从网站记录中删除，可撤销');
       }
 
       function validatePhotos(value) {
@@ -380,6 +438,9 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
           if (photo.layoutWidth !== undefined && (!Number.isFinite(Number(photo.layoutWidth)) || Number(photo.layoutWidth) < 45 || Number(photo.layoutWidth) > 200)) throw new Error(`${photo.id} 的显示尺寸应在 45–200 之间。`);
           if (photo.layoutOffsetX !== undefined && (!Number.isFinite(Number(photo.layoutOffsetX)) || Math.abs(Number(photo.layoutOffsetX)) > 80)) throw new Error(`${photo.id} 的水平位置应在 -80–80 之间。`);
           if (photo.layoutOffsetY !== undefined && (!Number.isFinite(Number(photo.layoutOffsetY)) || Math.abs(Number(photo.layoutOffsetY)) > 80)) throw new Error(`${photo.id} 的垂直位置应在 -80–80 之间。`);
+          if (photo.categoryLayoutWidth !== undefined && (!Number.isFinite(Number(photo.categoryLayoutWidth)) || Number(photo.categoryLayoutWidth) < 45 || Number(photo.categoryLayoutWidth) > 200)) throw new Error(`${photo.id} 的分类页显示尺寸应在 45–200 之间。`);
+          if (photo.categoryLayoutOffsetX !== undefined && (!Number.isFinite(Number(photo.categoryLayoutOffsetX)) || Math.abs(Number(photo.categoryLayoutOffsetX)) > 80)) throw new Error(`${photo.id} 的分类页水平位置应在 -80–80 之间。`);
+          if (photo.categoryLayoutOffsetY !== undefined && (!Number.isFinite(Number(photo.categoryLayoutOffsetY)) || Math.abs(Number(photo.categoryLayoutOffsetY)) > 80)) throw new Error(`${photo.id} 的分类页垂直位置应在 -80–80 之间。`);
           ids.add(photo.id);
         });
         return value;
@@ -450,24 +511,28 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         const { id } = card.dataset;
         const action = button.dataset.action;
         if (action === 'edit') openInspector(id);
+        if (action === 'delete') deletePhoto(id);
         if (action === 'up') movePhoto(id, -1);
         if (action === 'down') movePhoto(id, 1);
         if (action === 'size') {
           const photo = photoData.find((item) => item.id === id);
           if (!photo) return;
           snapshot();
-          const current = getLayoutWidth(photo);
-          photo.layoutWidth = current >= 200 ? 60 : current >= 150 ? 200 : current >= 100 ? 150 : current >= 80 ? 100 : 80;
+          const layoutScope = getLayoutScope();
+          const current = getLayoutWidth(photo, layoutScope);
+          const nextWidth = current >= 200 ? 60 : current >= 150 ? 200 : current >= 100 ? 150 : current >= 80 ? 100 : 80;
+          setLayoutWidth(photo, nextWidth, layoutScope);
           setDirty(true);
           render();
-          showToast(`照片尺寸已调整为 ${photo.layoutWidth}%`);
+          showToast(`照片尺寸已调整为 ${nextWidth}%`);
         }
         if (action === 'reset-position') {
           const photo = photoData.find((item) => item.id === id);
           if (!photo) return;
           snapshot();
-          photo.layoutOffsetX = 0;
-          photo.layoutOffsetY = 0;
+          const layoutScope = getLayoutScope();
+          setLayoutOffset(photo, 'x', 0, layoutScope);
+          setLayoutOffset(photo, 'y', 0, layoutScope);
           setDirty(true);
           render();
           showToast('照片位置已归零');
@@ -490,8 +555,10 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         event.stopPropagation();
         const photo = photoData.find((item) => item.id === card.dataset.id);
         if (!photo) return;
+        const layoutScope = getLayoutScope();
+        if (!layoutScope) return;
         snapshot();
-        const startScale = getLayoutWidth(photo);
+        const startScale = getLayoutWidth(photo, layoutScope);
         const startX = event.clientX;
         const startWidth = card.getBoundingClientRect().width;
         const baseWidth = startWidth / (startScale / 100);
@@ -501,7 +568,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         const onMove = (moveEvent) => {
           const nextWidth = startWidth + (moveEvent.clientX - startX) * 2;
           const nextScale = Math.min(200, Math.max(45, Math.round((nextWidth / baseWidth) * 100)));
-          photo.layoutWidth = nextScale;
+          setLayoutWidth(photo, nextScale, layoutScope);
           card.style.setProperty('--card-width', `${nextScale}%`);
           const sizeButton = card.querySelector('[data-action="size"]');
           sizeButton.textContent = `↔ ${nextScale}%`;
@@ -514,7 +581,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
           window.removeEventListener('pointercancel', onEnd);
           card.classList.remove('is-resizing');
           setDirty(true);
-          showToast(`照片尺寸已调整为 ${getLayoutWidth(photo)}%`);
+          showToast(`照片尺寸已调整为 ${getLayoutWidth(photo, layoutScope)}%`);
         };
         window.addEventListener('pointermove', onMove);
         window.addEventListener('pointerup', onEnd);
@@ -524,15 +591,16 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
       grid.addEventListener('pointerdown', (event) => {
         const image = event.target.closest('.editor-card__image');
         const card = event.target.closest('.editor-card');
-        if (viewFilter.value !== 'featured' || !image || !card || event.target.closest('button')) return;
+        const layoutScope = getLayoutScope();
+        if (!layoutScope || !image || !card || event.target.closest('button')) return;
         event.preventDefault();
         const photo = photoData.find((item) => item.id === card.dataset.id);
         if (!photo) return;
         snapshot();
         const startX = event.clientX;
         const startY = event.clientY;
-        const startOffsetX = getLayoutOffset(photo, 'x');
-        const startOffsetY = getLayoutOffset(photo, 'y');
+        const startOffsetX = getLayoutOffset(photo, 'x', layoutScope);
+        const startOffsetY = getLayoutOffset(photo, 'y', layoutScope);
         const bounds = card.getBoundingClientRect();
         card.classList.add('is-positioning');
         image.setPointerCapture?.(event.pointerId);
@@ -540,8 +608,8 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         const onMove = (moveEvent) => {
           const nextX = Math.min(80, Math.max(-80, Math.round(startOffsetX + ((moveEvent.clientX - startX) / bounds.width) * 100)));
           const nextY = Math.min(80, Math.max(-80, Math.round(startOffsetY + ((moveEvent.clientY - startY) / bounds.height) * 100)));
-          photo.layoutOffsetX = nextX;
-          photo.layoutOffsetY = nextY;
+          setLayoutOffset(photo, 'x', nextX, layoutScope);
+          setLayoutOffset(photo, 'y', nextY, layoutScope);
           card.style.setProperty('--offset-x', `${nextX}%`);
           card.style.setProperty('--offset-y', `${nextY}%`);
           const control = card.querySelector('[data-action="reset-position"]');
@@ -556,7 +624,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
           window.removeEventListener('pointercancel', onEnd);
           card.classList.remove('is-positioning');
           setDirty(true);
-          showToast(`照片位置：${getLayoutOffset(photo, 'x')}, ${getLayoutOffset(photo, 'y')}`);
+          showToast(`照片位置：${getLayoutOffset(photo, 'x', layoutScope)}, ${getLayoutOffset(photo, 'y', layoutScope)}`);
         };
         window.addEventListener('pointermove', onMove);
         window.addEventListener('pointerup', onEnd);
@@ -567,6 +635,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
       searchInput.addEventListener('input', render);
       $('#clear-search').addEventListener('click', () => { searchInput.value = ''; render(); });
       $('#apply-photo').addEventListener('click', applyInspector);
+      $('#delete-photo').addEventListener('click', () => deletePhoto($('#form-original-id').value));
       $('#form-image').addEventListener('input', (event) => { $('#form-preview').src = event.target.value; });
       $('#open-file').addEventListener('click', async () => {
         if ('showOpenFilePicker' in window) {
@@ -675,13 +744,13 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .photo-grid[data-view='featured'] .editor-card:nth-child(1) { grid-column: 1 / span 4; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(2) { grid-column: 6 / span 7; margin-top: 8vw; }
   .photo-grid[data-view='featured'] .editor-card[data-id='home-006'] { grid-column: 2 / span 5; }
-  .photo-grid[data-view='portrait'] .editor-card { width: 100%; grid-column: span 6; transform: none; justify-self: stretch; }
+  .photo-grid[data-view='portrait'] .editor-card { grid-column: span 6; justify-self: center; }
   .photo-grid--rows { display: block; }
   .editor-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); margin-bottom: clamp(5rem, 10vw, 10rem); }
   .editor-row--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .editor-row--landscape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .editor-row .editor-card { width: 100%; grid-column: auto; transform: none; justify-self: stretch; }
-  .photo-grid:not([data-view='featured']) .editor-card:nth-child(3n+2) { margin-top: 5vw; }
+  .editor-row .editor-card { grid-column: auto; justify-self: center; }
+  .photo-grid[data-view='portrait'] > .editor-card:nth-child(3n+2) { margin-top: 5vw; }
   .editor-card__image { position: relative; overflow: hidden; background: #e4e2dc; cursor: grab; touch-action: none; }
   .editor-card.is-positioning { z-index: 6; transition: none; }
   .editor-card.is-positioning .editor-card__image { cursor: grabbing; box-shadow: 0 1.2rem 3rem rgba(0,0,0,.18); }
@@ -691,6 +760,8 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .card-badge--muted { background: rgba(190,75,47,.9); }
   .favorite { width: 2rem; height: 2rem; padding: 0; position: absolute; top: .6rem; right: .6rem; border: 0; border-radius: 50%; color: rgba(255,255,255,.7); background: rgba(20,20,19,.55); }
   .favorite.is-active { color: #f0ca68; }
+  .delete-control { width: 2rem; height: 2rem; padding: 0; position: absolute; top: .6rem; right: 3rem; border: 0; border-radius: 50%; color: #fff; background: rgba(190,75,47,.86); font-size: 1.2rem; line-height: 1; opacity: 0; transition: opacity 150ms; }
+  .editor-card:hover .delete-control, .editor-card:focus-within .delete-control { opacity: 1; }
   .position-control { min-width: 4.2rem; height: 1.8rem; padding: 0 .45rem; position: absolute; top: .65rem; left: 50%; border: 0; color: rgba(255,255,255,.78); background: rgba(20,20,19,.58); font-size: .52rem; transform: translateX(-50%); opacity: 0; transition: opacity 150ms; }
   .position-control.is-active, .editor-card:hover .position-control, .editor-card:focus-within .position-control { opacity: 1; }
   .size-control { min-width: 3.6rem; height: 1.8rem; padding: 0 .45rem; position: absolute; left: .6rem; bottom: .6rem; border: 0; color: #fff; background: rgba(20,20,19,.72); font-size: .56rem; letter-spacing: .04em; }
@@ -728,6 +799,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .toggle input:checked + span::after { transform: translateX(1.1rem); }
   .form-error { min-height: 1.2rem; margin: .6rem 0; color: var(--accent); font-size: .72rem; }
   .dialog-actions { padding-top: 1rem; border-top: 1px solid var(--line); }
+  .dialog-actions > div { display: flex; align-items: center; gap: .75rem; }
   #toast { position: fixed; right: 1.5rem; bottom: 1.5rem; z-index: 50; padding: .8rem 1rem; color: #fff; background: var(--ink); font-size: .7rem; letter-spacing: .06em; opacity: 0; transform: translateY(1rem); pointer-events: none; transition: 180ms; }
   #toast.is-visible { opacity: 1; transform: translateY(0); }
   @media (max-width: 900px) {
@@ -759,6 +831,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
     .photo-grid .editor-card--portrait { width: 82% !important; margin-inline: auto; }
     .photo-grid[data-view='featured'] .editor-card--portrait { width: 78% !important; }
     .move-actions { opacity: 1; }
+    .delete-control { opacity: 1; }
     .editor-card__meta > span:last-child { display: none; }
     .form-grid { grid-template-columns: 1fr; }
     .form-grid .full { grid-column: auto; }

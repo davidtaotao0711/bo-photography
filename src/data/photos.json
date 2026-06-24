@@ -12,7 +12,10 @@
     "alt": "An urban street scene with passing traffic",
     "layoutWidth": 106,
     "layoutOffsetX": 27,
-    "layoutOffsetY": 5
+    "layoutOffsetY": 5,
+    "categoryLayoutWidth": 88,
+    "categoryLayoutOffsetX": 15,
+    "categoryLayoutOffsetY": -7
   },
   {
     "id": "home-002",
@@ -867,18 +870,6 @@
     "alt": "Portrait photograph: portrait 012"
   },
   {
-    "id": "portrait-013",
-    "title": "No. 71",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-013.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 013"
-  },
-  {
     "id": "portrait-014",
     "title": "No. 72",
     "category": "portrait",
@@ -948,7 +939,9 @@
     "image": "/images/portrait/portrait-019.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 019"
+    "alt": "Portrait photograph: portrait 019",
+    "categoryLayoutOffsetX": 67,
+    "categoryLayoutOffsetY": -4
   },
   {
     "id": "scenes-001",

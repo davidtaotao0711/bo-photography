@@ -9,16 +9,22 @@ interface Photo {
   layoutWidth?: number;
   layoutOffsetX?: number;
   layoutOffsetY?: number;
+  categoryLayoutWidth?: number;
+  categoryLayoutOffsetX?: number;
+  categoryLayoutOffsetY?: number;
 }
-interface Props { photo: Photo; eager?: boolean; number?: number; useCustomLayout?: boolean }
-const { photo, eager = false, number, useCustomLayout = true } = Astro.props;
+interface Props { photo: Photo; eager?: boolean; number?: number; layoutScope?: 'home' | 'category' | 'none' }
+const { photo, eager = false, number, layoutScope = 'home' } = Astro.props;
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
-const layoutWidth = Number.isFinite(photo.layoutWidth)
-  ? Math.min(200, Math.max(45, Number(photo.layoutWidth)))
+const widthValue = layoutScope === 'category' ? photo.categoryLayoutWidth : photo.layoutWidth;
+const offsetXValue = layoutScope === 'category' ? photo.categoryLayoutOffsetX : photo.layoutOffsetX;
+const offsetYValue = layoutScope === 'category' ? photo.categoryLayoutOffsetY : photo.layoutOffsetY;
+const layoutWidth = Number.isFinite(widthValue)
+  ? Math.min(200, Math.max(45, Number(widthValue)))
   : null;
-const offsetX = Number.isFinite(photo.layoutOffsetX) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetX))) : 0;
-const offsetY = Number.isFinite(photo.layoutOffsetY) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetY))) : 0;
-const layoutStyle = useCustomLayout ? [
+const offsetX = Number.isFinite(offsetXValue) ? Math.min(80, Math.max(-80, Number(offsetXValue))) : 0;
+const offsetY = Number.isFinite(offsetYValue) ? Math.min(80, Math.max(-80, Number(offsetYValue))) : 0;
+const layoutStyle = layoutScope !== 'none' ? [
   layoutWidth ? `width: ${layoutWidth}%` : '',
   layoutWidth ? 'justify-self: center' : '',
   offsetX || offsetY ? `transform: translate(${offsetX}%, ${offsetY}%)` : '',
