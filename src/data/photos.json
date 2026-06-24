@@ -11,7 +11,7 @@
     "orientation": "portrait",
     "alt": "An urban street scene with passing traffic",
     "layoutWidth": 106,
-    "layoutOffsetX": 9,
+    "layoutOffsetX": 28,
     "layoutOffsetY": 1
   },
   {
@@ -26,8 +26,8 @@
     "orientation": "landscape",
     "alt": "A busy street scene viewed from above",
     "layoutWidth": 71,
-    "layoutOffsetX": -27,
-    "layoutOffsetY": -5
+    "layoutOffsetX": -5,
+    "layoutOffsetY": -3
   },
   {
     "id": "home-009",
@@ -40,9 +40,9 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "Portrait of a woman in a black dress",
-    "layoutWidth": 87,
-    "layoutOffsetX": -6,
-    "layoutOffsetY": -4
+    "layoutWidth": 96,
+    "layoutOffsetX": 3,
+    "layoutOffsetY": -5
   },
   {
     "id": "home-003",
@@ -56,8 +56,8 @@
     "orientation": "landscape",
     "alt": "A quiet tabletop scene with books and objects",
     "layoutWidth": 66,
-    "layoutOffsetX": -43,
-    "layoutOffsetY": 18
+    "layoutOffsetX": -14,
+    "layoutOffsetY": 19
   },
   {
     "id": "home-006",
@@ -85,8 +85,8 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A distant landscape framed by an interior",
-    "layoutOffsetX": -64,
-    "layoutOffsetY": -32,
+    "layoutOffsetX": -43,
+    "layoutOffsetY": -29,
     "layoutWidth": 100
   },
   {
@@ -100,8 +100,8 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "Green banks reflected in still water",
-    "layoutWidth": 87,
-    "layoutOffsetX": -10,
+    "layoutWidth": 110,
+    "layoutOffsetX": -2,
     "layoutOffsetY": -11
   },
   {
@@ -115,8 +115,8 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A quiet room lit through large windows",
-    "layoutOffsetX": -35,
-    "layoutOffsetY": -4,
+    "layoutOffsetX": -18,
+    "layoutOffsetY": -1,
     "layoutWidth": 73
   },
   {

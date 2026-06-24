@@ -81,7 +81,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         </div>
 
         <div class="status-row">
-          <p id="view-title">首页精选</p>
+          <p><span id="view-title">首页精选</span><span id="canvas-scale"></span></p>
           <p id="save-status" data-state="clean">已载入网站数据</p>
         </div>
 
@@ -89,7 +89,11 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
           <p>没有找到照片</p>
           <button class="text-button" id="clear-search" type="button">清除搜索</button>
         </div>
-        <div id="photo-grid" class="photo-grid" aria-label="可自由定位的照片版面"></div>
+        <div id="canvas-viewport" class="canvas-viewport">
+          <div id="canvas-stage" class="canvas-stage">
+            <div id="photo-grid" class="photo-grid" aria-label="可自由定位的照片版面"></div>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -155,6 +159,8 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
       const searchInput = document.querySelector('#search');
       const inspector = document.querySelector('#inspector');
       const formError = document.querySelector('#form-error');
+      const canvasViewport = document.querySelector('#canvas-viewport');
+      const canvasStage = document.querySelector('#canvas-stage');
 
       const $ = (selector) => document.querySelector(selector);
       const escapeHtml = (value = '') => String(value)
@@ -202,6 +208,16 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         return Number.isFinite(offset) ? Math.min(80, Math.max(-80, Math.round(offset))) : 0;
       }
 
+      function syncCanvasScale() {
+        if (!canvasViewport || !canvasStage) return;
+        canvasStage.style.zoom = '1';
+        const designWidth = canvasStage.offsetWidth;
+        const availableWidth = canvasViewport.clientWidth;
+        const scale = window.innerWidth <= 620 || !designWidth ? 1 : Math.min(1, availableWidth / designWidth);
+        canvasStage.style.zoom = String(scale);
+        $('#canvas-scale').textContent = window.innerWidth <= 620 ? '' : ` · 完整画布 ${Math.round(scale * 100)}% 预览`;
+      }
+
       function render() {
         const visible = getVisiblePhotos();
         const filterLabel = viewFilter.options[viewFilter.selectedIndex]?.textContent || '';
@@ -242,6 +258,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
               </button>
             </article>`;
         }).join('');
+        window.requestAnimationFrame(syncCanvasScale);
       }
 
       function replaceVisibleOrder(orderedIds) {
@@ -565,6 +582,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
         event.preventDefault();
         event.returnValue = '';
       });
+      window.addEventListener('resize', syncCanvasScale);
 
       render();
     </script>
@@ -605,7 +623,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .help { margin-top: 3.5rem; color: var(--muted); font-size: .72rem; }
   .help ol { margin: 0; padding-left: 1.15rem; line-height: 2; }
   .help .note { margin-top: 1rem; padding-left: .8rem; border-left: 2px solid var(--accent); line-height: 1.55; }
-  .workspace { min-width: 0; padding: 2rem clamp(1.25rem, 3vw, 3.5rem) 8rem; overflow-x: auto; background: #faf9f6; }
+  .workspace { min-width: 0; padding: 2rem clamp(1.25rem, 3vw, 3.5rem) 8rem; overflow: hidden; background: #faf9f6; }
   .toolbar, .status-row { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
   .toolbar > div { display: flex; gap: .7rem; align-items: center; }
   .button { min-height: 2.65rem; padding: .7rem 1rem; border: 1px solid var(--ink); color: var(--ink); background: transparent; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -616,9 +634,12 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
   .text-button--danger:hover { color: var(--accent); }
   .status-row { margin-top: 3rem; padding-bottom: .85rem; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .63rem; letter-spacing: .11em; text-transform: uppercase; }
   .status-row p { margin: 0; }
+  #canvas-scale { margin-left: .45rem; color: var(--accent); }
   #save-status::before { content: ''; display: inline-block; width: .42rem; height: .42rem; margin-right: .5rem; border-radius: 50%; background: #78a96c; vertical-align: .05rem; }
   #save-status[data-state='dirty']::before { background: #d38b32; }
-  .photo-grid { width: calc(100vw - 2 * clamp(1.25rem, 4vw, 4.5rem)); padding-top: clamp(3rem, 6vw, 6rem); display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
+  .canvas-viewport { width: 100%; overflow: hidden; }
+  .canvas-stage { width: calc(100vw - 2 * clamp(1.25rem, 4vw, 4.5rem)); transform-origin: top left; }
+  .photo-grid { width: 100%; padding-top: clamp(3rem, 6vw, 6rem); display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
   .editor-card { width: var(--card-width, 100%); min-width: 0; overflow: visible; grid-column: span 4; justify-self: center; transform: translate(var(--offset-x, 0), var(--offset-y, 0)); transition: opacity 150ms, transform 150ms, width 120ms ease; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(4n+1) { grid-column: 1 / span 7; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(4n+2) { grid-column: 9 / span 4; margin-top: 9vw; }
@@ -692,7 +713,8 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
     .toolbar > div { width: 100%; }
     .toolbar .button { flex: 1; }
     .status-row { margin-top: 2rem; align-items: flex-start; }
-    .photo-grid { width: 100%; display: block; }
+    .canvas-stage { width: 100%; }
+    .photo-grid { display: block; }
     .photo-grid .editor-card,
     .photo-grid[data-view='featured'] .editor-card:nth-child(n),
     .photo-grid:not([data-view='featured']) .editor-card:nth-child(n) { grid-column: auto; margin-top: 0; }
