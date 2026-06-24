@@ -1,16 +1,21 @@
 ---
-interface Series { slug: string; title: string; year: string; coverImage: string; description: string }
-interface Props { item: Series; index: number }
-const { item, index } = Astro.props;
+interface Series { slug: string; title: string; year?: string; coverImage?: string; description?: string }
+interface Props { item: Series; index: number; coverImage?: string; photoCount?: number }
+const { item, index, coverImage = '', photoCount = 0 } = Astro.props;
 ---
 
-<article class:list={["series-card", { "series-card--offset": index % 2 === 1 }]}> 
+<article class="series-card">
   <a href={`/series/${item.slug}`}>
-    <div class="series-card__image"><img src={item.coverImage} alt="" loading="lazy" /></div>
+    <div class:list={["series-card__image", { "is-empty": !coverImage }]}>
+      {coverImage ? <img src={coverImage} alt={`Cover of ${item.title}`} loading="lazy" /> : <span>Empty series</span>}
+    </div>
     <div class="series-card__text">
       <p>{String(index + 1).padStart(2, '0')}</p>
-      <h2>{item.title}</h2>
-      <p>{item.year}</p>
+      <div>
+        <h2>{item.title}</h2>
+        {item.description && <p class="series-card__description">{item.description}</p>}
+      </div>
+      <p>{item.year || `${photoCount} photos`}</p>
     </div>
   </a>
 </article>

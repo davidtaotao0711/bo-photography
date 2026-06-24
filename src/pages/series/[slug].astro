@@ -9,12 +9,24 @@ export function getStaticPaths() {
 }
 
 const { item } = Astro.props;
-const items = photos.filter((photo) => photo.series === item.slug);
+const items = photos
+  .map((photo, index) => ({ photo, index, order: Number.isFinite(Number(photo.order)) ? Number(photo.order) : index + 1 }))
+  .filter(({ photo }) => photo.series === item.slug)
+  .sort((a, b) => a.order - b.order || a.index - b.index)
+  .map(({ photo }) => photo);
 const layoutStyle = (photo) => {
-  const width = Number.isFinite(photo.layoutWidth) ? Math.min(200, Math.max(45, Number(photo.layoutWidth))) : null;
+  const explicitWidth = Number(photo.layoutWidth);
+  const sizeWidth = Number(photo.size);
+  const width = Number.isFinite(explicitWidth)
+    ? Math.min(200, Math.max(45, explicitWidth))
+    : Number.isFinite(sizeWidth) ? Math.min(200, Math.max(45, sizeWidth)) : null;
   const x = Number.isFinite(photo.layoutOffsetX) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetX))) : 0;
   const y = Number.isFinite(photo.layoutOffsetY) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetY))) : 0;
   return [width ? `width: ${width}%` : '', width ? 'justify-self: center' : '', x || y ? `transform: translate(${x}%, ${y}%)` : ''].filter(Boolean).join('; ');
+};
+const imageStyle = (photo) => {
+  const aspect = Number(photo.aspect);
+  return Number.isFinite(aspect) && aspect > 0 ? `aspect-ratio: ${aspect}; object-fit: cover;` : undefined;
 };
 ---
 
@@ -22,20 +34,20 @@ const layoutStyle = (photo) => {
   <article class="series-detail">
     <header class="series-detail__head page-shell">
       <a class="back-link" href="/series">← Series</a>
-      <p class="eyebrow">Photo essay / {item.year}</p>
+      <p class="eyebrow">Photo essay / {item.year || 'Ongoing'} / {items.length} photographs</p>
       <h1>{item.title}</h1>
-      <p class="series-detail__description">{item.description}</p>
+      {item.description && <p class="series-detail__description">{item.description}</p>}
     </header>
     <div class="series-flow page-shell">
-      {items.map((photo, index) => (
+      {items.length ? items.map((photo, index) => (
         <figure
           class:list={["series-flow__item", `series-flow__item--${index % 4}`, `is-${photo.orientation}`]}
           style={layoutStyle(photo) || undefined}
         >
-          <a href={`/photo/${photo.id}`}><img src={photo.image} alt={photo.alt} loading={index === 0 ? 'eager' : 'lazy'} /></a>
+          <a href={`/photo/${photo.id}`}><img src={photo.image} alt={photo.alt} loading={index === 0 ? 'eager' : 'lazy'} style={imageStyle(photo)} /></a>
           <figcaption>{String(index + 1).padStart(2, '0')} / {photo.location}</figcaption>
         </figure>
-      ))}
+      )) : <div class="series-detail__empty"><p>This series is waiting for its first photograph.</p></div>}
     </div>
     <footer class="series-detail__end page-shell">
       <p>End of series</p>

@@ -88,14 +88,20 @@ p, h1, h2, figure { margin: 0; }
 .photo-detail figcaption { margin-top: 1rem; display: flex; justify-content: space-between; color: var(--muted); font-size: .67rem; text-transform: uppercase; letter-spacing: .12em; }
 .photo-detail h1 { font: inherit; }
 
-.series-list { padding-bottom: 12rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12vw 7vw; align-items: start; }
-.series-card--offset { margin-top: 13vw; }
-.series-card__image { overflow: hidden; background: #e8e8e3; }
-.series-card__image img { aspect-ratio: 4 / 3; object-fit: cover; transition: transform 400ms ease; }
-.series-card a:hover img { transform: scale(1.015); }
-.series-card__text { margin-top: 1rem; display: grid; grid-template-columns: 3rem 1fr auto; align-items: baseline; }
-.series-card__text h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 4rem); font-weight: 400; }
-.series-card__text p { color: var(--muted); font-size: .65rem; text-transform: uppercase; letter-spacing: .12em; }
+.series-list { padding-bottom: 12rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(6rem, 10vw, 10rem) clamp(3rem, 7vw, 7rem); align-items: start; }
+.series-card { min-width: 0; transition: transform 240ms cubic-bezier(.2,.7,.2,1); }
+.series-card__image { position: relative; overflow: hidden; background: #e8e8e3; box-shadow: 0 .9rem 2.2rem rgba(24,24,21,.1); transition: box-shadow 240ms cubic-bezier(.2,.7,.2,1); }
+.series-card__image::after { content: ''; height: .42rem; position: absolute; right: .55rem; bottom: -.01rem; left: .55rem; border: 1px solid rgba(22,22,20,.12); border-top: 0; background: rgba(250,249,246,.9); transform: translateY(100%); }
+.series-card__image img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 240ms cubic-bezier(.2,.7,.2,1); }
+.series-card__image.is-empty { aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--muted); font-family: var(--serif); font-size: clamp(1.4rem, 2.5vw, 2.2rem); }
+.series-card:hover { transform: translateY(-4px); }
+.series-card:hover .series-card__image { box-shadow: 0 1.3rem 3rem rgba(24,24,21,.15); }
+.series-card:hover .series-card__image img { transform: scale(1.03); }
+.series-card__text { margin-top: 1.3rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr) auto; gap: .5rem; align-items: start; }
+.series-card__text h2 { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3.6rem); font-weight: 400; line-height: .95; }
+.series-card__text > p { padding-top: .3rem; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; }
+.series-card__description { max-width: 28rem; margin-top: .9rem; color: var(--muted); font-family: var(--serif); font-size: clamp(.95rem, 1.25vw, 1.15rem); line-height: 1.45; }
+.series-empty { grid-column: 1 / -1; padding: 8rem 0; border-block: 1px solid var(--line); color: var(--muted); font-family: var(--serif); font-size: 1.5rem; text-align: center; }
 
 .series-detail__head { padding-top: clamp(4rem, 10vw, 9rem); padding-bottom: clamp(7rem, 13vw, 13rem); display: grid; grid-template-columns: 1fr 2.5fr; }
 .series-detail__head .back-link { grid-row: span 3; }
@@ -110,6 +116,7 @@ p, h1, h2, figure { margin: 0; }
 .series-flow img { max-height: 88vh; object-fit: cover; }
 .series-flow__item.is-portrait img { aspect-ratio: 3 / 4; }
 .series-flow figcaption { margin-top: .75rem; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; }
+.series-detail__empty { grid-column: 1 / -1; padding: clamp(7rem, 14vw, 13rem) 1rem; border-block: 1px solid var(--line); color: var(--muted); font-family: var(--serif); font-size: clamp(1.4rem, 2.5vw, 2.1rem); text-align: center; }
 .series-detail__end { padding-top: 12rem; padding-bottom: 10rem; display: flex; justify-content: space-between; align-items: flex-end; color: var(--muted); }
 
 .about { padding-top: clamp(5rem, 10vw, 9rem); padding-bottom: 12rem; display: grid; grid-template-columns: 1fr 1.15fr 1.2fr; gap: 4vw; align-items: start; }
@@ -153,7 +160,6 @@ p, h1, h2, figure { margin: 0; }
   .gallery-row { display: block; }
   .photo-detail__figure, .photo-detail__figure--portrait { max-width: 100%; }
   .series-list { grid-template-columns: 1fr; gap: 5rem; }
-  .series-card--offset { margin-top: 0; }
   .series-detail__head .back-link { grid-row: auto; margin-bottom: 5rem; }
   .series-flow { display: block; }
   .series-flow__item { width: 100% !important; margin: 0 0 5rem; transform: none !important; justify-self: stretch !important; }

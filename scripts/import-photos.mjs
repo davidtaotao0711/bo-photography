@@ -9,7 +9,7 @@ const imagesDirectory = path.join(publicDirectory, 'images');
 const photosFile = path.join(projectRoot, 'src', 'data', 'photos.json');
 
 const supportedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
-const validCategories = new Set(['street', 'portrait', 'scenes']);
+const validCategories = new Set(['street', 'portrait', 'scenes', 'series']);
 const categoryDirectories = [
   { directory: 'street', category: 'street' },
   { directory: 'portrait', category: 'portrait' },
@@ -20,6 +20,7 @@ const altPrefixes = {
   street: 'Street photograph',
   portrait: 'Portrait photograph',
   scenes: 'Scene photograph',
+  series: 'Series photograph',
 };
 
 function normalizeImagePath(imagePath) {
@@ -112,10 +113,10 @@ async function collectCandidates(photos) {
 
     const slug = entry.name;
     const files = await findImages(path.join(seriesDirectory, slug));
-    const category = categoryBySeries.get(slug) ?? 'street';
+    const category = categoryBySeries.get(slug) ?? 'series';
 
     if (files.length > 0 && !categoryBySeries.has(slug)) {
-      console.warn(`Series "${slug}" has no existing category; defaulting new photos to "street".`);
+      console.warn(`Series "${slug}" has no existing category; defaulting new photos to "series".`);
     }
 
     for (const filePath of files) {

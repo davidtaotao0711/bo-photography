@@ -1,8 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SeriesCard from '../../components/SeriesCard.astro';
+import photos from '../../data/photos.json';
 import series from '../../data/series.json';
 import site from '../../data/site.json';
+
+const orderedSeries = series
+  .map((item, index) => ({ item, index, order: Number.isFinite(Number(item.order)) ? Number(item.order) : index + 1 }))
+  .sort((a, b) => a.order - b.order || a.index - b.index)
+  .map(({ item }) => {
+    const itemPhotos = photos
+      .map((photo, index) => ({ photo, index, order: Number.isFinite(Number(photo.order)) ? Number(photo.order) : index + 1 }))
+      .filter(({ photo }) => photo.series === item.slug)
+      .sort((a, b) => a.order - b.order || a.index - b.index)
+      .map(({ photo }) => photo);
+    return { item, photoCount: itemPhotos.length, coverImage: item.coverImage || itemPhotos[0]?.image || '' };
+  });
 ---
 
 <BaseLayout title={`Series — ${site.name}`}>
@@ -12,6 +25,8 @@ import site from '../../data/site.json';
     <p class="index-hero__sub">Small books of place and time</p>
   </section>
   <section class="series-list page-shell">
-    {series.map((item, index) => <SeriesCard item={item} index={index} />)}
+    {orderedSeries.length ? orderedSeries.map(({ item, photoCount, coverImage }, index) => (
+      <SeriesCard item={item} index={index} photoCount={photoCount} coverImage={coverImage} />
+    )) : <p class="series-empty">No series yet.</p>}
   </section>
 </BaseLayout>
