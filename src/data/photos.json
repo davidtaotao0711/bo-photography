@@ -10,7 +10,7 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "An urban street scene with passing traffic",
-    "layoutWidth": 73
+    "layoutWidth": 128
   },
   {
     "id": "home-002",
@@ -23,9 +23,9 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A busy street scene viewed from above",
-    "layoutWidth": 150,
-    "layoutOffsetX": -41,
-    "layoutOffsetY": -4
+    "layoutWidth": 86,
+    "layoutOffsetX": 16,
+    "layoutOffsetY": -3
   },
   {
     "id": "home-009",
@@ -54,8 +54,8 @@
     "orientation": "landscape",
     "alt": "A quiet tabletop scene with books and objects",
     "layoutWidth": 80,
-    "layoutOffsetX": 2,
-    "layoutOffsetY": 15
+    "layoutOffsetX": 14,
+    "layoutOffsetY": 16
   },
   {
     "id": "home-006",
@@ -68,8 +68,8 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "Two horses standing together outdoors",
-    "layoutWidth": 87,
-    "layoutOffsetX": 0,
+    "layoutWidth": 122,
+    "layoutOffsetX": -14,
     "layoutOffsetY": -6
   },
   {
@@ -83,7 +83,7 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A distant landscape framed by an interior",
-    "layoutOffsetX": -28,
+    "layoutOffsetX": -30,
     "layoutOffsetY": -32,
     "layoutWidth": 121
   },
@@ -113,8 +113,8 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A quiet room lit through large windows",
-    "layoutOffsetX": 7,
-    "layoutOffsetY": -15,
+    "layoutOffsetX": 8,
+    "layoutOffsetY": -4,
     "layoutWidth": 88
   },
   {
