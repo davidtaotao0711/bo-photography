@@ -281,8 +281,8 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A quiet room lit through large windows",
-    "layoutOffsetX": -14,
-    "layoutOffsetY": -18,
+    "layoutOffsetX": -1,
+    "layoutOffsetY": -17,
     "layoutWidth": 93
   },
   {
@@ -471,8 +471,8 @@
     "alt": "Street photograph: street 049",
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
-    "layoutOffsetX": -36,
-    "layoutOffsetY": -64
+    "layoutOffsetX": -23,
+    "layoutOffsetY": -55
   },
   {
     "id": "portrait-003",
@@ -754,7 +754,7 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 038",
-    "layoutOffsetX": -1,
+    "layoutOffsetX": 3,
     "layoutOffsetY": -23,
     "layoutWidth": 122
   },
@@ -998,8 +998,8 @@
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 023",
     "layoutOffsetX": -4,
-    "layoutOffsetY": -6,
-    "layoutWidth": 106
+    "layoutOffsetY": 4,
+    "layoutWidth": 92
   },
   {
     "id": "scenes-035",
