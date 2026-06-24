@@ -10,7 +10,9 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "An urban street scene with passing traffic",
-    "layoutWidth": 128
+    "layoutWidth": 106,
+    "layoutOffsetX": 9,
+    "layoutOffsetY": 1
   },
   {
     "id": "home-002",
@@ -23,9 +25,9 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A busy street scene viewed from above",
-    "layoutWidth": 86,
-    "layoutOffsetX": 16,
-    "layoutOffsetY": -3
+    "layoutWidth": 71,
+    "layoutOffsetX": -27,
+    "layoutOffsetY": -5
   },
   {
     "id": "home-009",
@@ -38,7 +40,7 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "Portrait of a woman in a black dress",
-    "layoutWidth": 105,
+    "layoutWidth": 87,
     "layoutOffsetX": -6,
     "layoutOffsetY": -4
   },
@@ -53,9 +55,9 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A quiet tabletop scene with books and objects",
-    "layoutWidth": 80,
-    "layoutOffsetX": 14,
-    "layoutOffsetY": 16
+    "layoutWidth": 66,
+    "layoutOffsetX": -43,
+    "layoutOffsetY": 18
   },
   {
     "id": "home-006",
@@ -68,7 +70,7 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "Two horses standing together outdoors",
-    "layoutWidth": 122,
+    "layoutWidth": 101,
     "layoutOffsetX": -14,
     "layoutOffsetY": -6
   },
@@ -83,9 +85,9 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A distant landscape framed by an interior",
-    "layoutOffsetX": -30,
+    "layoutOffsetX": -64,
     "layoutOffsetY": -32,
-    "layoutWidth": 121
+    "layoutWidth": 100
   },
   {
     "id": "home-005",
@@ -98,8 +100,8 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "Green banks reflected in still water",
-    "layoutWidth": 105,
-    "layoutOffsetX": -4,
+    "layoutWidth": 87,
+    "layoutOffsetX": -10,
     "layoutOffsetY": -11
   },
   {
@@ -113,9 +115,9 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A quiet room lit through large windows",
-    "layoutOffsetX": 8,
+    "layoutOffsetX": -35,
     "layoutOffsetY": -4,
-    "layoutWidth": 88
+    "layoutWidth": 73
   },
   {
     "id": "street-001",
