@@ -32,10 +32,10 @@ npm run editor
 - 使用照片上的上下箭头调整前后顺序；
 - 点击尺寸按钮在 60%、80%、100%、150% 和 200% 之间切换，或拖动照片右下角手柄在 45%–200% 间连续等比缩放；
 - 直接按住照片画面自由拖动位置，点击照片上方的坐标按钮可恢复原位；
-- 首页与 Street、Portrait、Scenes 分别保存独立的尺寸和位置，互不覆盖；
+- 首页与 Street、Portrait、Scenes、Nature 分别保存独立的尺寸和位置，互不覆盖；
 - 可从卡片或照片设置窗口删除网站中的照片记录，并可在保存前撤销；磁盘原图不会被删除；
-- Street 与 Scenes 自动按“3 张竖图一排、2 张横图一排”交替布局，编辑器与正式页面使用同一套排列规则；
-- 在独立的 Series 书架中创建影集、上传照片、选择封面和调整影集顺序；
+- Street、Scenes 与 Nature 自动按“3 张竖图一排、2 张横图一排”交替布局，编辑器与正式页面使用同一套排列规则；
+- 在独立的 Series 书架中创建、编辑或回收影集，上传照片、选择封面、调整影集顺序和逐行编排照片；
 - 手机端始终使用稳妥的单列图片流，并忽略桌面端保存的缩放和位移；
 - 修改标题、分类、横竖方向、地点、日期、系列、图片路径和图片描述；
 - 一键加入或移出首页精选，并提示首页实际展示的前 12 张；
@@ -105,7 +105,15 @@ public/images/series/tokyo-2026/003.jpg
 
 如果普通照片排版还有未保存修改，Editor 会先要求保存，再允许创建、上传或调整 Series，避免刷新时丢失修改。
 
-#### 6. 本地检查与 Build
+#### 6. 编辑、删除和逐行排版
+
+- 在 Series 书架中点击卡片上的 **Edit**，可以修改名称、年份、简介、顺序和封面路径。slug 创建后保持不变，避免网址、图片文件夹和照片记录失联。
+- 点击 **Delete** 后还需要第二次确认，并输入该 Series 的 slug。确认后，Series 记录和它的照片记录会从 JSON 中移除；原图片文件夹不会永久删除，而会移动到 `trash/series/[slug]/`。
+- 进入某个 Series 后，可以使用 **+ Portrait Row** 或 **+ Landscape Row** 新建一行。每行的 `+` / `-` 调整照片数量，箭头调整整行前后顺序。
+- 竖图行允许 1–4 张，横图行允许 1–3 张。点击 **Save Layout** 后，排版会写入 `src/data/series.json` 的 `layoutRows`。
+- 没有 `layoutRows` 的旧 Series 会继续自动排版，不需要手动补数据。
+
+#### 7. 本地检查与 Build
 
 完成后先查看公开的 `/series` 页面和对应详情页，然后在终端运行：
 
@@ -115,7 +123,7 @@ npm.cmd run build
 
 看到 `Complete!` 表示静态网站构建成功，可以提交上线。
 
-#### 7. Commit、Push 和 Vercel 上线
+#### 8. Commit、Push 和 Vercel 上线
 
 在项目文件夹运行：
 
@@ -179,7 +187,8 @@ src/styles/global.css       全站基础样式与响应式布局
 ```text
 public/images/street/              街头摄影
 public/images/portrait/            人像摄影
-public/images/scenes/              场景与自然风景
+public/images/scenes/              空间、静物、建筑细节与环境氛围
+public/images/nature/              海边、山、湖、树林、植物、云和天气
 public/images/series/tokyo-2026/   某个系列的照片，最后一层是系列 slug
 ```
 
@@ -191,7 +200,7 @@ public/images/series/tokyo-2026/   某个系列的照片，最后一层是系列
 npm run import:photos
 ```
 
-脚本会扫描 `street`、`portrait`、`scenes` 和 Series 文件夹，只把尚未登记的图片追加到 `src/data/photos.json`，重复运行不会重复添加。`scenes` 文件夹中的照片会自动使用 `category: "scenes"`，显示在网站的 Scenes 页面。为了兼容以前的文件，脚本也会继续扫描旧的 `public/images/natural/` 文件夹，并将其中的新照片归入 Scenes。
+脚本会扫描 `street`、`portrait`、`scenes`、`nature` 和 Series 文件夹，只把尚未登记的图片追加到 `src/data/photos.json`，重复运行不会重复添加。`nature` 会写入 `category: "nature"`；`scenes` 继续保留给空间、静物、建筑细节和环境氛围。脚本不会自动迁移现有 Scenes 照片。为了兼容以前的文件，它也会继续扫描旧的 `public/images/natural/` 文件夹，并将其中的新照片归入 Scenes。
 
 每张新照片会自动生成 `id`、顺序编号 `title`、`category`、`image`、`featured: false`、`alt` 等字段，并自动整理 JSON 格式。已经存在相同图片路径的文件不会重复添加。
 
@@ -259,7 +268,7 @@ npm run import:photos
 ```
 
 - `id` 必须唯一，会用于单图页地址。
-- `category` 只能使用 `street`、`portrait` 或 `scenes`。
+- `category` 可使用 `street`、`portrait`、`scenes`、`nature`；Series 照片由 Editor 自动使用 `series`。
 - `series` 填系列的 `slug`；不属于系列时可填空字符串。
 - `orientation` 使用 `portrait` 或 `landscape`，会影响排版比例。
 - `alt` 应简短、具体地描述画面，供无障碍阅读和搜索引擎使用。
@@ -287,11 +296,15 @@ npm run import:photos
   "year": "2027",
   "description": "A short note about the atmosphere of this series.",
   "coverImage": "/images/series/hangzhou-2027/001.webp",
-  "order": 5
+  "order": 5,
+  "layoutRows": [
+    { "orientation": "landscape", "photoIds": ["hangzhou-2027-001"] },
+    { "orientation": "portrait", "photoIds": ["hangzhou-2027-002", "hangzhou-2027-003"] }
+  ]
 }
 ```
 
-旧记录没有 `order` 也能正常显示；Editor 第一次调整顺序时会自动补齐。详情页按照片的 `order` 展示，没有 `order` 的旧照片继续按 JSON 原顺序显示。
+旧记录没有 `order` 或 `layoutRows` 也能正常显示；Editor 第一次调整顺序或保存排版时会自动补齐。详情页优先按照 `layoutRows` 展示，没有行数据时按照片顺序自动分行。
 
 ## 部署到 Vercel
 

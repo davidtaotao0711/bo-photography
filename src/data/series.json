@@ -1,10 +1,10 @@
 [
   {
-    "slug": "kamakura-enoshima-2026",
-    "title": "Kamakura / Enoshima",
-    "year": "2026",
-    "description": "A short journey between railway lines, salt air, and the edge of the sea.",
-    "coverImage": "/images/home/004.jpg",
+    "slug": "b-and-w",
+    "title": "B&W",
+    "year": "",
+    "description": "",
+    "coverImage": "/images/series/b-and-w/010.jpg",
     "order": 1
   },
   {
@@ -14,29 +14,5 @@
     "description": "Passing gestures, hard light, and the quiet order hidden inside the city.",
     "coverImage": "/images/home/002.jpg",
     "order": 2
-  },
-  {
-    "slug": "hakone-2026",
-    "title": "Hakone",
-    "year": "2026",
-    "description": "Mist, water, and fragments of landscape held between arrival and departure.",
-    "coverImage": "/images/home/005.jpg",
-    "order": 3
-  },
-  {
-    "slug": "001",
-    "title": "001",
-    "year": "",
-    "description": "",
-    "coverImage": "/images/series/001/002.jpg",
-    "order": 4
-  },
-  {
-    "slug": "shanghai-street-notes",
-    "title": "Shanghai Street Notes",
-    "year": "2025–26",
-    "description": "An ongoing notebook of ordinary light and unplanned encounters close to home.",
-    "coverImage": "/images/home/008.jpg",
-    "order": 5
   }
 ]

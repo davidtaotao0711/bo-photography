@@ -1,13 +1,17 @@
-import { mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, readdir, rename, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { Readable } from 'node:stream';
+import { photoCategorySlugs } from '../src/data/categories.js';
 
 const CATEGORY_ENDPOINT = '/__editor/import-photos';
 const SERIES_CREATE_ENDPOINT = '/__editor/series/create';
 const SERIES_UPLOAD_ENDPOINT = '/__editor/series/upload';
 const SERIES_COVER_ENDPOINT = '/__editor/series/cover';
 const SERIES_REORDER_ENDPOINT = '/__editor/series/reorder';
-const CATEGORIES = new Set(['street', 'portrait', 'scenes']);
+const SERIES_UPDATE_ENDPOINT = '/__editor/series/update';
+const SERIES_DELETE_ENDPOINT = '/__editor/series/delete';
+const SERIES_LAYOUT_ENDPOINT = '/__editor/series/layout';
+const CATEGORIES = new Set(photoCategorySlugs);
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -99,6 +103,39 @@ function photoMetadata(value, index) {
     orientation,
     aspect: Number.isFinite(ratio) && ratio > 0 ? Number(ratio.toFixed(4)) : orientation === 'portrait' ? 0.75 : 1.5,
   };
+}
+
+function maxPhotosForOrientation(orientation) {
+  return orientation === 'portrait' ? 4 : 3;
+}
+
+function completeLayoutRows(rows, photos) {
+  const photosById = new Map(photos.map((photo) => [photo.id, photo]));
+  const used = new Set();
+  const normalized = [];
+
+  if (Array.isArray(rows)) {
+    rows.forEach((row) => {
+      const orientation = row?.orientation === 'portrait' ? 'portrait' : 'landscape';
+      const photoIds = Array.isArray(row?.photoIds)
+        ? row.photoIds.filter((id) => {
+            const photo = photosById.get(id);
+            if (!photo || used.has(id) || photo.orientation !== orientation) return false;
+            used.add(id);
+            return true;
+          }).slice(0, maxPhotosForOrientation(orientation))
+        : [];
+      if (photoIds.length) normalized.push({ orientation, photoIds });
+    });
+  }
+
+  photos.filter((photo) => !used.has(photo.id)).forEach((photo) => {
+    const orientation = photo.orientation === 'portrait' ? 'portrait' : 'landscape';
+    const lastCompatible = [...normalized].reverse().find((row) => row.orientation === orientation && row.photoIds.length < maxPhotosForOrientation(orientation));
+    if (lastCompatible) lastCompatible.photoIds.push(photo.id);
+    else normalized.push({ orientation, photoIds: [photo.id] });
+  });
+  return normalized;
 }
 
 async function importCategoryPhotos(request, projectRoot) {
@@ -226,6 +263,9 @@ async function uploadSeriesPhotos(request, projectRoot) {
 
     const updatedSeries = { ...series[seriesIndex] };
     if (!updatedSeries.coverImage && additions.length) updatedSeries.coverImage = additions[0].image;
+    if (Array.isArray(updatedSeries.layoutRows)) {
+      updatedSeries.layoutRows = completeLayoutRows(updatedSeries.layoutRows, [...seriesPhotos, ...additions]);
+    }
     series[seriesIndex] = updatedSeries;
     await writeJson(paths.photos, [...photos, ...additions]);
     await writeJson(paths.series, series);
@@ -267,6 +307,97 @@ async function reorderSeries(request, projectRoot) {
   return { series: ordered };
 }
 
+async function updateSeries(request, projectRoot) {
+  const body = await webRequestFrom(request, SERIES_UPDATE_ENDPOINT).json();
+  const slug = validateSlug(body.slug);
+  const title = String(body.title || '').trim();
+  const year = String(body.year || '').trim();
+  const description = String(body.description || '').trim();
+  const coverImage = String(body.coverImage || '').trim();
+  const requestedOrder = Number(body.order);
+  if (!title) throw new RequestError(400, '请填写 Series 名称。');
+  if (!Number.isFinite(requestedOrder) || requestedOrder < 1) throw new RequestError(400, 'Series 顺序必须是大于 0 的数字。');
+
+  const paths = dataPaths(projectRoot);
+  const series = await readJson(paths.series);
+  const index = series.findIndex((item) => normalizeSlug(item.slug) === slug);
+  if (index < 0) throw new RequestError(404, `找不到 Series：${slug}`);
+  series[index] = { ...series[index], title, year, description, coverImage, order: Math.round(requestedOrder) };
+  const ordered = series
+    .map((item, originalIndex) => ({ item, originalIndex, order: Number.isFinite(Number(item.order)) ? Number(item.order) : originalIndex + 1 }))
+    .sort((a, b) => a.order - b.order || a.originalIndex - b.originalIndex)
+    .map(({ item }, orderIndex) => ({ ...item, order: orderIndex + 1 }));
+  await writeJson(paths.series, ordered);
+  return { series: ordered, item: ordered.find((item) => item.slug === slug) };
+}
+
+async function saveSeriesLayout(request, projectRoot) {
+  const body = await webRequestFrom(request, SERIES_LAYOUT_ENDPOINT).json();
+  const slug = validateSlug(body.slug);
+  const rows = Array.isArray(body.layoutRows) ? body.layoutRows : [];
+  const paths = dataPaths(projectRoot);
+  const [series, photos] = await Promise.all([readJson(paths.series), readJson(paths.photos)]);
+  const index = series.findIndex((item) => normalizeSlug(item.slug) === slug);
+  if (index < 0) throw new RequestError(404, `找不到 Series：${slug}`);
+  const seriesPhotos = photos.filter((photo) => photo.series === slug);
+  const normalized = completeLayoutRows(rows, seriesPhotos);
+  const requestedIds = rows.flatMap((row) => Array.isArray(row?.photoIds) ? row.photoIds : []);
+  if (new Set(requestedIds).size !== requestedIds.length) throw new RequestError(400, '同一张照片不能出现在多个布局行中。');
+  if (normalized.flatMap((row) => row.photoIds).length !== seriesPhotos.length) throw new RequestError(400, '布局必须包含当前 Series 的全部照片。');
+  series[index] = { ...series[index], layoutRows: normalized };
+  await writeJson(paths.series, series);
+  return { series: series[index] };
+}
+
+async function deleteSeries(request, projectRoot) {
+  const body = await webRequestFrom(request, SERIES_DELETE_ENDPOINT).json();
+  const slug = validateSlug(body.slug);
+  const paths = dataPaths(projectRoot);
+  const [series, photos] = await Promise.all([readJson(paths.series), readJson(paths.photos)]);
+  const item = series.find((entry) => normalizeSlug(entry.slug) === slug);
+  if (!item) throw new RequestError(404, `找不到 Series：${slug}`);
+
+  const sourceDirectory = path.join(projectRoot, 'public', 'images', 'series', slug);
+  const trashRoot = path.join(projectRoot, 'trash', 'series');
+  let trashDirectory = path.join(trashRoot, slug);
+  let folderMoved = false;
+  try {
+    await access(sourceDirectory);
+    await mkdir(trashRoot, { recursive: true });
+    try {
+      await access(trashDirectory);
+      trashDirectory = path.join(trashRoot, `${slug}-${new Date().toISOString().replace(/[:.]/g, '-')}`);
+    } catch {}
+    await rename(sourceDirectory, trashDirectory);
+    folderMoved = true;
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+
+  const remainingSeries = series
+    .filter((entry) => normalizeSlug(entry.slug) !== slug)
+    .map((entry, index) => ({ ...entry, order: index + 1 }));
+  const removedPhotos = photos.filter((photo) => photo.series === slug);
+  const remainingPhotos = photos.filter((photo) => photo.series !== slug);
+
+  try {
+    await writeJson(paths.photos, remainingPhotos);
+    await writeJson(paths.series, remainingSeries);
+  } catch (error) {
+    await Promise.all([
+      writeJson(paths.photos, photos).catch(() => {}),
+      writeJson(paths.series, series).catch(() => {}),
+      folderMoved ? rename(trashDirectory, sourceDirectory).catch(() => {}) : Promise.resolve(),
+    ]);
+    throw error;
+  }
+  return {
+    series: remainingSeries,
+    removedPhotoCount: removedPhotos.length,
+    trashPath: folderMoved ? path.relative(projectRoot, trashDirectory).split(path.sep).join('/') : '',
+  };
+}
+
 export function editorUploadPlugin() {
   return {
     name: 'bo-david-editor-upload',
@@ -280,6 +411,9 @@ export function editorUploadPlugin() {
           [SERIES_UPLOAD_ENDPOINT, uploadSeriesPhotos],
           [SERIES_COVER_ENDPOINT, setSeriesCover],
           [SERIES_REORDER_ENDPOINT, reorderSeries],
+          [SERIES_UPDATE_ENDPOINT, updateSeries],
+          [SERIES_DELETE_ENDPOINT, deleteSeries],
+          [SERIES_LAYOUT_ENDPOINT, saveSeriesLayout],
         ]);
         const handler = handlers.get(pathname);
         if (!handler) return next();

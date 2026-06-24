@@ -1,0 +1,22 @@
+<script>
+  const items = Array.from(document.querySelectorAll('[data-scroll-reveal]'));
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reducedMotion && items.length && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('has-scroll-reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+    items.forEach((item, index) => {
+      item.style.setProperty('--reveal-delay', `${(index % 6) * 55}ms`);
+      observer.observe(item);
+    });
+  } else {
+    items.forEach((item) => item.classList.add('is-revealed'));
+  }
+</script>

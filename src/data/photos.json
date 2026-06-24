@@ -30,7 +30,8 @@
     "alt": "A busy street scene viewed from above",
     "layoutWidth": 71,
     "layoutOffsetX": 4,
-    "layoutOffsetY": -2
+    "layoutOffsetY": -2,
+    "categoryRowSize": 2
   },
   {
     "id": "home-009",
@@ -47,7 +48,8 @@
     "layoutOffsetX": 3,
     "layoutOffsetY": -5,
     "categoryLayoutOffsetX": -1,
-    "categoryLayoutOffsetY": 9
+    "categoryLayoutOffsetY": 9,
+    "categoryRowSize": 2
   },
   {
     "id": "street-050",
@@ -77,7 +79,8 @@
     "alt": "Two horses standing together outdoors",
     "layoutWidth": 101,
     "layoutOffsetX": -14,
-    "layoutOffsetY": 1
+    "layoutOffsetY": 1,
+    "categoryRowSize": 2
   },
   {
     "id": "home-004",
@@ -107,7 +110,8 @@
     "alt": "A quiet tabletop scene with books and objects",
     "layoutWidth": 77,
     "layoutOffsetX": -17,
-    "layoutOffsetY": -9
+    "layoutOffsetY": -9,
+    "categoryRowSize": 2
   },
   {
     "id": "street-005",
@@ -182,7 +186,8 @@
     "image": "/images/street/street-006.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 006"
+    "alt": "Street photograph: street 006",
+    "categoryRowSize": 2
   },
   {
     "id": "street-007",
@@ -218,7 +223,8 @@
     "image": "/images/street/street-010.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 010"
+    "alt": "Street photograph: street 010",
+    "categoryRowSize": 2
   },
   {
     "id": "street-013",
@@ -298,16 +304,17 @@
     "alt": "Street photograph: street 037"
   },
   {
-    "id": "street-012",
-    "title": "No. 20",
+    "id": "street-016",
+    "title": "No. 24",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-012.jpg",
+    "image": "/images/street/street-016.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 012"
+    "alt": "Street photograph: street 016",
+    "categoryRowSize": 2
   },
   {
     "id": "street-020",
@@ -348,16 +355,16 @@
     "alt": "Street photograph: street 022"
   },
   {
-    "id": "street-016",
-    "title": "No. 24",
+    "id": "street-028",
+    "title": "No. 36",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-016.jpg",
+    "image": "/images/street/street-028.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 016"
+    "alt": "Street photograph: street 028"
   },
   {
     "id": "street-024",
@@ -372,16 +379,16 @@
     "alt": "Street photograph: street 024"
   },
   {
-    "id": "street-028",
-    "title": "No. 36",
+    "id": "street-018",
+    "title": "No. 26",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-028.jpg",
+    "image": "/images/street/street-018.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 028"
+    "alt": "Street photograph: street 018"
   },
   {
     "id": "street-002",
@@ -396,16 +403,17 @@
     "alt": "Street photograph: street 002"
   },
   {
-    "id": "street-018",
-    "title": "No. 26",
+    "id": "street-023",
+    "title": "No. 31",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-018.jpg",
+    "image": "/images/street/street-023.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 018"
+    "alt": "Street photograph: street 023",
+    "categoryRowSize": 2
   },
   {
     "id": "street-033",
@@ -420,16 +428,17 @@
     "alt": "Street photograph: street 033"
   },
   {
-    "id": "street-023",
-    "title": "No. 31",
+    "id": "street-012",
+    "title": "No. 20",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-023.jpg",
+    "image": "/images/street/street-012.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 023"
+    "alt": "Street photograph: street 012",
+    "categoryRowSize": 2
   },
   {
     "id": "street-035",
@@ -454,9 +463,9 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 030",
-    "categoryLayoutOffsetX": 80,
-    "categoryLayoutOffsetY": 1,
-    "categoryLayoutWidth": 135
+    "categoryLayoutOffsetX": -2,
+    "categoryLayoutOffsetY": 8,
+    "categoryLayoutWidth": 45
   },
   {
     "id": "street-049",
@@ -485,8 +494,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 003",
-    "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": -6
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": 9
   },
   {
     "id": "portrait-001",
@@ -500,7 +509,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 001",
     "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": 0
+    "categoryLayoutOffsetY": 0,
+    "categoryRowSize": 3
   },
   {
     "id": "portrait-002",
@@ -514,7 +524,7 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 002",
     "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": 1
+    "categoryLayoutOffsetY": 0
   },
   {
     "id": "portrait-005",
@@ -527,8 +537,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 005",
-    "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": -9
+    "categoryLayoutOffsetX": 3,
+    "categoryLayoutOffsetY": 2
   },
   {
     "id": "portrait-006",
@@ -540,7 +550,37 @@
     "image": "/images/portrait/portrait-006.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 006"
+    "alt": "Portrait photograph: portrait 006",
+    "categoryRowSize": 2
+  },
+  {
+    "id": "portrait-008",
+    "title": "No. 66",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-008.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph: portrait 008",
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0
+  },
+  {
+    "id": "portrait-007",
+    "title": "No. 65",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-007.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Portrait photograph: portrait 007",
+    "categoryLayoutOffsetX": -2,
+    "categoryLayoutOffsetY": 4,
+    "categoryLayoutWidth": 69
   },
   {
     "id": "portrait-004",
@@ -554,34 +594,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 004",
     "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": 6
-  },
-  {
-    "id": "portrait-007",
-    "title": "No. 65",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-007.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Portrait photograph: portrait 007",
-    "categoryLayoutOffsetX": -9,
-    "categoryLayoutOffsetY": 4,
-    "categoryLayoutWidth": 85
-  },
-  {
-    "id": "portrait-008",
-    "title": "No. 66",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-008.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 008"
+    "categoryLayoutOffsetY": 6,
+    "categoryRowSize": 3
   },
   {
     "id": "portrait-009",
@@ -593,7 +607,9 @@
     "image": "/images/portrait/portrait-009.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 009"
+    "alt": "Portrait photograph: portrait 009",
+    "categoryLayoutOffsetX": -3,
+    "categoryLayoutOffsetY": 5
   },
   {
     "id": "portrait-010",
@@ -606,8 +622,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 010",
-    "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": -15
+    "categoryLayoutOffsetX": -1,
+    "categoryLayoutOffsetY": 5
   },
   {
     "id": "portrait-011",
@@ -619,7 +635,8 @@
     "image": "/images/portrait/portrait-011.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 011"
+    "alt": "Portrait photograph: portrait 011",
+    "categoryRowSize": 3
   },
   {
     "id": "portrait-012",
@@ -632,8 +649,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 012",
-    "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": -6
+    "categoryLayoutOffsetX": -4,
+    "categoryLayoutOffsetY": 0
   },
   {
     "id": "portrait-014",
@@ -647,7 +664,7 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 014",
     "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": -22
+    "categoryLayoutOffsetY": 1
   },
   {
     "id": "portrait-015",
@@ -660,8 +677,9 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 015",
-    "categoryLayoutOffsetX": 2,
-    "categoryLayoutOffsetY": -13
+    "categoryLayoutOffsetX": -7,
+    "categoryLayoutOffsetY": -3,
+    "categoryRowSize": 2
   },
   {
     "id": "portrait-016",
@@ -674,8 +692,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 016",
-    "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": -12
+    "categoryLayoutOffsetX": 2,
+    "categoryLayoutOffsetY": -3
   },
   {
     "id": "portrait-018",
@@ -688,8 +706,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 018",
-    "categoryLayoutOffsetX": 3,
-    "categoryLayoutOffsetY": -27
+    "categoryLayoutOffsetX": 5,
+    "categoryLayoutOffsetY": 0,
+    "categoryRowSize": 2,
+    "categoryLayoutWidth": 62
   },
   {
     "id": "portrait-017",
@@ -702,8 +722,9 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 017",
-    "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": -12
+    "categoryLayoutOffsetX": -10,
+    "categoryLayoutOffsetY": 1,
+    "categoryLayoutWidth": 62
   },
   {
     "id": "portrait-019",
@@ -716,8 +737,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 019",
-    "categoryLayoutOffsetX": 67,
-    "categoryLayoutOffsetY": -4
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 2,
+    "categoryRowSize": 1,
+    "categoryLayoutWidth": 45
   },
   {
     "id": "scenes-001",
@@ -729,7 +752,8 @@
     "image": "/images/scenes/scenes-001.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 001"
+    "alt": "Scene photograph: scenes 001",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-002",
@@ -741,7 +765,8 @@
     "image": "/images/scenes/scenes-002.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Scene photograph: scenes 002"
+    "alt": "Scene photograph: scenes 002",
+    "categoryRowSize": 3
   },
   {
     "id": "scenes-038",
@@ -792,7 +817,8 @@
     "image": "/images/scenes/scenes-005.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Scene photograph: scenes 005"
+    "alt": "Scene photograph: scenes 005",
+    "categoryRowSize": 3
   },
   {
     "id": "scenes-009",
@@ -804,7 +830,8 @@
     "image": "/images/scenes/scenes-009.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 009"
+    "alt": "Scene photograph: scenes 009",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-010",
@@ -828,19 +855,21 @@
     "image": "/images/scenes/scenes-012.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 012"
+    "alt": "Scene photograph: scenes 012",
+    "categoryRowSize": 1,
+    "categoryLayoutWidth": 90
   },
   {
-    "id": "scenes-011",
-    "title": "No. 88",
+    "id": "scenes-017",
+    "title": "No. 94",
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/scenes/scenes-011.jpg",
+    "image": "/images/scenes/scenes-017.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 011"
+    "alt": "Scene photograph: scenes 017"
   },
   {
     "id": "scenes-039",
@@ -855,16 +884,17 @@
     "alt": "Scene photograph: scenes 039"
   },
   {
-    "id": "scenes-017",
-    "title": "No. 94",
+    "id": "scenes-020",
+    "title": "No. 97",
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/scenes/scenes-017.jpg",
+    "image": "/images/scenes/scenes-020.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 017"
+    "alt": "Scene photograph: scenes 020",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-008",
@@ -888,19 +918,20 @@
     "image": "/images/scenes/scenes-013.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Scene photograph: scenes 013"
+    "alt": "Scene photograph: scenes 013",
+    "categoryRowSize": 3
   },
   {
-    "id": "scenes-020",
-    "title": "No. 97",
+    "id": "scenes-021",
+    "title": "No. 98",
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/scenes/scenes-020.jpg",
+    "image": "/images/scenes/scenes-021.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 020"
+    "alt": "Scene photograph: scenes 021"
   },
   {
     "id": "scenes-015",
@@ -927,18 +958,6 @@
     "alt": "Scene photograph: scenes 016"
   },
   {
-    "id": "scenes-021",
-    "title": "No. 98",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/scenes/scenes-021.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Scene photograph: scenes 021"
-  },
-  {
     "id": "scenes-050",
     "title": "No. 127",
     "category": "scenes",
@@ -948,7 +967,8 @@
     "image": "/images/scenes/scenes-050.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 050"
+    "alt": "Scene photograph: scenes 050",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-026",
@@ -963,18 +983,6 @@
     "alt": "Scene photograph: scenes 026"
   },
   {
-    "id": "scenes-019",
-    "title": "No. 96",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/scenes/scenes-019.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Scene photograph: scenes 019"
-  },
-  {
     "id": "scenes-051",
     "title": "No. 128",
     "category": "scenes",
@@ -984,7 +992,34 @@
     "image": "/images/scenes/scenes-051.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 051"
+    "alt": "Scene photograph: scenes 051",
+    "categoryRowSize": 2
+  },
+  {
+    "id": "scenes-019",
+    "title": "No. 96",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-019.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scene photograph: scenes 019",
+    "categoryRowSize": 3
+  },
+  {
+    "id": "scenes-011",
+    "title": "No. 88",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-011.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 011",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-023",
@@ -1023,7 +1058,8 @@
     "image": "/images/scenes/scenes-041.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 041"
+    "alt": "Scene photograph: scenes 041",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-018",
@@ -1059,7 +1095,8 @@
     "image": "/images/scenes/scenes-004.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Scene photograph: scenes 004"
+    "alt": "Scene photograph: scenes 004",
+    "categoryRowSize": 3
   },
   {
     "id": "scenes-024",
@@ -1095,19 +1132,8 @@
     "image": "/images/scenes/scenes-053.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Scene photograph: scenes 053"
-  },
-  {
-    "id": "scenes-032",
-    "title": "No. 109",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/scenes/scenes-032.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Scene photograph: scenes 032"
+    "alt": "Scene photograph: scenes 053",
+    "categoryRowSize": 3
   },
   {
     "id": "scenes-040",
@@ -1155,7 +1181,8 @@
     "image": "/images/scenes/scenes-044.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 044"
+    "alt": "Scene photograph: scenes 044",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-045",
@@ -1179,7 +1206,8 @@
     "image": "/images/scenes/scenes-047.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 047"
+    "alt": "Scene photograph: scenes 047",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-048",
@@ -1204,8 +1232,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 046",
-    "categoryLayoutOffsetX": 36,
-    "categoryLayoutOffsetY": -2
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 3,
+    "categoryRowSize": 2,
+    "categoryLayoutWidth": 75
   },
   {
     "id": "scenes-054",
@@ -1218,38 +1248,9 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 054",
-    "categoryLayoutOffsetX": 80,
-    "categoryLayoutOffsetY": -2
-  },
-  {
-    "id": "001-001",
-    "title": "No. 01",
-    "category": "series",
-    "series": "001",
-    "location": "",
-    "date": "2026",
-    "image": "/images/series/001/001.jpg",
-    "featured": false,
-    "order": 1,
-    "size": "standard",
-    "aspect": 1.6657,
-    "orientation": "landscape",
-    "alt": "001 photograph 1 by Bo David"
-  },
-  {
-    "id": "001-002",
-    "title": "No. 02",
-    "category": "series",
-    "series": "001",
-    "location": "",
-    "date": "2026",
-    "image": "/images/series/001/002.jpg",
-    "featured": false,
-    "order": 2,
-    "size": "standard",
-    "aspect": 0.6243,
-    "orientation": "portrait",
-    "alt": "001 photograph 2 by Bo David"
+    "categoryLayoutOffsetX": -2,
+    "categoryLayoutOffsetY": 3,
+    "categoryLayoutWidth": 76
   },
   {
     "id": "scenes-049",
@@ -1261,6 +1262,214 @@
     "image": "/images/scenes/scenes-049.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 049"
+    "alt": "Scene photograph: scenes 049",
+    "categoryRowSize": 1
+  },
+  {
+    "id": "b-and-w-001",
+    "title": "No. 01",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/001.jpg",
+    "featured": false,
+    "order": 1,
+    "size": "standard",
+    "aspect": 0.6664,
+    "orientation": "portrait",
+    "alt": "B&W photograph 1 by Bo David"
+  },
+  {
+    "id": "b-and-w-002",
+    "title": "No. 02",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/002.jpg",
+    "featured": false,
+    "order": 2,
+    "size": "standard",
+    "aspect": 0.6396,
+    "orientation": "portrait",
+    "alt": "B&W photograph 2 by Bo David"
+  },
+  {
+    "id": "b-and-w-003",
+    "title": "No. 03",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/003.jpg",
+    "featured": false,
+    "order": 3,
+    "size": "standard",
+    "aspect": 1.5501,
+    "orientation": "landscape",
+    "alt": "B&W photograph 3 by Bo David"
+  },
+  {
+    "id": "b-and-w-004",
+    "title": "No. 04",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/004.jpg",
+    "featured": false,
+    "order": 4,
+    "size": "standard",
+    "aspect": 0.6558,
+    "orientation": "portrait",
+    "alt": "B&W photograph 4 by Bo David"
+  },
+  {
+    "id": "b-and-w-005",
+    "title": "No. 05",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/005.jpg",
+    "featured": false,
+    "order": 5,
+    "size": "standard",
+    "aspect": 1.5004,
+    "orientation": "landscape",
+    "alt": "B&W photograph 5 by Bo David"
+  },
+  {
+    "id": "b-and-w-006",
+    "title": "No. 06",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/006.jpg",
+    "featured": false,
+    "order": 6,
+    "size": "standard",
+    "aspect": 0.6665,
+    "orientation": "portrait",
+    "alt": "B&W photograph 6 by Bo David"
+  },
+  {
+    "id": "b-and-w-007",
+    "title": "No. 07",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/007.jpg",
+    "featured": false,
+    "order": 7,
+    "size": "standard",
+    "aspect": 0.6668,
+    "orientation": "portrait",
+    "alt": "B&W photograph 7 by Bo David"
+  },
+  {
+    "id": "b-and-w-008",
+    "title": "No. 08",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/008.jpg",
+    "featured": false,
+    "order": 8,
+    "size": "standard",
+    "aspect": 1.3549,
+    "orientation": "landscape",
+    "alt": "B&W photograph 8 by Bo David"
+  },
+  {
+    "id": "b-and-w-009",
+    "title": "No. 09",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/009.jpg",
+    "featured": false,
+    "order": 9,
+    "size": "standard",
+    "aspect": 0.6433,
+    "orientation": "portrait",
+    "alt": "B&W photograph 9 by Bo David"
+  },
+  {
+    "id": "b-and-w-010",
+    "title": "No. 10",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/010.jpg",
+    "featured": false,
+    "order": 10,
+    "size": "standard",
+    "aspect": 1.7,
+    "orientation": "landscape",
+    "alt": "B&W photograph 10 by Bo David"
+  },
+  {
+    "id": "b-and-w-011",
+    "title": "No. 11",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/011.jpg",
+    "featured": false,
+    "order": 11,
+    "size": "standard",
+    "aspect": 0.6071,
+    "orientation": "portrait",
+    "alt": "B&W photograph 11 by Bo David"
+  },
+  {
+    "id": "b-and-w-012",
+    "title": "No. 12",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/012.jpg",
+    "featured": false,
+    "order": 12,
+    "size": "standard",
+    "aspect": 0.6666,
+    "orientation": "portrait",
+    "alt": "B&W photograph 12 by Bo David"
+  },
+  {
+    "id": "b-and-w-013",
+    "title": "No. 13",
+    "category": "series",
+    "series": "b-and-w",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/b-and-w/013.jpg",
+    "featured": false,
+    "order": 13,
+    "size": "standard",
+    "aspect": 0.6666,
+    "orientation": "portrait",
+    "alt": "B&W photograph 13 by Bo David"
+  },
+  {
+    "id": "nature-001",
+    "title": "No. 01",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-001.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David"
   }
 ]

@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import photos from '../../data/photos.json';
 import series from '../../data/series.json';
 import site from '../../data/site.json';
+import { buildOrientationRows } from '../../utils/photo-layout.js';
 
 export function getStaticPaths() {
   return series.map((item) => ({ params: { slug: item.slug }, props: { item } }));
@@ -14,6 +15,31 @@ const items = photos
   .filter(({ photo }) => photo.series === item.slug)
   .sort((a, b) => a.order - b.order || a.index - b.index)
   .map(({ photo }) => photo);
+const itemById = new Map(items.map((photo) => [photo.id, photo]));
+const usedPhotoIds = new Set();
+const configuredRows = Array.isArray(item.layoutRows)
+  ? item.layoutRows.flatMap((row) => {
+      const orientation = row?.orientation === 'portrait' ? 'portrait' : 'landscape';
+      const maxPhotos = orientation === 'portrait' ? 4 : 3;
+      const rowItems = (Array.isArray(row?.photoIds) ? row.photoIds : [])
+        .map((id) => itemById.get(id))
+        .filter((photo) => {
+          if (!photo || usedPhotoIds.has(photo.id)) return false;
+          const photoOrientation = photo.orientation === 'portrait' ? 'portrait' : 'landscape';
+          return photoOrientation === orientation;
+        })
+        .slice(0, maxPhotos);
+      rowItems.forEach((photo) => usedPhotoIds.add(photo.id));
+      return rowItems.length ? [{ orientation, items: rowItems }] : [];
+    })
+  : [];
+const remainingRows = buildOrientationRows(items.filter((photo) => !usedPhotoIds.has(photo.id)));
+const layoutRows = configuredRows.length ? [...configuredRows, ...remainingRows] : buildOrientationRows(items);
+let photoNumber = 0;
+const numberedRows = layoutRows.map((row) => ({
+  ...row,
+  items: row.items.map((photo) => ({ photo, number: ++photoNumber })),
+}));
 const layoutStyle = (photo) => {
   const explicitWidth = Number(photo.layoutWidth);
   const sizeWidth = Number(photo.size);
@@ -39,14 +65,21 @@ const imageStyle = (photo) => {
       {item.description && <p class="series-detail__description">{item.description}</p>}
     </header>
     <div class="series-flow page-shell">
-      {items.length ? items.map((photo, index) => (
-        <figure
-          class:list={["series-flow__item", `series-flow__item--${index % 4}`, `is-${photo.orientation}`]}
-          style={layoutStyle(photo) || undefined}
+      {items.length ? numberedRows.map((row) => (
+        <div
+          class:list={['series-flow__row', `series-flow__row--${row.orientation}`, { 'series-flow__row--single': row.items.length === 1 }]}
+          style={`--series-row-count: ${row.items.length}`}
         >
-          <a href={`/photo/${photo.id}`}><img src={photo.image} alt={photo.alt} loading={index === 0 ? 'eager' : 'lazy'} style={imageStyle(photo)} /></a>
-          <figcaption>{String(index + 1).padStart(2, '0')} / {photo.location}</figcaption>
-        </figure>
+          {row.items.map(({ photo, number }) => (
+            <figure
+              class:list={['series-flow__item', `is-${photo.orientation === 'portrait' ? 'portrait' : 'landscape'}`]}
+              style={layoutStyle(photo) || undefined}
+            >
+              <a href={`/photo/${photo.id}`}><img src={photo.image} alt={photo.alt} loading={number === 1 ? 'eager' : 'lazy'} style={imageStyle(photo)} /></a>
+              <figcaption>{String(number).padStart(2, '0')}{photo.location ? ` / ${photo.location}` : ''}</figcaption>
+            </figure>
+          ))}
+        </div>
       )) : <div class="series-detail__empty"><p>This series is waiting for its first photograph.</p></div>}
     </div>
     <footer class="series-detail__end page-shell">

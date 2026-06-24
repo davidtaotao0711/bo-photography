@@ -1,9 +1,11 @@
 ---
 import photos from '../data/photos.json';
 import series from '../data/series.json';
+import { photoCategories as categoryConfig } from '../data/categories.js';
 
 const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
+const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -18,6 +20,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
   <body>
     <script id="initial-photos" type="application/json" set:html={serializedPhotos}></script>
     <script id="initial-series" type="application/json" set:html={serializedSeries}></script>
+    <script id="initial-categories" type="application/json" set:html={serializedCategories}></script>
 
     <header class="editor-header">
       <a class="wordmark" href="/">BO DAVID</a>
@@ -40,9 +43,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
           <select id="view-filter">
             <option value="featured">首页精选</option>
             <option value="all">全部照片</option>
-            <option value="street">Street</option>
-            <option value="portrait">Portrait</option>
-            <option value="scenes">Scenes</option>
+            {categoryConfig.map((category) => <option value={category.slug}>{category.title}</option>)}
             <option value="series">Series</option>
           </select>
         </div>
@@ -65,7 +66,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
             <li>使用上下箭头改变前后顺序</li>
             <li>点尺寸按钮或拖右下角缩放</li>
             <li>点击照片编辑属性</li>
-            <li>Street / Scenes 保持 3 竖或 2 横成行</li>
+            <li>Street / Scenes / Nature 会按横竖方向自动成行</li>
             <li>进入分类页后可一次添加单张或多张照片</li>
             <li>Series 先新建影集，再进入影集上传与选择封面</li>
             <li>删除只移除网站记录，不删除磁盘原图</li>
@@ -132,11 +133,21 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
                 <h2 id="series-manager-title"></h2>
                 <p id="series-manager-meta"></p>
               </div>
-              <button class="add-photos" id="upload-series-photos" type="button">
-                <span class="add-photos__icon" aria-hidden="true">+</span>
-                <span>Upload Photos</span>
-              </button>
+              <div class="series-manager__actions">
+                <button class="add-photos" id="upload-series-photos" type="button">
+                  <span class="add-photos__icon" aria-hidden="true">+</span>
+                  <span>Upload Photos</span>
+                </button>
+                <button class="button" id="edit-active-series" type="button">Edit Series</button>
+              </div>
             </header>
+            <div class="series-layout-toolbar">
+              <div>
+                <button class="text-button" id="add-portrait-row" type="button">+ Portrait Row</button>
+                <button class="text-button" id="add-landscape-row" type="button">+ Landscape Row</button>
+              </div>
+              <button class="button button--primary" id="save-series-layout" type="button" disabled>Save Layout</button>
+            </div>
             <div id="series-photo-empty" class="series-photo-empty" hidden>
               <p>这本影集还没有照片</p>
               <span>上传后的第一张照片会自动成为封面。</span>
@@ -164,9 +175,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
           <label>唯一 ID<input id="form-id" required pattern="[a-zA-Z0-9_-]+" /></label>
           <label>分类
             <select id="form-category" required>
-              <option value="street">Street</option>
-              <option value="portrait">Portrait</option>
-              <option value="scenes">Scenes</option>
+              {categoryConfig.map((category) => <option value={category.slug}>{category.title}</option>)}
               <option value="series">Series</option>
             </select>
           </label>
@@ -224,6 +233,60 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
       </form>
     </dialog>
 
+    <dialog id="series-edit-dialog" class="series-dialog">
+      <form id="series-edit-form" method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Edit photo book</p>
+            <h2>Edit Series</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+        </div>
+        <p class="series-dialog__intro">Slug 创建后保持不变，避免图片路径和公开链接失效。</p>
+        <input id="series-edit-original-slug" type="hidden" />
+        <div class="form-grid">
+          <label>Series 名称<input id="series-edit-title" required /></label>
+          <label>Slug<input id="series-edit-slug" readonly /></label>
+          <label>年份<input id="series-edit-year" /></label>
+          <label>展示顺序<input id="series-edit-order" type="number" min="1" step="1" required /></label>
+          <label class="full">封面路径<input id="series-edit-cover" placeholder="/images/series/slug/001.jpg" /></label>
+          <label class="full">简短说明<textarea id="series-edit-description" rows="3"></textarea></label>
+        </div>
+        <p id="series-edit-error" class="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="text-button text-button--danger" id="request-delete-series" type="button">Delete Series</button>
+          <div>
+            <button class="text-button" value="cancel" type="submit">取消</button>
+            <button class="button button--primary" id="save-series-edit" type="button">保存修改</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="series-delete-dialog" class="warning-dialog">
+      <form id="series-delete-form" method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Move to trash</p>
+            <h2>确认删除 Series</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+        </div>
+        <p class="warning-copy">这会移除该 Series 及其照片记录，并把图片文件夹移动到 <code>trash/series/</code>。请输入 slug 再确认。</p>
+        <label class="delete-confirm-label">输入 <strong id="series-delete-slug-label"></strong>
+          <input id="series-delete-confirmation" autocomplete="off" required />
+        </label>
+        <p id="series-delete-error" class="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <span></span>
+          <div>
+            <button class="text-button" value="cancel" type="submit">取消</button>
+            <button class="button button--danger" id="confirm-delete-series" type="button" disabled>Move to Trash</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="large-file-warning" class="warning-dialog">
       <form method="dialog">
         <div class="dialog-head">
@@ -255,16 +318,22 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
 
       const initialNode = document.querySelector('#initial-photos');
       const initialSeriesNode = document.querySelector('#initial-series');
+      const initialCategoriesNode = document.querySelector('#initial-categories');
       const initialPhotos = JSON.parse(initialNode?.textContent || '[]');
       const initialSeries = JSON.parse(initialSeriesNode?.textContent || '[]');
+      const photoCategoryConfig = JSON.parse(initialCategoriesNode?.textContent || '[]');
       let photoData = structuredClone(initialPhotos);
       let seriesData = structuredClone(initialSeries);
       let fileHandle = null;
       let dirty = false;
       let activeSeriesSlug = sessionStorage.getItem('editorSeriesSlug') || '';
+      let layoutDraftSlug = '';
+      let layoutDraftRows = [];
+      let layoutDirty = false;
       const history = [];
       const maxRecommendedFileSize = 5 * 1024 * 1024;
-      const photoCategories = ['street', 'portrait', 'scenes'];
+      const photoCategories = photoCategoryConfig.map((category) => category.slug);
+      const rowLayoutCategories = photoCategoryConfig.filter((category) => category.rowLayout).map((category) => category.slug);
 
       const grid = document.querySelector('#photo-grid');
       const viewFilter = document.querySelector('#view-filter');
@@ -283,6 +352,8 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
       const seriesEditorGrid = document.querySelector('#series-editor-grid');
       const seriesPhotoGrid = document.querySelector('#series-photo-grid');
       const seriesDialog = document.querySelector('#series-dialog');
+      const seriesEditDialog = document.querySelector('#series-edit-dialog');
+      const seriesDeleteDialog = document.querySelector('#series-delete-dialog');
 
       const savedView = sessionStorage.getItem('editorView');
       if (['featured', 'all', ...photoCategories, 'series'].includes(savedView)) viewFilter.value = savedView;
@@ -325,7 +396,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
 
       function getLayoutScope() {
         if (viewFilter.value === 'featured') return 'home';
-        if (['street', 'portrait', 'scenes'].includes(viewFilter.value)) return 'category';
+        if (photoCategories.includes(viewFilter.value)) return 'category';
         return null;
       }
 
@@ -403,6 +474,87 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         return item.coverImage || items[0]?.image || '';
       }
 
+      function maxRowPhotos(orientation) {
+        return orientation === 'portrait' ? 4 : 3;
+      }
+
+      function defaultSeriesRows(items) {
+        return buildOrientationRows(items).map((row) => ({
+          orientation: row.orientation,
+          photoIds: row.items.map((photo) => photo.id),
+        }));
+      }
+
+      function normalizedSeriesRows(item, items) {
+        const photosById = new Map(items.map((photo) => [photo.id, photo]));
+        const used = new Set();
+        const rows = [];
+        if (Array.isArray(item.layoutRows)) {
+          item.layoutRows.forEach((row) => {
+            const orientation = row?.orientation === 'portrait' ? 'portrait' : 'landscape';
+            const photoIds = Array.isArray(row?.photoIds)
+              ? row.photoIds.filter((id) => {
+                  const photo = photosById.get(id);
+                  if (!photo || used.has(id) || photo.orientation !== orientation) return false;
+                  used.add(id);
+                  return true;
+                }).slice(0, maxRowPhotos(orientation))
+              : [];
+            if (photoIds.length) rows.push({ orientation, photoIds });
+          });
+        }
+        const missing = items.filter((photo) => !used.has(photo.id));
+        defaultSeriesRows(missing).forEach((row) => rows.push(row));
+        return rows;
+      }
+
+      function ensureLayoutDraft(item, items) {
+        if (layoutDraftSlug === item.slug) return;
+        layoutDraftSlug = item.slug;
+        layoutDraftRows = normalizedSeriesRows(item, items);
+        layoutDirty = false;
+        $('#save-series-layout').disabled = true;
+      }
+
+      function markLayoutDirty() {
+        layoutDirty = true;
+        $('#save-series-layout').disabled = false;
+      }
+
+      function renderSeriesRows(items, cover) {
+        const byId = new Map(items.map((photo) => [photo.id, photo]));
+        seriesPhotoGrid.innerHTML = layoutDraftRows.map((row, rowIndex) => {
+          const rowPhotos = row.photoIds.map((id) => byId.get(id)).filter(Boolean);
+          const max = maxRowPhotos(row.orientation);
+          return `
+            <section class="series-layout-row" data-row-index="${rowIndex}">
+              <header class="series-layout-row__head">
+                <span>${rowPhotos.length}/${max}</span>
+                <div>
+                  <button type="button" data-row-action="decrease" aria-label="减少本行照片" ${rowPhotos.length <= 1 ? 'disabled' : ''}>−</button>
+                  <button type="button" data-row-action="increase" aria-label="增加本行照片" ${rowPhotos.length >= max ? 'disabled' : ''}>+</button>
+                  <button type="button" data-row-action="up" aria-label="本行上移" ${rowIndex === 0 ? 'disabled' : ''}>↑</button>
+                  <button type="button" data-row-action="down" aria-label="本行下移" ${rowIndex === layoutDraftRows.length - 1 ? 'disabled' : ''}>↓</button>
+                </div>
+              </header>
+              <div class="series-layout-row__photos series-layout-row__photos--${row.orientation}" style="--row-columns:${Math.max(1, rowPhotos.length)}">
+                ${rowPhotos.map((photo, index) => `
+                  <article class="series-photo-card ${photo.image === cover ? 'is-cover' : ''}">
+                    <div class="series-photo-card__image">
+                      <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" loading="lazy" />
+                      <span>${String(index + 1).padStart(2, '0')}</span>
+                      ${photo.image === cover ? '<strong>Cover</strong>' : ''}
+                    </div>
+                    <div class="series-photo-card__meta">
+                      <span>${photo.orientation === 'portrait' ? '竖图' : '横图'}</span>
+                      ${photo.image === cover ? '<span>当前封面</span>' : `<button type="button" data-cover-image="${escapeHtml(photo.image)}">Set as Cover</button>`}
+                    </div>
+                  </article>`).join('')}
+              </div>
+            </section>`;
+        }).join('');
+      }
+
       function renderSeries() {
         const ordered = orderedSeries();
         const activeItem = ordered.find((item) => item.slug === activeSeriesSlug);
@@ -437,7 +589,9 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
                     <span>${items.length} photos</span>
                   </span>
                 </button>
-                <div class="series-editor-card__order" aria-label="调整 Series 顺序">
+                <div class="series-editor-card__order" aria-label="Series 管理">
+                  <button type="button" data-series-action="edit" aria-label="编辑 ${escapeHtml(item.title)}">Edit</button>
+                  <button class="is-danger" type="button" data-series-action="delete" aria-label="删除 ${escapeHtml(item.title)}">Delete</button>
                   <button type="button" data-series-action="up" aria-label="向前移动" ${index === 0 ? 'disabled' : ''}>↑</button>
                   <button type="button" data-series-action="down" aria-label="向后移动" ${index === ordered.length - 1 ? 'disabled' : ''}>↓</button>
                 </div>
@@ -448,23 +602,15 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
 
         const items = photosForSeries(activeItem.slug);
         const cover = seriesCover(activeItem, items);
+        ensureLayoutDraft(activeItem, items);
         $('#view-title').textContent = `${activeItem.title} · Series manager`;
         $('#series-manager-title').textContent = activeItem.title;
         $('#series-manager-meta').textContent = `${activeItem.year || '未填写年份'} · ${items.length} photographs · ${activeItem.slug}`;
         $('#series-photo-empty').hidden = items.length > 0;
         seriesPhotoGrid.hidden = items.length === 0;
-        seriesPhotoGrid.innerHTML = items.map((photo, index) => `
-          <article class="series-photo-card ${photo.image === cover ? 'is-cover' : ''}">
-            <div class="series-photo-card__image">
-              <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" loading="lazy" />
-              <span>${String(index + 1).padStart(2, '0')}</span>
-              ${photo.image === cover ? '<strong>Cover</strong>' : ''}
-            </div>
-            <div class="series-photo-card__meta">
-              <span>${photo.orientation === 'portrait' ? '竖图' : '横图'}</span>
-              ${photo.image === cover ? '<span>当前封面</span>' : `<button type="button" data-cover-image="${escapeHtml(photo.image)}">Set as Cover</button>`}
-            </div>
-          </article>`).join('');
+        $('#add-portrait-row').disabled = !items.some((photo) => photo.orientation === 'portrait');
+        $('#add-landscape-row').disabled = !items.some((photo) => photo.orientation !== 'portrait');
+        if (items.length) renderSeriesRows(items, cover);
       }
 
       function render() {
@@ -489,7 +635,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         $('#total-label').textContent = '照片总数';
         const layoutScope = getLayoutScope();
         const isFreeLayout = Boolean(layoutScope);
-        const isOrientationLayout = viewFilter.value === 'street' || viewFilter.value === 'scenes';
+        const isOrientationLayout = rowLayoutCategories.includes(viewFilter.value);
         const orientationRows = isOrientationLayout ? buildOrientationRows(visible) : [];
         const displayPhotos = isOrientationLayout ? orientationRows.flatMap((row) => row.items) : visible;
         const filterLabel = viewFilter.options[viewFilter.selectedIndex]?.textContent || '';
@@ -541,7 +687,20 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         });
         if (isOrientationLayout) {
           let cardIndex = 0;
-          grid.innerHTML = orientationRows.map((row) => `<div class="editor-row editor-row--${row.orientation}">${row.items.map(() => cards[cardIndex++]).join('')}</div>`).join('');
+          grid.innerHTML = orientationRows.map((row, rowIndex) => {
+            const max = maxRowPhotos(row.orientation);
+            const hasLaterPhoto = orientationRows.slice(rowIndex + 1).some((candidate) => candidate.orientation === row.orientation);
+            return `<section class="editor-row-wrap" data-category-row-index="${rowIndex}">
+              <header class="category-row-controls">
+                <span>${row.items.length}/${max}</span>
+                <div>
+                  <button type="button" data-category-row-action="decrease" aria-label="减少本行照片" ${row.items.length <= 1 ? 'disabled' : ''}>−</button>
+                  <button type="button" data-category-row-action="increase" aria-label="增加本行照片" ${row.items.length >= max || !hasLaterPhoto ? 'disabled' : ''}>+</button>
+                </div>
+              </header>
+              <div class="editor-row editor-row--${row.orientation}" style="--category-row-columns:${row.items.length}">${row.items.map(() => cards[cardIndex++]).join('')}</div>
+            </section>`;
+          }).join('');
         } else {
           grid.innerHTML = cards.join('');
         }
@@ -562,7 +721,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         const visible = getVisiblePhotos();
         const current = visible.find((photo) => photo.id === id);
         if (!current) return;
-        const orderedPhotos = ['street', 'scenes'].includes(viewFilter.value)
+        const orderedPhotos = rowLayoutCategories.includes(viewFilter.value)
           ? visible.filter((photo) => photo.orientation === current.orientation)
           : visible;
         const index = orderedPhotos.findIndex((photo) => photo.id === id);
@@ -652,6 +811,50 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         setDirty(true, '照片已移除，保存后生效');
         render();
         showToast('照片已从网站记录中删除，可撤销');
+      }
+
+      function adjustCategoryRow(rowIndex, action) {
+        if (!rowLayoutCategories.includes(viewFilter.value)) return;
+        const visible = getVisiblePhotos();
+        const rows = buildOrientationRows(visible);
+        const row = rows[rowIndex];
+        if (!row || !['increase', 'decrease'].includes(action)) return;
+        const orientationRows = rows.filter((candidate) => candidate.orientation === row.orientation);
+        const orientationIndex = rows.slice(0, rowIndex + 1).filter((candidate) => candidate.orientation === row.orientation).length - 1;
+        const currentSizes = orientationRows.map((candidate) => candidate.items.length);
+        const max = maxRowPhotos(row.orientation);
+        const target = currentSizes[orientationIndex] + (action === 'increase' ? 1 : -1);
+        if (target < 1 || target > max) return;
+
+        const orientationPhotos = visible.filter((photo) => (photo.orientation === 'portrait' ? 'portrait' : 'landscape') === row.orientation);
+        const photosBeforeNextRow = currentSizes.slice(0, orientationIndex + 1).reduce((sum, size) => sum + size, 0);
+        if (action === 'increase' && photosBeforeNextRow >= orientationPhotos.length) return;
+
+        snapshot();
+        currentSizes[orientationIndex] = target;
+        const nextSizes = [];
+        let remaining = orientationPhotos.length;
+        currentSizes.forEach((size) => {
+          if (remaining <= 0) return;
+          const nextSize = Math.min(max, Math.max(1, size), remaining);
+          nextSizes.push(nextSize);
+          remaining -= nextSize;
+        });
+        while (remaining > 0) {
+          const nextSize = Math.min(row.orientation === 'portrait' ? 3 : 2, remaining);
+          nextSizes.push(nextSize);
+          remaining -= nextSize;
+        }
+
+        orientationPhotos.forEach((photo) => delete photo.categoryRowSize);
+        let offset = 0;
+        nextSizes.forEach((size) => {
+          orientationPhotos[offset].categoryRowSize = size;
+          offset += size;
+        });
+        setDirty(true);
+        render();
+        showToast(`本行已调整为 ${target} 张，点击保存写入 photos.json`);
       }
 
       function formatFileSize(bytes) {
@@ -748,6 +951,12 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         return false;
       }
 
+      function ensureLayoutSaved() {
+        if (!layoutDirty) return true;
+        window.alert('请先保存当前 Series 行布局，再执行其他 Series 操作。');
+        return false;
+      }
+
       function slugify(value) {
         return String(value || '')
           .normalize('NFKD')
@@ -807,7 +1016,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
       }
 
       async function moveSeries(slug, direction) {
-        if (!ensureSeriesActionReady()) return;
+        if (!ensureSeriesActionReady() || !ensureLayoutSaved()) return;
         const ordered = orderedSeries();
         const index = ordered.findIndex((item) => item.slug === slug);
         const nextIndex = index + direction;
@@ -824,8 +1033,154 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         }
       }
 
-      async function setSeriesCover(image) {
+      function openSeriesEdit(slug) {
+        if (!ensureSeriesActionReady() || !ensureLayoutSaved()) return;
+        const item = seriesData.find((entry) => entry.slug === slug);
+        if (!item) return;
+        $('#series-edit-original-slug').value = item.slug;
+        $('#series-edit-title').value = item.title || '';
+        $('#series-edit-slug').value = item.slug;
+        $('#series-edit-year').value = item.year || '';
+        $('#series-edit-order').value = String(Number(item.order) || orderedSeries().findIndex((entry) => entry.slug === slug) + 1);
+        $('#series-edit-cover').value = item.coverImage || '';
+        $('#series-edit-description').value = item.description || '';
+        $('#series-edit-error').textContent = '';
+        seriesEditDialog.showModal();
+      }
+
+      async function saveSeriesEdit() {
+        const form = $('#series-edit-form');
+        if (!form.reportValidity() || !ensureSeriesActionReady() || !ensureLayoutSaved()) return;
+        const button = $('#save-series-edit');
+        button.disabled = true;
+        const slug = $('#series-edit-original-slug').value;
+        sessionStorage.setItem('editorView', 'series');
+        if (activeSeriesSlug) sessionStorage.setItem('editorSeriesSlug', activeSeriesSlug);
+        try {
+          const result = await postJson('/__editor/series/update', {
+            slug,
+            title: $('#series-edit-title').value.trim(),
+            year: $('#series-edit-year').value.trim(),
+            order: Number($('#series-edit-order').value),
+            coverImage: $('#series-edit-cover').value.trim(),
+            description: $('#series-edit-description').value.trim(),
+          });
+          seriesData = result.series;
+          seriesEditDialog.close();
+          renderSeries();
+          showToast('Series 资料已保存');
+        } catch (error) {
+          $('#series-edit-error').textContent = error.message;
+        } finally {
+          button.disabled = false;
+        }
+      }
+
+      function requestSeriesDelete(slug) {
+        if (!ensureSeriesActionReady() || !ensureLayoutSaved()) return;
+        const item = seriesData.find((entry) => entry.slug === slug);
+        if (!item) return;
+        if (seriesEditDialog.open) seriesEditDialog.close();
+        seriesDeleteDialog.dataset.slug = slug;
+        $('#series-delete-slug-label').textContent = slug;
+        $('#series-delete-confirmation').value = '';
+        $('#series-delete-error').textContent = '';
+        $('#confirm-delete-series').disabled = true;
+        seriesDeleteDialog.showModal();
+        $('#series-delete-confirmation').focus();
+      }
+
+      async function deleteSeries() {
+        const slug = seriesDeleteDialog.dataset.slug || '';
+        if ($('#series-delete-confirmation').value.trim() !== slug) return;
+        const button = $('#confirm-delete-series');
+        button.disabled = true;
+        sessionStorage.setItem('editorView', 'series');
+        sessionStorage.removeItem('editorSeriesSlug');
+        try {
+          const result = await postJson('/__editor/series/delete', { slug });
+          seriesData = result.series;
+          photoData = photoData.filter((photo) => photo.series !== slug);
+          activeSeriesSlug = '';
+          layoutDraftSlug = '';
+          layoutDraftRows = [];
+          layoutDirty = false;
+          seriesDeleteDialog.close();
+          setDirty(false, `Series 已移至 ${result.trashPath || 'trash/series'}`);
+          renderSeries();
+          showToast(`Series 已移除，${result.removedPhotoCount} 条照片记录已清理`);
+        } catch (error) {
+          $('#series-delete-error').textContent = error.message;
+          button.disabled = false;
+        }
+      }
+
+      function addSeriesRow(orientation) {
+        const donorIndex = layoutDraftRows.findLastIndex((row) => row.orientation === orientation && row.photoIds.length > 1);
+        const photoIds = donorIndex >= 0 ? [layoutDraftRows[donorIndex].photoIds.pop()] : [];
+        layoutDraftRows.push({ orientation, photoIds });
+        markLayoutDirty();
+        renderSeries();
+      }
+
+      function adjustSeriesRow(rowIndex, action) {
+        const row = layoutDraftRows[rowIndex];
+        if (!row) return;
+        if (action === 'up' || action === 'down') {
+          const nextIndex = rowIndex + (action === 'up' ? -1 : 1);
+          if (nextIndex < 0 || nextIndex >= layoutDraftRows.length) return;
+          [layoutDraftRows[rowIndex], layoutDraftRows[nextIndex]] = [layoutDraftRows[nextIndex], layoutDraftRows[rowIndex]];
+        }
+        if (action === 'increase') {
+          if (row.photoIds.length >= maxRowPhotos(row.orientation)) return;
+          let donorIndex = layoutDraftRows.findIndex((candidate, index) => index > rowIndex && candidate.orientation === row.orientation && candidate.photoIds.length > 1);
+          if (donorIndex < 0) donorIndex = layoutDraftRows.findIndex((candidate, index) => index !== rowIndex && candidate.orientation === row.orientation && candidate.photoIds.length > 1);
+          if (donorIndex < 0) {
+            showToast('没有可移入本行的同方向照片');
+            return;
+          }
+          const donor = layoutDraftRows[donorIndex];
+          row.photoIds.push(donorIndex > rowIndex ? donor.photoIds.shift() : donor.photoIds.pop());
+        }
+        if (action === 'decrease') {
+          if (row.photoIds.length <= 1) return;
+          const photoId = row.photoIds.pop();
+          let receiverIndex = layoutDraftRows.findIndex((candidate, index) => index > rowIndex && candidate.orientation === row.orientation && candidate.photoIds.length < maxRowPhotos(row.orientation));
+          if (receiverIndex < 0) {
+            layoutDraftRows.splice(rowIndex + 1, 0, { orientation: row.orientation, photoIds: [photoId] });
+          } else {
+            layoutDraftRows[receiverIndex].photoIds.unshift(photoId);
+          }
+        }
+        layoutDraftRows = layoutDraftRows.filter((candidate) => candidate.photoIds.length > 0);
+        markLayoutDirty();
+        renderSeries();
+      }
+
+      async function saveSeriesLayout() {
         if (!activeSeriesSlug || !ensureSeriesActionReady()) return;
+        const button = $('#save-series-layout');
+        button.disabled = true;
+        sessionStorage.setItem('editorView', 'series');
+        sessionStorage.setItem('editorSeriesSlug', activeSeriesSlug);
+        try {
+          const result = await postJson('/__editor/series/layout', {
+            slug: activeSeriesSlug,
+            layoutRows: layoutDraftRows.filter((row) => row.photoIds.length > 0),
+          });
+          seriesData = seriesData.map((item) => item.slug === activeSeriesSlug ? result.series : item);
+          layoutDraftRows = structuredClone(result.series.layoutRows || []);
+          layoutDirty = false;
+          renderSeries();
+          showToast('Series 行布局已保存');
+        } catch (error) {
+          window.alert(`保存布局失败：${error.message}`);
+          button.disabled = false;
+        }
+      }
+
+      async function setSeriesCover(image) {
+        if (!activeSeriesSlug || !ensureSeriesActionReady() || !ensureLayoutSaved()) return;
         sessionStorage.setItem('editorView', 'series');
         sessionStorage.setItem('editorSeriesSlug', activeSeriesSlug);
         try {
@@ -839,7 +1194,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
       }
 
       async function importSeriesPhotos(files) {
-        if (!activeSeriesSlug || !files.length || !ensureSeriesActionReady()) return;
+        if (!activeSeriesSlug || !files.length || !ensureSeriesActionReady() || !ensureLayoutSaved()) return;
         const button = $('#upload-series-photos');
         button.disabled = true;
         const label = button.querySelector('span:last-child');
@@ -858,6 +1213,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
           if (!response.ok) throw new Error(result.error || 'Series 照片上传失败。');
           photoData.push(...result.photos);
           seriesData = seriesData.map((item) => item.slug === activeSeriesSlug ? result.series : item);
+          layoutDraftSlug = '';
           setDirty(false, `${result.photos.length} 张 Series 照片已写入 photos.json`);
           renderSeries();
           showToast(`${result.photos.length} 张照片已上传，横竖方向已识别`);
@@ -876,7 +1232,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
           if (!photo || typeof photo !== 'object') throw new Error(`第 ${index + 1} 项不是有效照片。`);
           if (!photo.id || !photo.image) throw new Error(`第 ${index + 1} 项缺少 id 或 image。`);
           if (ids.has(photo.id)) throw new Error(`发现重复 ID：${photo.id}`);
-          if (!['street', 'portrait', 'scenes', 'series'].includes(photo.category)) throw new Error(`${photo.id} 的分类无效。`);
+          if (![...photoCategories, 'series'].includes(photo.category)) throw new Error(`${photo.id} 的分类无效。`);
           if (!['portrait', 'landscape'].includes(photo.orientation)) throw new Error(`${photo.id} 的画面方向无效。`);
           if (photo.layoutWidth !== undefined && (!Number.isFinite(Number(photo.layoutWidth)) || Number(photo.layoutWidth) < 45 || Number(photo.layoutWidth) > 200)) throw new Error(`${photo.id} 的显示尺寸应在 45–200 之间。`);
           if (photo.layoutOffsetX !== undefined && (!Number.isFinite(Number(photo.layoutOffsetX)) || Math.abs(Number(photo.layoutOffsetX)) > 80)) throw new Error(`${photo.id} 的水平位置应在 -80–80 之间。`);
@@ -948,6 +1304,12 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
       }
 
       grid.addEventListener('click', (event) => {
+        const categoryRowButton = event.target.closest('[data-category-row-action]');
+        const categoryRow = event.target.closest('[data-category-row-index]');
+        if (categoryRowButton && categoryRow) {
+          adjustCategoryRow(Number(categoryRow.dataset.categoryRowIndex), categoryRowButton.dataset.categoryRowAction);
+          return;
+        }
         const button = event.target.closest('button');
         const card = event.target.closest('.editor-card');
         if (!button || !card) return;
@@ -1074,7 +1436,14 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         window.addEventListener('pointercancel', onEnd);
       });
 
-      viewFilter.addEventListener('change', render);
+      viewFilter.addEventListener('change', () => {
+        if (layoutDirty && viewFilter.value !== 'series' && !window.confirm('当前 Series 行布局尚未保存，确定放弃吗？')) {
+          viewFilter.value = 'series';
+          return;
+        }
+        if (viewFilter.value !== 'series') layoutDirty = false;
+        render();
+      });
       searchInput.addEventListener('input', render);
       newSeriesButton.addEventListener('click', openSeriesDialog);
       $('#create-series').addEventListener('click', createNewSeries);
@@ -1089,7 +1458,11 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
       });
       $('#series-slug').addEventListener('input', () => { seriesDialog.dataset.slugTouched = 'true'; });
       $('#series-back').addEventListener('click', () => {
+        if (layoutDirty && !window.confirm('当前行布局尚未保存，确定返回并放弃吗？')) return;
         activeSeriesSlug = '';
+        layoutDraftSlug = '';
+        layoutDraftRows = [];
+        layoutDirty = false;
         sessionStorage.removeItem('editorSeriesSlug');
         renderSeries();
       });
@@ -1103,13 +1476,34 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
           sessionStorage.setItem('editorSeriesSlug', activeSeriesSlug);
           renderSeries();
         }
+        if (action === 'edit') openSeriesEdit(card.dataset.slug);
+        if (action === 'delete') requestSeriesDelete(card.dataset.slug);
         if (action === 'up') moveSeries(card.dataset.slug, -1);
         if (action === 'down') moveSeries(card.dataset.slug, 1);
       });
       seriesPhotoGrid.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-cover-image]');
-        if (button) setSeriesCover(button.dataset.coverImage);
+        const coverButton = event.target.closest('[data-cover-image]');
+        if (coverButton) setSeriesCover(coverButton.dataset.coverImage);
+        const rowButton = event.target.closest('[data-row-action]');
+        const row = event.target.closest('[data-row-index]');
+        if (rowButton && row) adjustSeriesRow(Number(row.dataset.rowIndex), rowButton.dataset.rowAction);
       });
+      $('#add-portrait-row').addEventListener('click', () => addSeriesRow('portrait'));
+      $('#add-landscape-row').addEventListener('click', () => addSeriesRow('landscape'));
+      $('#save-series-layout').addEventListener('click', saveSeriesLayout);
+      $('#edit-active-series').addEventListener('click', () => openSeriesEdit(activeSeriesSlug));
+      $('#save-series-edit').addEventListener('click', saveSeriesEdit);
+      $('#request-delete-series').addEventListener('click', () => requestSeriesDelete($('#series-edit-original-slug').value));
+      $('#series-delete-confirmation').addEventListener('input', (event) => {
+        $('#confirm-delete-series').disabled = event.target.value.trim() !== seriesDeleteDialog.dataset.slug;
+      });
+      seriesDeleteDialog.querySelectorAll('[value="cancel"]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          seriesDeleteDialog.close('cancel');
+        });
+      });
+      $('#confirm-delete-series').addEventListener('click', deleteSeries);
       $('#upload-series-photos').addEventListener('click', () => $('#series-photo-input').click());
       $('#series-photo-input').addEventListener('change', async (event) => {
         const files = Array.from(event.target.files || []);
@@ -1165,7 +1559,7 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
         render();
       });
       window.addEventListener('beforeunload', (event) => {
-        if (!dirty) return;
+        if (!dirty && !layoutDirty) return;
         event.preventDefault();
         event.returnValue = '';
       });
@@ -1215,6 +1609,8 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
   .toolbar > div { display: flex; gap: .7rem; align-items: center; }
   .button { min-height: 2.65rem; padding: .7rem 1rem; border: 1px solid var(--ink); color: var(--ink); background: transparent; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
   .button--primary { color: #fff; background: var(--ink); }
+  .button--danger { border-color: var(--accent); color: #fff; background: var(--accent); }
+  .button:disabled { opacity: .38; cursor: default; }
   .text-button { padding: .5rem .25rem; border: 0; color: var(--muted); background: none; font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; }
   .text-button:hover { color: var(--ink); }
   .text-button:disabled { opacity: .35; cursor: default; }
@@ -1252,16 +1648,29 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
   .series-editor-card__body strong { overflow: hidden; font: 400 clamp(1.45rem, 2.3vw, 2.3rem)/1 var(--serif); text-overflow: ellipsis; white-space: nowrap; }
   .series-editor-card__body small, .series-editor-card__body > span:last-child { color: var(--muted); font-size: .58rem; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; }
   .series-editor-card__order { position: absolute; right: 0; bottom: -.2rem; display: flex; transform: translateY(100%); }
-  .series-editor-card__order button { width: 2rem; height: 2rem; padding: 0; border: 1px solid var(--line); color: var(--muted); background: transparent; }
+  .series-editor-card__order button { min-width: 2rem; height: 2rem; padding: 0 .5rem; border: 1px solid var(--line); color: var(--muted); background: #faf9f6; font-size: .55rem; letter-spacing: .06em; text-transform: uppercase; }
   .series-editor-card__order button + button { border-left: 0; }
   .series-editor-card__order button:hover:not(:disabled) { color: #fff; background: var(--ink); }
+  .series-editor-card__order button.is-danger:hover:not(:disabled) { border-color: var(--accent); background: var(--accent); }
   .series-editor-card__order button:disabled { opacity: .25; cursor: default; }
   .series-back { margin-bottom: 3rem; padding: 0 0 .4rem; border: 0; border-bottom: 1px solid currentColor; color: var(--muted); background: transparent; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
   .series-manager__head { margin-bottom: 3rem; padding-bottom: 2rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; border-bottom: 1px solid var(--line); }
   .series-manager__head > div > p:last-child { margin: 1rem 0 0; color: var(--muted); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
-  .series-photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3rem 1.5rem; }
+  .series-manager__actions { display: flex; align-items: center; gap: .7rem; }
+  .series-layout-toolbar { margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .series-layout-toolbar > div { display: flex; gap: 1rem; }
+  .series-photo-grid { display: block; }
+  .series-layout-row { margin-bottom: clamp(3.5rem, 6vw, 6rem); padding-top: 1rem; border-top: 1px solid var(--line); }
+  .series-layout-row__head { margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; }
+  .series-layout-row__head > div { display: flex; }
+  .series-layout-row__head button { width: 2rem; height: 2rem; padding: 0; border: 1px solid var(--line); color: var(--muted); background: transparent; }
+  .series-layout-row__head button + button { border-left: 0; }
+  .series-layout-row__head button:hover:not(:disabled) { color: #fff; background: var(--ink); }
+  .series-layout-row__head button:disabled { opacity: .28; cursor: default; }
+  .series-layout-row__photos { display: grid; grid-template-columns: repeat(var(--row-columns), minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); align-items: start; }
   .series-photo-card__image { position: relative; overflow: hidden; background: #e5e3dc; }
   .series-photo-card__image img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+  .series-layout-row__photos--portrait .series-photo-card__image img { aspect-ratio: 3/4; }
   .series-photo-card__image > span, .series-photo-card__image > strong { position: absolute; top: .6rem; padding: .3rem .45rem; color: #fff; background: rgba(20,20,19,.72); font-size: .54rem; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; }
   .series-photo-card__image > span { left: .6rem; }
   .series-photo-card__image > strong { right: .6rem; background: var(--accent); }
@@ -1283,9 +1692,15 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
   .photo-grid[data-view='portrait'] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); }
   .photo-grid[data-view='portrait'] .editor-card { grid-column: auto; justify-self: center; }
   .photo-grid--rows { display: block; }
+  .editor-row-wrap { margin-bottom: clamp(5rem, 10vw, 10rem); padding-top: .8rem; border-top: 1px solid var(--line); }
+  .category-row-controls { margin-bottom: 1rem; display: flex; align-items: center; justify-content: flex-end; gap: .8rem; color: var(--muted); font-size: .58rem; letter-spacing: .1em; }
+  .category-row-controls > div { display: flex; }
+  .category-row-controls button { width: 2rem; height: 2rem; padding: 0; border: 1px solid var(--line); color: var(--muted); background: transparent; }
+  .category-row-controls button + button { border-left: 0; }
+  .category-row-controls button:hover:not(:disabled) { color: #fff; background: var(--ink); }
+  .category-row-controls button:disabled { opacity: .28; cursor: default; }
   .editor-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); margin-bottom: clamp(5rem, 10vw, 10rem); }
-  .editor-row--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .editor-row--landscape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .editor-row-wrap .editor-row { grid-template-columns: repeat(var(--category-row-columns), minmax(0, 1fr)); margin-bottom: 0; }
   .editor-row .editor-card { grid-column: auto; justify-self: center; }
   .photo-grid[data-view='portrait'] > .editor-card:nth-child(3n+2) { margin-top: clamp(3rem, 9vw, 9rem); }
   .editor-card__image { position: relative; overflow: hidden; background: #e4e2dc; cursor: grab; touch-action: none; }
@@ -1340,6 +1755,10 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
   .warning-dialog { width: min(36rem, calc(100vw - 2rem)); }
   .series-dialog { width: min(42rem, calc(100vw - 2rem)); }
   .series-dialog__intro { margin: 2rem 0 1.5rem; color: var(--muted); line-height: 1.65; }
+  .series-dialog input[readonly] { color: var(--muted); background: rgba(0,0,0,.035); cursor: not-allowed; }
+  .delete-confirm-label { display: block; margin-bottom: 1.5rem; color: var(--muted); font-size: .65rem; letter-spacing: .07em; text-transform: uppercase; }
+  .delete-confirm-label input { margin-top: .55rem; font-size: .8rem; letter-spacing: 0; text-transform: none; }
+  .warning-copy code { color: var(--ink); font-size: .75rem; }
   .warning-copy { margin: 2rem 0 1.25rem; max-width: 31rem; color: var(--muted); line-height: 1.65; }
   .warning-list { max-height: 15rem; margin: 0 0 2rem; padding: 0; overflow: auto; border-top: 1px solid var(--line); list-style: none; }
   .warning-list li { padding: .8rem 0; display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); font-size: .75rem; }
@@ -1369,15 +1788,20 @@ const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
     .status-row { margin-top: 2rem; align-items: flex-start; }
     .status-actions { align-items: flex-end; flex-direction: column-reverse; gap: .75rem; }
     .series-editor-head { grid-template-columns: 1fr; gap: 1rem; }
-    .series-editor-grid, .series-photo-grid { grid-template-columns: 1fr; }
     .series-manager__head { align-items: flex-start; flex-direction: column; }
-    .series-manager__head .add-photos { width: 100%; justify-content: center; }
+    .series-manager__actions, .series-manager__head .add-photos, .series-manager__actions .button { width: 100%; }
+    .series-manager__actions { align-items: stretch; flex-direction: column; }
+    .series-manager__head .add-photos { justify-content: center; }
+    .series-layout-toolbar { align-items: stretch; flex-direction: column; }
+    .series-layout-toolbar > div { justify-content: space-between; }
+    .series-layout-row__photos { grid-template-columns: 1fr; }
     .canvas-stage { width: 100%; }
     .photo-grid { display: block; }
     .photo-grid .editor-card,
     .photo-grid[data-view='featured'] .editor-card:nth-child(n),
     .photo-grid:not([data-view='featured']) .editor-card:nth-child(n) { grid-column: auto; margin-top: 0; }
     .editor-row { display: block; margin: 0; }
+    .editor-row-wrap { margin-bottom: 4.5rem; }
     .photo-grid .editor-card { width: 100% !important; margin-bottom: 4.5rem; transform: none !important; justify-self: stretch !important; }
     .photo-grid .editor-card--portrait { width: 82% !important; margin-inline: auto; }
     .photo-grid[data-view='featured'] .editor-card--portrait { width: 78% !important; }

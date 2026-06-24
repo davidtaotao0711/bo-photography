@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import { photoCategories } from '../data/categories.js';
 import site from '../data/site.json';
 
 const entries = [
-  { title: 'Street', href: '/portfolio/street', note: 'Unplanned gestures and everyday light.', number: '01' },
-  { title: 'Portrait', href: '/portfolio/portrait', note: 'Faces, presence, and quiet exchange.', number: '02' },
-  { title: 'Scenes', href: '/portfolio/scenes', note: 'Weather, distance, and the shape of place.', number: '03' },
-  { title: 'Series', href: '/series', note: 'Longer stories, edited as small books.', number: '04' },
-];
+  ...photoCategories.map((category) => ({ title: category.title, href: `/portfolio/${category.slug}`, note: category.note })),
+  { title: 'Series', href: '/series', note: 'Longer stories, edited as small books.' },
+].map((entry, index) => ({ ...entry, number: String(index + 1).padStart(2, '0') }));
 ---
 
 <BaseLayout title={`Portfolio — ${site.name}`}>
@@ -18,7 +18,7 @@ const entries = [
   </section>
   <section class="portfolio-index page-shell" aria-label="Portfolio categories">
     {entries.map((entry) => (
-      <a class="index-row" href={entry.href}>
+      <a class="index-row" href={entry.href} data-scroll-reveal>
         <span class="index-row__number">{entry.number}</span>
         <h2>{entry.title}</h2>
         <p>{entry.note}</p>
@@ -26,4 +26,5 @@ const entries = [
       </a>
     ))}
   </section>
+  <ScrollReveal />
 </BaseLayout>

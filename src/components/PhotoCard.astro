@@ -13,8 +13,8 @@ interface Photo {
   categoryLayoutOffsetX?: number;
   categoryLayoutOffsetY?: number;
 }
-interface Props { photo: Photo; eager?: boolean; number?: number; layoutScope?: 'home' | 'category' | 'none' }
-const { photo, eager = false, number, layoutScope = 'home' } = Astro.props;
+interface Props { photo: Photo; eager?: boolean; number?: number; layoutScope?: 'home' | 'category' | 'none'; reveal?: boolean }
+const { photo, eager = false, number, layoutScope = 'home', reveal = false } = Astro.props;
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
 const widthValue = layoutScope === 'category' ? photo.categoryLayoutWidth : photo.layoutWidth;
 const offsetXValue = layoutScope === 'category' ? photo.categoryLayoutOffsetX : photo.layoutOffsetX;
@@ -34,6 +34,7 @@ const layoutStyle = layoutScope !== 'none' ? [
 <article
   class:list={["photo-card", `photo-card--${photo.orientation}`]}
   data-photo-id={photo.id}
+  data-scroll-reveal={reveal ? '' : undefined}
   style={layoutStyle || undefined}
 >
   <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>

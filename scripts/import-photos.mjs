@@ -1,6 +1,7 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { photoCategories, photoCategorySlugs } from '../src/data/categories.js';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, '..');
@@ -9,17 +10,16 @@ const imagesDirectory = path.join(publicDirectory, 'images');
 const photosFile = path.join(projectRoot, 'src', 'data', 'photos.json');
 
 const supportedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
-const validCategories = new Set(['street', 'portrait', 'scenes', 'series']);
+const validCategories = new Set([...photoCategorySlugs, 'series']);
 const categoryDirectories = [
-  { directory: 'street', category: 'street' },
-  { directory: 'portrait', category: 'portrait' },
-  { directory: 'scenes', category: 'scenes' },
+  ...photoCategories.map(({ directory, slug }) => ({ directory, category: slug })),
   { directory: 'natural', category: 'scenes' },
 ];
 const altPrefixes = {
   street: 'Street photograph',
   portrait: 'Portrait photograph',
   scenes: 'Scene photograph',
+  nature: 'Nature photograph',
   series: 'Series photograph',
 };
 

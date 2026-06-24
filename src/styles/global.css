@@ -77,8 +77,7 @@ p, h1, h2, figure { margin: 0; }
 .gallery:not(.gallery--rows) > .photo-card--portrait { width: 78%; justify-self: center; }
 .gallery--rows { display: flex; flex-direction: column; gap: clamp(5rem, 10vw, 10rem); }
 .gallery-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); }
-.gallery-row--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.gallery-row--landscape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gallery-row { grid-template-columns: repeat(var(--gallery-row-count), minmax(0, 1fr)); }
 .gallery-row .photo-card { justify-self: center; }
 
 .photo-detail { padding-top: 4rem; padding-bottom: 9rem; }
@@ -107,12 +106,12 @@ p, h1, h2, figure { margin: 0; }
 .series-detail__head .back-link { grid-row: span 3; }
 .series-detail__head h1 { margin-top: 1.4rem; font-family: var(--serif); font-size: clamp(4rem, 10vw, 10rem); line-height: .86; font-weight: 400; letter-spacing: -.055em; }
 .series-detail__description { margin-top: 2.5rem; max-width: 34rem; color: var(--muted); font-family: var(--serif); font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1.4; }
-.series-flow { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(5rem, 12vw, 12rem) 2vw; align-items: start; }
-.series-flow__item--0 { grid-column: 1 / -1; }
-.series-flow__item--1 { grid-column: 2 / span 5; }
-.series-flow__item--2 { grid-column: 8 / span 4; margin-top: 12vw; }
-.series-flow__item--3 { grid-column: 4 / span 7; }
-.series-flow__item.is-portrait.series-flow__item--0 { grid-column: 3 / span 7; }
+.series-flow { display: flex; flex-direction: column; gap: clamp(5rem, 10vw, 10rem); }
+.series-flow__row { display: grid; grid-template-columns: repeat(var(--series-row-count), minmax(0, 1fr)); gap: clamp(1.25rem, 2.5vw, 3rem); align-items: start; }
+.series-flow__row--single { justify-items: center; }
+.series-flow__row--single .series-flow__item { width: min(100%, 70rem); }
+.series-flow__row--single .series-flow__item.is-portrait { width: min(72%, 42rem); }
+.series-flow__item { min-width: 0; }
 .series-flow img { max-height: 88vh; object-fit: cover; }
 .series-flow__item.is-portrait img { aspect-ratio: 3 / 4; }
 .series-flow figcaption { margin-top: .75rem; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; }
@@ -131,6 +130,16 @@ p, h1, h2, figure { margin: 0; }
 .about__links span { margin-bottom: .25rem; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .13em; }
 
 .site-footer { margin: 0 var(--pad); padding: 2rem 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; }
+
+.has-scroll-reveal .index-row[data-scroll-reveal],
+.has-scroll-reveal .photo-card[data-scroll-reveal] > a {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 620ms cubic-bezier(.22,.61,.36,1), transform 620ms cubic-bezier(.22,.61,.36,1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.has-scroll-reveal .index-row[data-scroll-reveal].is-revealed,
+.has-scroll-reveal .photo-card[data-scroll-reveal].is-revealed > a { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 720px) {
   .site-header { height: 4.5rem; }
@@ -162,6 +171,7 @@ p, h1, h2, figure { margin: 0; }
   .series-list { grid-template-columns: 1fr; gap: 5rem; }
   .series-detail__head .back-link { grid-row: auto; margin-bottom: 5rem; }
   .series-flow { display: block; }
+  .series-flow__row { display: block; }
   .series-flow__item { width: 100% !important; margin: 0 0 5rem; transform: none !important; justify-self: stretch !important; }
   .series-flow__item.is-portrait { width: 78% !important; margin-inline: auto; }
   .series-detail__end { padding-top: 4rem; }
@@ -174,4 +184,6 @@ p, h1, h2, figure { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
+  .has-scroll-reveal .index-row[data-scroll-reveal],
+  .has-scroll-reveal .photo-card[data-scroll-reveal] > a { opacity: 1; transform: none; transition: none; }
 }
