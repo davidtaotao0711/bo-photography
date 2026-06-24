@@ -45,7 +45,9 @@
     "alt": "Portrait of a woman in a black dress",
     "layoutWidth": 96,
     "layoutOffsetX": 3,
-    "layoutOffsetY": -5
+    "layoutOffsetY": -5,
+    "categoryLayoutOffsetX": -1,
+    "categoryLayoutOffsetY": 9
   },
   {
     "id": "home-003",
@@ -726,6 +728,20 @@
     "alt": "Street photograph: street 050"
   },
   {
+    "id": "portrait-003",
+    "title": "No. 61",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-003.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph: portrait 003",
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": -6
+  },
+  {
     "id": "portrait-001",
     "title": "No. 59",
     "category": "portrait",
@@ -735,7 +751,9 @@
     "image": "/images/portrait/portrait-001.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 001"
+    "alt": "Portrait photograph: portrait 001",
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0
   },
   {
     "id": "portrait-002",
@@ -747,31 +765,9 @@
     "image": "/images/portrait/portrait-002.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 002"
-  },
-  {
-    "id": "portrait-003",
-    "title": "No. 61",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-003.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 003"
-  },
-  {
-    "id": "portrait-004",
-    "title": "No. 62",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-004.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 004"
+    "alt": "Portrait photograph: portrait 002",
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": 1
   },
   {
     "id": "portrait-005",
@@ -783,7 +779,23 @@
     "image": "/images/portrait/portrait-005.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 005"
+    "alt": "Portrait photograph: portrait 005",
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": -9
+  },
+  {
+    "id": "portrait-004",
+    "title": "No. 62",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-004.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph: portrait 004",
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": 6
   },
   {
     "id": "portrait-006",
@@ -807,7 +819,10 @@
     "image": "/images/portrait/portrait-007.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Portrait photograph: portrait 007"
+    "alt": "Portrait photograph: portrait 007",
+    "categoryLayoutOffsetX": -9,
+    "categoryLayoutOffsetY": 4,
+    "categoryLayoutWidth": 85
   },
   {
     "id": "portrait-008",
@@ -843,7 +858,9 @@
     "image": "/images/portrait/portrait-010.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 010"
+    "alt": "Portrait photograph: portrait 010",
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": -15
   },
   {
     "id": "portrait-011",
@@ -867,7 +884,9 @@
     "image": "/images/portrait/portrait-012.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 012"
+    "alt": "Portrait photograph: portrait 012",
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": -6
   },
   {
     "id": "portrait-014",
@@ -879,7 +898,9 @@
     "image": "/images/portrait/portrait-014.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 014"
+    "alt": "Portrait photograph: portrait 014",
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": -22
   },
   {
     "id": "portrait-015",
@@ -891,7 +912,9 @@
     "image": "/images/portrait/portrait-015.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 015"
+    "alt": "Portrait photograph: portrait 015",
+    "categoryLayoutOffsetX": 2,
+    "categoryLayoutOffsetY": -13
   },
   {
     "id": "portrait-016",
@@ -903,19 +926,9 @@
     "image": "/images/portrait/portrait-016.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 016"
-  },
-  {
-    "id": "portrait-017",
-    "title": "No. 75",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-017.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 017"
+    "alt": "Portrait photograph: portrait 016",
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": -12
   },
   {
     "id": "portrait-018",
@@ -927,7 +940,23 @@
     "image": "/images/portrait/portrait-018.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 018"
+    "alt": "Portrait photograph: portrait 018",
+    "categoryLayoutOffsetX": 3,
+    "categoryLayoutOffsetY": -27
+  },
+  {
+    "id": "portrait-017",
+    "title": "No. 75",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-017.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph: portrait 017",
+    "categoryLayoutOffsetX": 1,
+    "categoryLayoutOffsetY": -12
   },
   {
     "id": "portrait-019",
