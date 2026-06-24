@@ -105,7 +105,7 @@
     "featured": true,
     "orientation": "landscape",
     "alt": "A quiet tabletop scene with books and objects",
-    "layoutWidth": 66,
+    "layoutWidth": 77,
     "layoutOffsetX": -17,
     "layoutOffsetY": -9
   },
@@ -122,16 +122,19 @@
     "alt": "Street photograph: street 005"
   },
   {
-    "id": "street-004",
-    "title": "No. 12",
+    "id": "street-011",
+    "title": "No. 19",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-004.jpg",
+    "image": "/images/street/street-011.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 004"
+    "alt": "Street photograph: street 011",
+    "layoutWidth": 100,
+    "layoutOffsetX": 0,
+    "layoutOffsetY": 0
   },
   {
     "id": "street-009",
@@ -146,19 +149,16 @@
     "alt": "Street photograph: street 009"
   },
   {
-    "id": "street-011",
-    "title": "No. 19",
+    "id": "street-004",
+    "title": "No. 12",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-011.jpg",
+    "image": "/images/street/street-004.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 011",
-    "layoutWidth": 100,
-    "layoutOffsetX": 0,
-    "layoutOffsetY": 0
+    "alt": "Street photograph: street 004"
   },
   {
     "id": "street-008",
@@ -197,16 +197,16 @@
     "alt": "Street photograph: street 007"
   },
   {
-    "id": "street-015",
-    "title": "No. 23",
+    "id": "street-017",
+    "title": "No. 25",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-015.jpg",
+    "image": "/images/street/street-017.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 015"
+    "alt": "Street photograph: street 017"
   },
   {
     "id": "street-010",
@@ -221,30 +221,6 @@
     "alt": "Street photograph: street 010"
   },
   {
-    "id": "street-017",
-    "title": "No. 25",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-017.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Street photograph: street 017"
-  },
-  {
-    "id": "street-012",
-    "title": "No. 20",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-012.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Street photograph: street 012"
-  },
-  {
     "id": "street-013",
     "title": "No. 21",
     "category": "street",
@@ -255,6 +231,20 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 013"
+  },
+  {
+    "id": "street-041",
+    "title": "No. 49",
+    "category": "street",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/street/street-041.jpg",
+    "featured": true,
+    "orientation": "landscape",
+    "alt": "Street photograph: street 041",
+    "layoutOffsetX": -11,
+    "layoutOffsetY": -18
   },
   {
     "id": "street-019",
@@ -269,40 +259,55 @@
     "alt": "Street photograph: street 019"
   },
   {
-    "id": "street-016",
-    "title": "No. 24",
+    "id": "street-015",
+    "title": "No. 23",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-016.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Street photograph: street 016"
-  },
-  {
-    "id": "street-002",
-    "title": "No. 10",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-002.jpg",
+    "image": "/images/street/street-015.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 002"
+    "alt": "Street photograph: street 015"
   },
   {
-    "id": "street-028",
-    "title": "No. 36",
+    "id": "home-007",
+    "title": "No. 08",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/home/007.jpg",
+    "featured": true,
+    "orientation": "landscape",
+    "alt": "A quiet room lit through large windows",
+    "layoutOffsetX": -14,
+    "layoutOffsetY": -18,
+    "layoutWidth": 93
+  },
+  {
+    "id": "street-037",
+    "title": "No. 45",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-028.jpg",
+    "image": "/images/street/street-037.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Street photograph: street 037"
+  },
+  {
+    "id": "street-012",
+    "title": "No. 20",
+    "category": "street",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/street/street-012.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 028"
+    "alt": "Street photograph: street 012"
   },
   {
     "id": "street-020",
@@ -315,18 +320,6 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 020"
-  },
-  {
-    "id": "street-021",
-    "title": "No. 29",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-021.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Street photograph: street 021"
   },
   {
     "id": "street-003",
@@ -355,16 +348,16 @@
     "alt": "Street photograph: street 022"
   },
   {
-    "id": "street-018",
-    "title": "No. 26",
+    "id": "street-016",
+    "title": "No. 24",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-018.jpg",
+    "image": "/images/street/street-016.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 018"
+    "alt": "Street photograph: street 016"
   },
   {
     "id": "street-024",
@@ -379,78 +372,40 @@
     "alt": "Street photograph: street 024"
   },
   {
-    "id": "street-023",
-    "title": "No. 31",
+    "id": "street-028",
+    "title": "No. 36",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-023.jpg",
+    "image": "/images/street/street-028.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 023"
+    "alt": "Street photograph: street 028"
   },
   {
-    "id": "street-030",
-    "title": "No. 38",
+    "id": "street-002",
+    "title": "No. 10",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-030.jpg",
+    "image": "/images/street/street-002.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 030"
+    "alt": "Street photograph: street 002"
   },
   {
-    "id": "street-029",
-    "title": "No. 37",
+    "id": "street-018",
+    "title": "No. 26",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-029.jpg",
+    "image": "/images/street/street-018.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 029"
-  },
-  {
-    "id": "street-027",
-    "title": "No. 35",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-027.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Street photograph: street 027",
-    "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": 0
-  },
-  {
-    "id": "street-031",
-    "title": "No. 39",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-031.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Street photograph: street 031"
-  },
-  {
-    "id": "street-037",
-    "title": "No. 45",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-037.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Street photograph: street 037"
+    "alt": "Street photograph: street 018"
   },
   {
     "id": "street-033",
@@ -465,28 +420,16 @@
     "alt": "Street photograph: street 033"
   },
   {
-    "id": "street-034",
-    "title": "No. 42",
+    "id": "street-023",
+    "title": "No. 31",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-034.jpg",
+    "image": "/images/street/street-023.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 034"
-  },
-  {
-    "id": "street-039",
-    "title": "No. 47",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-039.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Street photograph: street 039"
+    "alt": "Street photograph: street 023"
   },
   {
     "id": "street-035",
@@ -501,55 +444,19 @@
     "alt": "Street photograph: street 035"
   },
   {
-    "id": "street-040",
-    "title": "No. 48",
+    "id": "street-030",
+    "title": "No. 38",
     "category": "street",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/street/street-040.jpg",
+    "image": "/images/street/street-030.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 040"
-  },
-  {
-    "id": "home-007",
-    "title": "No. 08",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/home/007.jpg",
-    "featured": true,
-    "orientation": "landscape",
-    "alt": "A quiet room lit through large windows",
-    "layoutOffsetX": -14,
-    "layoutOffsetY": -18,
-    "layoutWidth": 93
-  },
-  {
-    "id": "street-046",
-    "title": "No. 54",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-046.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Street photograph: street 046"
-  },
-  {
-    "id": "street-041",
-    "title": "No. 49",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-041.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Street photograph: street 041"
+    "alt": "Street photograph: street 030",
+    "categoryLayoutOffsetX": 80,
+    "categoryLayoutOffsetY": 1,
+    "categoryLayoutWidth": 135
   },
   {
     "id": "street-049",
@@ -559,23 +466,13 @@
     "location": "",
     "date": "2026",
     "image": "/images/street/street-049.jpg",
-    "featured": false,
+    "featured": true,
     "orientation": "landscape",
     "alt": "Street photograph: street 049",
     "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": 0
-  },
-  {
-    "id": "street-032",
-    "title": "No. 40",
-    "category": "street",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/street/street-032.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Street photograph: street 032"
+    "categoryLayoutOffsetY": 0,
+    "layoutOffsetX": -36,
+    "layoutOffsetY": -64
   },
   {
     "id": "portrait-003",
@@ -857,9 +754,9 @@
     "featured": true,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 038",
-    "layoutOffsetX": 45,
-    "layoutOffsetY": -12,
-    "layoutWidth": 75
+    "layoutOffsetX": -1,
+    "layoutOffsetY": -23,
+    "layoutWidth": 122
   },
   {
     "id": "scenes-037",
@@ -1097,9 +994,12 @@
     "location": "",
     "date": "2026",
     "image": "/images/scenes/scenes-023.jpg",
-    "featured": false,
+    "featured": true,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 023"
+    "alt": "Scene photograph: scenes 023",
+    "layoutOffsetX": -4,
+    "layoutOffsetY": -6,
+    "layoutWidth": 106
   },
   {
     "id": "scenes-035",
