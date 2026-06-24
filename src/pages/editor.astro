@@ -1,0 +1,705 @@
+---
+import photos from '../data/photos.json';
+
+const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>本地排版编辑器 · Bo David</title>
+  </head>
+  <body>
+    <script id="initial-photos" type="application/json" set:html={serializedPhotos}></script>
+
+    <header class="editor-header">
+      <a class="wordmark" href="/">BO DAVID</a>
+      <div>
+        <span class="local-badge"><i></i> 本地编辑</span>
+        <a class="site-link" href="/" target="_blank">查看网站 ↗</a>
+      </div>
+    </header>
+
+    <main class="editor-shell">
+      <aside class="sidebar">
+        <div class="sidebar-heading">
+          <p class="eyebrow">Layout studio</p>
+          <h1>排版<br />编辑器</h1>
+          <p>直接拖动照片自由安排位置，使用箭头调整顺序。所有操作只发生在你的电脑上。</p>
+        </div>
+
+        <div class="field-group">
+          <label for="view-filter">预览版面</label>
+          <select id="view-filter">
+            <option value="featured">首页精选</option>
+            <option value="all">全部照片</option>
+            <option value="street">Street</option>
+            <option value="portrait">Portrait</option>
+            <option value="scenes">Scenes</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="search">查找照片</label>
+          <input id="search" type="search" placeholder="名称、地点或 ID" autocomplete="off" />
+        </div>
+
+        <div class="stats" aria-live="polite">
+          <div><strong id="visible-count">0</strong><span>当前显示</span></div>
+          <div><strong id="featured-count">0</strong><span>首页精选</span></div>
+          <div><strong id="total-count">0</strong><span>照片总数</span></div>
+        </div>
+
+        <div class="help">
+          <p class="eyebrow">使用方法</p>
+          <ol>
+            <li>按住照片画面自由移动位置</li>
+            <li>使用上下箭头改变前后顺序</li>
+            <li>点尺寸按钮或拖右下角缩放</li>
+            <li>点击照片编辑属性</li>
+            <li>保存并覆盖 photos.json</li>
+          </ol>
+          <p class="note">首页只展示排在最前面的 12 张精选照片。</p>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="toolbar">
+          <div>
+            <button class="button button--primary" id="open-file" type="button">打开 photos.json</button>
+            <button class="button" id="save-file" type="button">保存</button>
+          </div>
+          <div>
+            <button class="text-button" id="undo" type="button" disabled>撤销</button>
+            <button class="text-button" id="download" type="button">下载副本</button>
+            <button class="text-button text-button--danger" id="reset" type="button">恢复初始</button>
+          </div>
+        </div>
+
+        <div class="status-row">
+          <p id="view-title">首页精选</p>
+          <p id="save-status" data-state="clean">已载入网站数据</p>
+        </div>
+
+        <div id="empty-state" class="empty-state" hidden>
+          <p>没有找到照片</p>
+          <button class="text-button" id="clear-search" type="button">清除搜索</button>
+        </div>
+        <div id="photo-grid" class="photo-grid" aria-label="可自由定位的照片版面"></div>
+      </section>
+    </main>
+
+    <dialog id="inspector">
+      <form id="photo-form" method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Photo details</p>
+            <h2>照片设置</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+        </div>
+
+        <div class="dialog-preview"><img id="form-preview" src="" alt="" /></div>
+        <input id="form-original-id" type="hidden" />
+        <div class="form-grid">
+          <label>标题<input id="form-title" required /></label>
+          <label>唯一 ID<input id="form-id" required pattern="[a-zA-Z0-9_-]+" /></label>
+          <label>分类
+            <select id="form-category" required>
+              <option value="street">Street</option>
+              <option value="portrait">Portrait</option>
+              <option value="scenes">Scenes</option>
+            </select>
+          </label>
+          <label>画面方向
+            <select id="form-orientation" required>
+              <option value="landscape">横图</option>
+              <option value="portrait">竖图</option>
+            </select>
+          </label>
+          <label>显示尺寸（%）<input id="form-layout-width" type="number" min="45" max="200" step="1" required /></label>
+          <label>水平位置（%）<input id="form-offset-x" type="number" min="-80" max="80" step="1" required /></label>
+          <label>垂直位置（%）<input id="form-offset-y" type="number" min="-80" max="80" step="1" required /></label>
+          <label>地点<input id="form-location" /></label>
+          <label>日期<input id="form-date" /></label>
+          <label>所属系列<input id="form-series" placeholder="没有可留空" /></label>
+          <label>图片路径<input id="form-image" required /></label>
+          <label class="full">图片描述<textarea id="form-alt" rows="3" required></textarea></label>
+          <label class="toggle full"><input id="form-featured" type="checkbox" /><span></span>显示在首页精选</label>
+        </div>
+        <p id="form-error" class="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="text-button" value="cancel" type="submit">取消</button>
+          <button class="button button--primary" id="apply-photo" type="button">应用修改</button>
+        </div>
+      </form>
+    </dialog>
+
+    <input id="file-fallback" type="file" accept="application/json,.json" hidden />
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const initialNode = document.querySelector('#initial-photos');
+      const initialPhotos = JSON.parse(initialNode?.textContent || '[]');
+      let photoData = structuredClone(initialPhotos);
+      let fileHandle = null;
+      let dirty = false;
+      const history = [];
+
+      const grid = document.querySelector('#photo-grid');
+      const viewFilter = document.querySelector('#view-filter');
+      const searchInput = document.querySelector('#search');
+      const inspector = document.querySelector('#inspector');
+      const formError = document.querySelector('#form-error');
+
+      const $ = (selector) => document.querySelector(selector);
+      const escapeHtml = (value = '') => String(value)
+        .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+
+      function snapshot() {
+        history.push(structuredClone(photoData));
+        if (history.length > 30) history.shift();
+        $('#undo').disabled = false;
+      }
+
+      function setDirty(value, message) {
+        dirty = value;
+        const status = $('#save-status');
+        status.dataset.state = value ? 'dirty' : 'clean';
+        status.textContent = message || (value ? '有未保存修改' : '所有修改已保存');
+      }
+
+      function showToast(message) {
+        const toast = $('#toast');
+        toast.textContent = message;
+        toast.classList.add('is-visible');
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove('is-visible'), 2400);
+      }
+
+      function getVisiblePhotos() {
+        const filter = viewFilter.value;
+        const query = searchInput.value.trim().toLowerCase();
+        return photoData.filter((photo) => {
+          const matchesView = filter === 'all' || (filter === 'featured' ? photo.featured : photo.category === filter);
+          const haystack = [photo.id, photo.title, photo.location, photo.series, photo.alt].join(' ').toLowerCase();
+          return matchesView && (!query || haystack.includes(query));
+        });
+      }
+
+      function getLayoutWidth(photo) {
+        const width = Number(photo.layoutWidth);
+        return Number.isFinite(width) ? Math.min(200, Math.max(45, Math.round(width))) : 100;
+      }
+
+      function getLayoutOffset(photo, axis) {
+        const offset = Number(photo[axis === 'x' ? 'layoutOffsetX' : 'layoutOffsetY']);
+        return Number.isFinite(offset) ? Math.min(80, Math.max(-80, Math.round(offset))) : 0;
+      }
+
+      function render() {
+        const visible = getVisiblePhotos();
+        const filterLabel = viewFilter.options[viewFilter.selectedIndex]?.textContent || '';
+        $('#view-title').textContent = `${filterLabel} · 拖动画面自由定位`;
+        $('#visible-count').textContent = String(visible.length);
+        $('#featured-count').textContent = String(photoData.filter((photo) => photo.featured).length);
+        $('#total-count').textContent = String(photoData.length);
+        $('#empty-state').hidden = visible.length > 0;
+        grid.hidden = visible.length === 0;
+        grid.dataset.view = viewFilter.value;
+
+        let featuredPosition = 0;
+        grid.innerHTML = visible.map((photo, index) => {
+          const layoutWidth = getLayoutWidth(photo);
+          const offsetX = getLayoutOffset(photo, 'x');
+          const offsetY = getLayoutOffset(photo, 'y');
+          if (photo.featured) featuredPosition += 1;
+          const publishBadge = viewFilter.value === 'featured' && featuredPosition > 12
+            ? '<span class="card-badge card-badge--muted">首页不展示</span>'
+            : `<span class="card-badge">${String(index + 1).padStart(2, '0')}</span>`;
+          return `
+            <article class="editor-card editor-card--${escapeHtml(photo.orientation)}" data-id="${escapeHtml(photo.id)}" style="--card-width: ${layoutWidth}%; --offset-x: ${offsetX}%; --offset-y: ${offsetY}%">
+              <div class="editor-card__image">
+                <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt)}" loading="lazy" />
+                ${publishBadge}
+                <button class="favorite ${photo.featured ? 'is-active' : ''}" type="button" data-action="featured" aria-label="${photo.featured ? '取消首页精选' : '加入首页精选'}" title="首页精选">★</button>
+                <button class="position-control ${offsetX || offsetY ? 'is-active' : ''}" type="button" data-action="reset-position" aria-label="位置归零，当前水平 ${offsetX}%，垂直 ${offsetY}%" title="点击恢复原位">⌖ ${offsetX}, ${offsetY}</button>
+                <button class="size-control" type="button" data-action="size" aria-label="切换照片尺寸，当前 ${layoutWidth}%" title="点击切换尺寸">↔ ${layoutWidth}%</button>
+                <div class="move-actions">
+                  <button type="button" data-action="up" aria-label="向前移动">↑</button>
+                  <button type="button" data-action="down" aria-label="向后移动">↓</button>
+                </div>
+                <button class="resize-handle" type="button" data-action="resize" aria-label="拖动以等比缩放照片" title="拖动以等比缩放"></button>
+              </div>
+              <button class="editor-card__meta" type="button" data-action="edit">
+                <span><strong>${escapeHtml(photo.title || photo.id)}</strong>${escapeHtml(photo.location || '未填写地点')}</span>
+                <span>${photo.orientation === 'portrait' ? '竖图' : '横图'} · 编辑</span>
+              </button>
+            </article>`;
+        }).join('');
+      }
+
+      function replaceVisibleOrder(orderedIds) {
+        const idSet = new Set(orderedIds);
+        let cursor = 0;
+        photoData = photoData.map((photo) => {
+          if (!idSet.has(photo.id)) return photo;
+          const nextId = orderedIds[cursor++];
+          return photoData.find((item) => item.id === nextId);
+        });
+      }
+
+      function movePhoto(id, direction) {
+        const visible = getVisiblePhotos();
+        const index = visible.findIndex((photo) => photo.id === id);
+        const nextIndex = index + direction;
+        if (index < 0 || nextIndex < 0 || nextIndex >= visible.length) return;
+        snapshot();
+        const ids = visible.map((photo) => photo.id);
+        [ids[index], ids[nextIndex]] = [ids[nextIndex], ids[index]];
+        replaceVisibleOrder(ids);
+        setDirty(true);
+        render();
+      }
+
+      function openInspector(id) {
+        const photo = photoData.find((item) => item.id === id);
+        if (!photo) return;
+        $('#form-original-id').value = photo.id;
+        $('#form-id').value = photo.id;
+        $('#form-title').value = photo.title || '';
+        $('#form-category').value = photo.category;
+        $('#form-orientation').value = photo.orientation;
+        $('#form-layout-width').value = String(getLayoutWidth(photo));
+        $('#form-offset-x').value = String(getLayoutOffset(photo, 'x'));
+        $('#form-offset-y').value = String(getLayoutOffset(photo, 'y'));
+        $('#form-location').value = photo.location || '';
+        $('#form-date').value = photo.date || '';
+        $('#form-series').value = photo.series || '';
+        $('#form-image').value = photo.image;
+        $('#form-alt').value = photo.alt || '';
+        $('#form-featured').checked = Boolean(photo.featured);
+        $('#form-preview').src = photo.image;
+        $('#form-preview').alt = photo.alt || '';
+        formError.textContent = '';
+        inspector.showModal();
+      }
+
+      function applyInspector() {
+        const form = $('#photo-form');
+        if (!form.reportValidity()) return;
+        const oldId = $('#form-original-id').value;
+        const newId = $('#form-id').value.trim();
+        if (photoData.some((photo) => photo.id === newId && photo.id !== oldId)) {
+          formError.textContent = `ID “${newId}” 已被另一张照片使用。`;
+          return;
+        }
+        const index = photoData.findIndex((photo) => photo.id === oldId);
+        if (index < 0) return;
+        snapshot();
+        photoData[index] = {
+          ...photoData[index],
+          id: newId,
+          title: $('#form-title').value.trim(),
+          category: $('#form-category').value,
+          series: $('#form-series').value.trim(),
+          location: $('#form-location').value.trim(),
+          date: $('#form-date').value.trim(),
+          image: $('#form-image').value.trim(),
+          featured: $('#form-featured').checked,
+          orientation: $('#form-orientation').value,
+          layoutWidth: Math.min(200, Math.max(45, Number($('#form-layout-width').value))),
+          layoutOffsetX: Math.min(80, Math.max(-80, Number($('#form-offset-x').value))),
+          layoutOffsetY: Math.min(80, Math.max(-80, Number($('#form-offset-y').value))),
+          alt: $('#form-alt').value.trim(),
+        };
+        inspector.close();
+        setDirty(true);
+        render();
+        showToast('照片设置已应用');
+      }
+
+      function validatePhotos(value) {
+        if (!Array.isArray(value)) throw new Error('文件内容不是照片数组。');
+        const ids = new Set();
+        value.forEach((photo, index) => {
+          if (!photo || typeof photo !== 'object') throw new Error(`第 ${index + 1} 项不是有效照片。`);
+          if (!photo.id || !photo.image) throw new Error(`第 ${index + 1} 项缺少 id 或 image。`);
+          if (ids.has(photo.id)) throw new Error(`发现重复 ID：${photo.id}`);
+          if (!['street', 'portrait', 'scenes'].includes(photo.category)) throw new Error(`${photo.id} 的分类无效。`);
+          if (!['portrait', 'landscape'].includes(photo.orientation)) throw new Error(`${photo.id} 的画面方向无效。`);
+          if (photo.layoutWidth !== undefined && (!Number.isFinite(Number(photo.layoutWidth)) || Number(photo.layoutWidth) < 45 || Number(photo.layoutWidth) > 200)) throw new Error(`${photo.id} 的显示尺寸应在 45–200 之间。`);
+          if (photo.layoutOffsetX !== undefined && (!Number.isFinite(Number(photo.layoutOffsetX)) || Math.abs(Number(photo.layoutOffsetX)) > 80)) throw new Error(`${photo.id} 的水平位置应在 -80–80 之间。`);
+          if (photo.layoutOffsetY !== undefined && (!Number.isFinite(Number(photo.layoutOffsetY)) || Math.abs(Number(photo.layoutOffsetY)) > 80)) throw new Error(`${photo.id} 的垂直位置应在 -80–80 之间。`);
+          ids.add(photo.id);
+        });
+        return value;
+      }
+
+      async function loadFile(file, handle = null) {
+        try {
+          const parsed = validatePhotos(JSON.parse(await file.text()));
+          if (dirty && !window.confirm('打开新文件会放弃当前未保存修改，继续吗？')) return;
+          photoData = parsed;
+          fileHandle = handle;
+          history.length = 0;
+          $('#undo').disabled = true;
+          setDirty(false, `已打开 ${file.name}`);
+          render();
+          showToast(`已载入 ${parsed.length} 张照片`);
+        } catch (error) {
+          window.alert(`无法打开文件：${error.message}`);
+        }
+      }
+
+      function serialize() {
+        validatePhotos(photoData);
+        return `${JSON.stringify(photoData, null, 2)}\n`;
+      }
+
+      function downloadJson() {
+        try {
+          const url = URL.createObjectURL(new Blob([serialize()], { type: 'application/json' }));
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'photos.json';
+          link.click();
+          URL.revokeObjectURL(url);
+          showToast('photos.json 副本已下载');
+        } catch (error) {
+          window.alert(`导出失败：${error.message}`);
+        }
+      }
+
+      async function saveJson() {
+        try {
+          if (!fileHandle && 'showSaveFilePicker' in window) {
+            fileHandle = await window.showSaveFilePicker({
+              suggestedName: 'photos.json',
+              types: [{ description: 'JSON 文件', accept: { 'application/json': ['.json'] } }],
+            });
+          }
+          if (!fileHandle) {
+            downloadJson();
+            setDirty(false, '副本已下载，请替换 src/data/photos.json');
+            return;
+          }
+          const writable = await fileHandle.createWritable();
+          await writable.write(serialize());
+          await writable.close();
+          setDirty(false);
+          showToast('已保存到本地文件');
+        } catch (error) {
+          if (error.name !== 'AbortError') window.alert(`保存失败：${error.message}`);
+        }
+      }
+
+      grid.addEventListener('click', (event) => {
+        const button = event.target.closest('button');
+        const card = event.target.closest('.editor-card');
+        if (!button || !card) return;
+        const { id } = card.dataset;
+        const action = button.dataset.action;
+        if (action === 'edit') openInspector(id);
+        if (action === 'up') movePhoto(id, -1);
+        if (action === 'down') movePhoto(id, 1);
+        if (action === 'size') {
+          const photo = photoData.find((item) => item.id === id);
+          if (!photo) return;
+          snapshot();
+          const current = getLayoutWidth(photo);
+          photo.layoutWidth = current >= 200 ? 60 : current >= 150 ? 200 : current >= 100 ? 150 : current >= 80 ? 100 : 80;
+          setDirty(true);
+          render();
+          showToast(`照片尺寸已调整为 ${photo.layoutWidth}%`);
+        }
+        if (action === 'reset-position') {
+          const photo = photoData.find((item) => item.id === id);
+          if (!photo) return;
+          snapshot();
+          photo.layoutOffsetX = 0;
+          photo.layoutOffsetY = 0;
+          setDirty(true);
+          render();
+          showToast('照片位置已归零');
+        }
+        if (action === 'featured') {
+          const photo = photoData.find((item) => item.id === id);
+          if (!photo) return;
+          snapshot();
+          photo.featured = !photo.featured;
+          setDirty(true);
+          render();
+        }
+      });
+
+      grid.addEventListener('pointerdown', (event) => {
+        const handle = event.target.closest('[data-action="resize"]');
+        const card = event.target.closest('.editor-card');
+        if (!handle || !card) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const photo = photoData.find((item) => item.id === card.dataset.id);
+        if (!photo) return;
+        snapshot();
+        const startScale = getLayoutWidth(photo);
+        const startX = event.clientX;
+        const startWidth = card.getBoundingClientRect().width;
+        const baseWidth = startWidth / (startScale / 100);
+          card.classList.add('is-resizing');
+        handle.setPointerCapture?.(event.pointerId);
+
+        const onMove = (moveEvent) => {
+          const nextWidth = startWidth + (moveEvent.clientX - startX);
+          const nextScale = Math.min(200, Math.max(45, Math.round((nextWidth / baseWidth) * 100)));
+          photo.layoutWidth = nextScale;
+          card.style.setProperty('--card-width', `${nextScale}%`);
+          const sizeButton = card.querySelector('[data-action="size"]');
+          sizeButton.textContent = `↔ ${nextScale}%`;
+          sizeButton.setAttribute('aria-label', `切换照片尺寸，当前 ${nextScale}%`);
+        };
+        const onEnd = () => {
+          if (handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onEnd);
+          window.removeEventListener('pointercancel', onEnd);
+          card.classList.remove('is-resizing');
+          setDirty(true);
+          showToast(`照片尺寸已调整为 ${getLayoutWidth(photo)}%`);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onEnd);
+        window.addEventListener('pointercancel', onEnd);
+      });
+
+      grid.addEventListener('pointerdown', (event) => {
+        const image = event.target.closest('.editor-card__image');
+        const card = event.target.closest('.editor-card');
+        if (!image || !card || event.target.closest('button')) return;
+        event.preventDefault();
+        const photo = photoData.find((item) => item.id === card.dataset.id);
+        if (!photo) return;
+        snapshot();
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const startOffsetX = getLayoutOffset(photo, 'x');
+        const startOffsetY = getLayoutOffset(photo, 'y');
+        const bounds = card.getBoundingClientRect();
+        card.classList.add('is-positioning');
+        image.setPointerCapture?.(event.pointerId);
+
+        const onMove = (moveEvent) => {
+          const nextX = Math.min(80, Math.max(-80, Math.round(startOffsetX + ((moveEvent.clientX - startX) / bounds.width) * 100)));
+          const nextY = Math.min(80, Math.max(-80, Math.round(startOffsetY + ((moveEvent.clientY - startY) / bounds.height) * 100)));
+          photo.layoutOffsetX = nextX;
+          photo.layoutOffsetY = nextY;
+          card.style.setProperty('--offset-x', `${nextX}%`);
+          card.style.setProperty('--offset-y', `${nextY}%`);
+          const control = card.querySelector('[data-action="reset-position"]');
+          control.textContent = `⌖ ${nextX}, ${nextY}`;
+          control.classList.toggle('is-active', Boolean(nextX || nextY));
+          control.setAttribute('aria-label', `位置归零，当前水平 ${nextX}%，垂直 ${nextY}%`);
+        };
+        const onEnd = () => {
+          if (image.hasPointerCapture?.(event.pointerId)) image.releasePointerCapture(event.pointerId);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onEnd);
+          window.removeEventListener('pointercancel', onEnd);
+          card.classList.remove('is-positioning');
+          setDirty(true);
+          showToast(`照片位置：${getLayoutOffset(photo, 'x')}, ${getLayoutOffset(photo, 'y')}`);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onEnd);
+        window.addEventListener('pointercancel', onEnd);
+      });
+
+      viewFilter.addEventListener('change', render);
+      searchInput.addEventListener('input', render);
+      $('#clear-search').addEventListener('click', () => { searchInput.value = ''; render(); });
+      $('#apply-photo').addEventListener('click', applyInspector);
+      $('#form-image').addEventListener('input', (event) => { $('#form-preview').src = event.target.value; });
+      $('#open-file').addEventListener('click', async () => {
+        if ('showOpenFilePicker' in window) {
+          try {
+            const [handle] = await window.showOpenFilePicker({
+              types: [{ description: 'JSON 文件', accept: { 'application/json': ['.json'] } }],
+              multiple: false,
+            });
+            await loadFile(await handle.getFile(), handle);
+          } catch (error) {
+            if (error.name !== 'AbortError') window.alert(`打开失败：${error.message}`);
+          }
+        } else {
+          $('#file-fallback').click();
+        }
+      });
+      $('#file-fallback').addEventListener('change', (event) => {
+        const [file] = event.target.files;
+        if (file) loadFile(file);
+        event.target.value = '';
+      });
+      $('#save-file').addEventListener('click', saveJson);
+      $('#download').addEventListener('click', downloadJson);
+      $('#undo').addEventListener('click', () => {
+        if (!history.length) return;
+        photoData = history.pop();
+        $('#undo').disabled = history.length === 0;
+        setDirty(true, '已撤销上一步');
+        render();
+      });
+      $('#reset').addEventListener('click', () => {
+        if (!window.confirm('确定恢复到页面最初载入的数据吗？当前修改会丢失。')) return;
+        snapshot();
+        photoData = structuredClone(initialPhotos);
+        setDirty(true, '已恢复初始数据，尚未保存');
+        render();
+      });
+      window.addEventListener('beforeunload', (event) => {
+        if (!dirty) return;
+        event.preventDefault();
+        event.returnValue = '';
+      });
+
+      render();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root { --paper: #f3f1eb; --ink: #171716; --muted: #75736d; --line: rgba(23,23,22,.16); --accent: #be4b2f; --serif: Georgia, 'Times New Roman', serif; --sans: Arial, Helvetica, sans-serif; }
+  * { box-sizing: border-box; }
+  html { background: var(--paper); }
+  body { margin: 0; color: var(--ink); background: var(--paper); font: 14px/1.4 var(--sans); }
+  button, input, select, textarea { font: inherit; }
+  button, select { cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+  .editor-header { height: 5rem; padding: 0 2rem; position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; color: #f7f5f0; background: #1c1c1a; }
+  .editor-header > div { display: flex; align-items: center; gap: 2rem; }
+  .wordmark { font-family: var(--serif); font-size: .82rem; letter-spacing: .17em; }
+  .local-badge, .site-link { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; }
+  .local-badge { display: flex; align-items: center; gap: .55rem; color: #b9b7b0; }
+  .local-badge i { width: .45rem; height: .45rem; border-radius: 50%; background: #78a96c; box-shadow: 0 0 0 4px rgba(120,169,108,.12); }
+  .site-link { padding-bottom: .25rem; border-bottom: 1px solid currentColor; }
+  .editor-shell { min-height: calc(100vh - 5rem); display: grid; grid-template-columns: minmax(16rem, 21rem) 1fr; }
+  .sidebar { padding: 3.5rem 2rem; border-right: 1px solid var(--line); }
+  .sidebar-heading { margin-bottom: 4rem; }
+  .eyebrow { margin: 0 0 1rem; color: var(--muted); font-size: .62rem; line-height: 1.2; letter-spacing: .17em; text-transform: uppercase; }
+  .sidebar h1 { margin: 0; font: 400 clamp(3rem, 4.4vw, 4.5rem)/.88 var(--serif); letter-spacing: -.055em; }
+  .sidebar-heading > p:last-child { margin: 1.8rem 0 0; max-width: 18rem; color: var(--muted); font-size: .78rem; line-height: 1.65; }
+  .field-group { margin-top: 1.4rem; }
+  .field-group label { display: block; margin-bottom: .5rem; color: var(--muted); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; }
+  input, select, textarea { width: 100%; color: var(--ink); background: rgba(255,255,255,.42); border: 1px solid var(--line); border-radius: 0; outline: none; }
+  input, select { height: 2.8rem; padding: 0 .8rem; }
+  textarea { padding: .8rem; resize: vertical; }
+  input:focus, select:focus, textarea:focus { border-color: var(--ink); }
+  .stats { margin-top: 2.6rem; padding: 1.25rem 0; display: grid; grid-template-columns: repeat(3,1fr); border-block: 1px solid var(--line); }
+  .stats div { display: flex; flex-direction: column; gap: .25rem; }
+  .stats strong { font: 400 1.5rem var(--serif); }
+  .stats span { color: var(--muted); font-size: .56rem; letter-spacing: .08em; }
+  .help { margin-top: 3.5rem; color: var(--muted); font-size: .72rem; }
+  .help ol { margin: 0; padding-left: 1.15rem; line-height: 2; }
+  .help .note { margin-top: 1rem; padding-left: .8rem; border-left: 2px solid var(--accent); line-height: 1.55; }
+  .workspace { min-width: 0; padding: 2rem clamp(1.25rem, 3vw, 3.5rem) 8rem; background: #faf9f6; }
+  .toolbar, .status-row { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+  .toolbar > div { display: flex; gap: .7rem; align-items: center; }
+  .button { min-height: 2.65rem; padding: .7rem 1rem; border: 1px solid var(--ink); color: var(--ink); background: transparent; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
+  .button--primary { color: #fff; background: var(--ink); }
+  .text-button { padding: .5rem .25rem; border: 0; color: var(--muted); background: none; font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; }
+  .text-button:hover { color: var(--ink); }
+  .text-button:disabled { opacity: .35; cursor: default; }
+  .text-button--danger:hover { color: var(--accent); }
+  .status-row { margin-top: 3rem; padding-bottom: .85rem; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .63rem; letter-spacing: .11em; text-transform: uppercase; }
+  .status-row p { margin: 0; }
+  #save-status::before { content: ''; display: inline-block; width: .42rem; height: .42rem; margin-right: .5rem; border-radius: 50%; background: #78a96c; vertical-align: .05rem; }
+  #save-status[data-state='dirty']::before { background: #d38b32; }
+  .photo-grid { padding-top: clamp(3rem, 6vw, 6rem); display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 7vw, 7rem) 2.2vw; align-items: start; }
+  .editor-card { width: var(--card-width, 100%); min-width: 0; overflow: visible; grid-column: span 4; justify-self: start; transform: translate(var(--offset-x, 0), var(--offset-y, 0)); transition: opacity 150ms, transform 150ms, width 120ms ease; }
+  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+1) { grid-column: 1 / span 7; }
+  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+2) { grid-column: 9 / span 4; margin-top: 9vw; }
+  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+3) { grid-column: 2 / span 4; }
+  .photo-grid[data-view='featured'] .editor-card:nth-child(4n+4) { grid-column: 7 / span 6; }
+  .photo-grid:not([data-view='featured']) .editor-card:nth-child(3n+2) { margin-top: 5vw; }
+  .editor-card__image { position: relative; overflow: hidden; background: #e4e2dc; cursor: grab; touch-action: none; }
+  .editor-card.is-positioning { z-index: 6; transition: none; }
+  .editor-card.is-positioning .editor-card__image { cursor: grabbing; box-shadow: 0 1.2rem 3rem rgba(0,0,0,.18); }
+  .editor-card__image img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; pointer-events: none; }
+  .editor-card--portrait .editor-card__image img { aspect-ratio: 3/4; }
+  .card-badge { position: absolute; top: .65rem; left: .65rem; padding: .35rem .5rem; color: #fff; background: rgba(20,20,19,.76); font-size: .56rem; letter-spacing: .08em; text-transform: uppercase; }
+  .card-badge--muted { background: rgba(190,75,47,.9); }
+  .favorite { width: 2rem; height: 2rem; padding: 0; position: absolute; top: .6rem; right: .6rem; border: 0; border-radius: 50%; color: rgba(255,255,255,.7); background: rgba(20,20,19,.55); }
+  .favorite.is-active { color: #f0ca68; }
+  .position-control { min-width: 4.2rem; height: 1.8rem; padding: 0 .45rem; position: absolute; top: .65rem; left: 50%; border: 0; color: rgba(255,255,255,.78); background: rgba(20,20,19,.58); font-size: .52rem; transform: translateX(-50%); opacity: 0; transition: opacity 150ms; }
+  .position-control.is-active, .editor-card:hover .position-control, .editor-card:focus-within .position-control { opacity: 1; }
+  .size-control { min-width: 3.6rem; height: 1.8rem; padding: 0 .45rem; position: absolute; left: .6rem; bottom: .6rem; border: 0; color: #fff; background: rgba(20,20,19,.72); font-size: .56rem; letter-spacing: .04em; }
+  .move-actions { position: absolute; left: 50%; bottom: .6rem; display: flex; opacity: 0; transform: translateX(-50%); transition: opacity 150ms; }
+  .editor-card:hover .move-actions, .editor-card:focus-within .move-actions { opacity: 1; }
+  .move-actions button { width: 2rem; height: 2rem; padding: 0; border: 0; color: #fff; background: rgba(20,20,19,.72); }
+  .move-actions button + button { border-left: 1px solid rgba(255,255,255,.3); }
+  .resize-handle { width: 1.65rem; height: 1.65rem; padding: 0; position: absolute; right: 0; bottom: 0; border: 0; border-radius: .15rem 0 0; background: linear-gradient(135deg, transparent 42%, rgba(255,255,255,.9) 44%, rgba(255,255,255,.9) 51%, transparent 53%, transparent 62%, rgba(255,255,255,.9) 64%, rgba(255,255,255,.9) 71%, transparent 73%), rgba(20,20,19,.52); cursor: nwse-resize; touch-action: none; }
+  .editor-card.is-resizing { z-index: 5; cursor: nwse-resize; transition: none; }
+  .editor-card__meta { width: 100%; padding: .75rem 0 0; display: flex; justify-content: space-between; gap: 1rem; border: 0; color: var(--muted); background: transparent; text-align: left; font-size: .57rem; letter-spacing: .08em; text-transform: uppercase; }
+  .editor-card__meta span { display: flex; flex-direction: column; gap: .18rem; }
+  .editor-card__meta span:last-child { flex: 0 0 auto; text-align: right; }
+  .editor-card__meta strong { overflow: hidden; max-width: 18ch; color: var(--ink); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+  .empty-state { padding: 10rem 0; text-align: center; color: var(--muted); }
+  dialog { width: min(44rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); padding: 0; border: 0; color: var(--ink); background: #f7f5ef; box-shadow: 0 2rem 6rem rgba(0,0,0,.28); }
+  dialog::backdrop { background: rgba(20,20,18,.62); backdrop-filter: blur(4px); }
+  dialog form { padding: 2rem; }
+  .dialog-head, .dialog-actions { display: flex; align-items: center; justify-content: space-between; }
+  .dialog-head h2 { margin: 0; font: 400 2.8rem/.95 var(--serif); letter-spacing: -.04em; }
+  .icon-button { width: 2.5rem; height: 2.5rem; padding: 0; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: transparent; font: 300 1.6rem/1 var(--sans); }
+  .dialog-preview { height: 12rem; margin: 2rem -2rem; background: #1d1d1b; }
+  .dialog-preview img { width: 100%; height: 100%; object-fit: contain; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-grid label { color: var(--muted); font-size: .61rem; letter-spacing: .09em; text-transform: uppercase; }
+  .form-grid input, .form-grid select, .form-grid textarea { margin-top: .4rem; font-size: .78rem; letter-spacing: 0; text-transform: none; }
+  .form-grid .full { grid-column: 1/-1; }
+  .toggle { min-height: 2.5rem; display: flex; align-items: center; gap: .65rem; cursor: pointer; }
+  .toggle input { width: 1px; height: 1px; position: absolute; opacity: 0; }
+  .toggle span { width: 2.4rem; height: 1.3rem; padding: .15rem; border-radius: 2rem; background: #ccc9c1; transition: background 150ms; }
+  .toggle span::after { content: ''; display: block; width: 1rem; height: 1rem; border-radius: 50%; background: #fff; transition: transform 150ms; }
+  .toggle input:checked + span { background: var(--ink); }
+  .toggle input:checked + span::after { transform: translateX(1.1rem); }
+  .form-error { min-height: 1.2rem; margin: .6rem 0; color: var(--accent); font-size: .72rem; }
+  .dialog-actions { padding-top: 1rem; border-top: 1px solid var(--line); }
+  #toast { position: fixed; right: 1.5rem; bottom: 1.5rem; z-index: 50; padding: .8rem 1rem; color: #fff; background: var(--ink); font-size: .7rem; letter-spacing: .06em; opacity: 0; transform: translateY(1rem); pointer-events: none; transition: 180ms; }
+  #toast.is-visible { opacity: 1; transform: translateY(0); }
+  @media (max-width: 900px) {
+    .editor-shell { grid-template-columns: 1fr; }
+    .sidebar { padding: 2.5rem 1.25rem; border-right: 0; border-bottom: 1px solid var(--line); }
+    .sidebar-heading { margin-bottom: 2rem; }
+    .sidebar h1 br { display: none; }
+    .sidebar-heading > p:last-child { max-width: 36rem; }
+    .help { display: none; }
+    .field-group { display: inline-block; width: calc(50% - .5rem); margin-right: .5rem; vertical-align: top; }
+    .stats { max-width: 30rem; }
+  }
+  @media (max-width: 620px) {
+    .editor-header { height: 4rem; padding: 0 1rem; }
+    .local-badge { display: none; }
+    .editor-shell { min-height: calc(100vh - 4rem); }
+    .workspace { padding-inline: 1rem; }
+    .toolbar { align-items: flex-start; flex-direction: column; }
+    .toolbar > div { width: 100%; }
+    .toolbar .button { flex: 1; }
+    .status-row { margin-top: 2rem; align-items: flex-start; }
+    .photo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem 1rem; }
+    .photo-grid .editor-card,
+    .photo-grid[data-view='featured'] .editor-card:nth-child(n),
+    .photo-grid:not([data-view='featured']) .editor-card:nth-child(n) { grid-column: auto; margin-top: 0; }
+    .photo-grid .editor-card:nth-child(even) { margin-top: 3.5rem; }
+    .move-actions { opacity: 1; }
+    .editor-card__meta > span:last-child { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .full { grid-column: auto; }
+    dialog form { padding: 1.25rem; }
+    .dialog-preview { margin-inline: -1.25rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+</style>

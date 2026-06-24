@@ -9,19 +9,23 @@
     "image": "/images/home/008.jpg",
     "featured": true,
     "orientation": "portrait",
-    "alt": "An urban street scene with passing traffic"
+    "alt": "An urban street scene with passing traffic",
+    "layoutWidth": 73
   },
   {
     "id": "home-002",
     "title": "No. 02",
     "category": "street",
     "series": "",
-    "location": "",
+    "location": "涩谷",
     "date": "2026",
     "image": "/images/home/002.jpg",
     "featured": true,
     "orientation": "landscape",
-    "alt": "A busy street scene viewed from above"
+    "alt": "A busy street scene viewed from above",
+    "layoutWidth": 150,
+    "layoutOffsetX": -41,
+    "layoutOffsetY": -4
   },
   {
     "id": "home-009",
@@ -33,7 +37,10 @@
     "image": "/images/home/009.jpg",
     "featured": true,
     "orientation": "portrait",
-    "alt": "Portrait of a woman in a black dress"
+    "alt": "Portrait of a woman in a black dress",
+    "layoutWidth": 105,
+    "layoutOffsetX": -6,
+    "layoutOffsetY": -4
   },
   {
     "id": "home-003",
@@ -45,31 +52,10 @@
     "image": "/images/home/003.jpg",
     "featured": true,
     "orientation": "landscape",
-    "alt": "A quiet tabletop scene with books and objects"
-  },
-  {
-    "id": "home-004",
-    "title": "No. 05",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/home/004.jpg",
-    "featured": true,
-    "orientation": "landscape",
-    "alt": "A distant landscape framed by an interior"
-  },
-  {
-    "id": "home-005",
-    "title": "No. 06",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/home/005.jpg",
-    "featured": true,
-    "orientation": "portrait",
-    "alt": "Green banks reflected in still water"
+    "alt": "A quiet tabletop scene with books and objects",
+    "layoutWidth": 80,
+    "layoutOffsetX": 2,
+    "layoutOffsetY": 15
   },
   {
     "id": "home-006",
@@ -81,7 +67,40 @@
     "image": "/images/home/006.jpg",
     "featured": true,
     "orientation": "landscape",
-    "alt": "Two horses standing together outdoors"
+    "alt": "Two horses standing together outdoors",
+    "layoutWidth": 87,
+    "layoutOffsetX": 0,
+    "layoutOffsetY": -6
+  },
+  {
+    "id": "home-004",
+    "title": "No. 05",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/home/004.jpg",
+    "featured": true,
+    "orientation": "landscape",
+    "alt": "A distant landscape framed by an interior",
+    "layoutOffsetX": -28,
+    "layoutOffsetY": -32,
+    "layoutWidth": 121
+  },
+  {
+    "id": "home-005",
+    "title": "No. 06",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/home/005.jpg",
+    "featured": true,
+    "orientation": "portrait",
+    "alt": "Green banks reflected in still water",
+    "layoutWidth": 105,
+    "layoutOffsetX": -4,
+    "layoutOffsetY": -11
   },
   {
     "id": "home-007",
@@ -93,7 +112,10 @@
     "image": "/images/home/007.jpg",
     "featured": true,
     "orientation": "landscape",
-    "alt": "A quiet room lit through large windows"
+    "alt": "A quiet room lit through large windows",
+    "layoutOffsetX": 7,
+    "layoutOffsetY": -15,
+    "layoutWidth": 88
   },
   {
     "id": "street-001",

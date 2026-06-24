@@ -6,13 +6,30 @@ interface Photo {
   alt: string;
   orientation: string;
   location: string;
+  layoutWidth?: number;
+  layoutOffsetX?: number;
+  layoutOffsetY?: number;
 }
 interface Props { photo: Photo; eager?: boolean; number?: number }
 const { photo, eager = false, number } = Astro.props;
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
+const layoutWidth = Number.isFinite(photo.layoutWidth)
+  ? Math.min(200, Math.max(45, Number(photo.layoutWidth)))
+  : null;
+const offsetX = Number.isFinite(photo.layoutOffsetX) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetX))) : 0;
+const offsetY = Number.isFinite(photo.layoutOffsetY) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetY))) : 0;
+const layoutStyle = [
+  layoutWidth ? `width: ${layoutWidth}%` : '',
+  layoutWidth ? 'justify-self: center' : '',
+  offsetX || offsetY ? `transform: translate(${offsetX}%, ${offsetY}%)` : '',
+].filter(Boolean).join('; ');
 ---
 
-<article class:list={["photo-card", `photo-card--${photo.orientation}`]} data-photo-id={photo.id}>
+<article
+  class:list={["photo-card", `photo-card--${photo.orientation}`]}
+  data-photo-id={photo.id}
+  style={layoutStyle || undefined}
+>
   <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>
     <div class="photo-card__image">
       <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />

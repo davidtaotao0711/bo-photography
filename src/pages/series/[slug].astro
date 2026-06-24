@@ -10,6 +10,12 @@ export function getStaticPaths() {
 
 const { item } = Astro.props;
 const items = photos.filter((photo) => photo.series === item.slug);
+const layoutStyle = (photo) => {
+  const width = Number.isFinite(photo.layoutWidth) ? Math.min(200, Math.max(45, Number(photo.layoutWidth))) : null;
+  const x = Number.isFinite(photo.layoutOffsetX) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetX))) : 0;
+  const y = Number.isFinite(photo.layoutOffsetY) ? Math.min(80, Math.max(-80, Number(photo.layoutOffsetY))) : 0;
+  return [width ? `width: ${width}%` : '', width ? 'justify-self: center' : '', x || y ? `transform: translate(${x}%, ${y}%)` : ''].filter(Boolean).join('; ');
+};
 ---
 
 <BaseLayout title={`${item.title} ${item.year} — ${site.name}`} description={item.description}>
@@ -22,7 +28,10 @@ const items = photos.filter((photo) => photo.series === item.slug);
     </header>
     <div class="series-flow page-shell">
       {items.map((photo, index) => (
-        <figure class:list={["series-flow__item", `series-flow__item--${index % 4}`, `is-${photo.orientation}`]}>
+        <figure
+          class:list={["series-flow__item", `series-flow__item--${index % 4}`, `is-${photo.orientation}`]}
+          style={layoutStyle(photo) || undefined}
+        >
           <a href={`/photo/${photo.id}`}><img src={photo.image} alt={photo.alt} loading={index === 0 ? 'eager' : 'lazy'} /></a>
           <figcaption>{String(index + 1).padStart(2, '0')} / {photo.location}</figcaption>
         </figure>
