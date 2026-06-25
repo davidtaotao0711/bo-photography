@@ -879,7 +879,10 @@
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 012",
     "categoryRowSize": 1,
-    "categoryLayoutWidth": 90
+    "categoryLayoutWidth": 63,
+    "detailScale": 80,
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0
   },
   {
     "id": "scenes-017",

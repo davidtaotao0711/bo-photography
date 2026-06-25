@@ -167,6 +167,7 @@ p, h1, h2, figure { margin: 0; }
 .selected-grid .photo-card[data-scroll-reveal] {
   transform: translateY(56px);
   transition-duration: 2100ms;
+  transition-delay: calc(var(--reveal-delay, 0ms) * .65);
 }
 .index-row[data-scroll-reveal].is-revealed,
 .photo-card[data-scroll-reveal].is-revealed { opacity: 1; transform: translateY(0); }

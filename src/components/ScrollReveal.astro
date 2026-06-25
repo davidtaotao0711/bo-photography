@@ -17,7 +17,7 @@
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         items.forEach((item, index) => {
-          item.style.setProperty('--reveal-delay', `${(index % 8) * 210}ms`);
+          item.style.setProperty('--reveal-delay', `${(index % 6) * 120}ms`);
           observer.observe(item);
         });
       });
