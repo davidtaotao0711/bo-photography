@@ -12,9 +12,13 @@
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
 
-    items.forEach((item, index) => {
-      item.style.setProperty('--reveal-delay', `${(index % 6) * 55}ms`);
-      observer.observe(item);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        items.forEach((item, index) => {
+          item.style.setProperty('--reveal-delay', `${(index % 6) * 65}ms`);
+          observer.observe(item);
+        });
+      });
     });
   } else {
     items.forEach((item) => item.classList.add('is-revealed'));
