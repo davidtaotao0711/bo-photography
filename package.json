@@ -8,6 +8,7 @@
     "editor": "astro dev --open /editor",
     "build": "astro build",
     "preview": "astro preview",
+    "images:generate": "node scripts/generate-responsive-images.mjs",
     "import:photos": "node scripts/import-photos.mjs"
   },
   "dependencies": {

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ResponsiveImage from '../../components/ResponsiveImage.astro';
 import photos from '../../data/photos.json';
 import site from '../../data/site.json';
 
@@ -15,7 +16,11 @@ const categoryUrl = `/portfolio/${photo.category}`;
   <article class="photo-detail page-shell">
     <a class="back-link" href={categoryUrl}>← {photo.category}</a>
     <figure class:list={["photo-detail__figure", `photo-detail__figure--${photo.orientation}`]}>
-      <img src={photo.image} alt={photo.alt} />
+      <ResponsiveImage
+        src={photo.image}
+        alt={photo.alt}
+        sizes={photo.orientation === 'portrait' ? '(max-width: 720px) 100vw, 58vw' : '82vw'}
+      />
       <figcaption>
         <h1>{photo.title}</h1>
         <p>{photo.location} · {photo.date.slice(0, 4)}</p>

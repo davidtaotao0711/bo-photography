@@ -1,4 +1,6 @@
 ---
+import ResponsiveImage from './ResponsiveImage.astro';
+
 interface Photo {
   id: string;
   title: string;
@@ -20,6 +22,9 @@ const { photo, eager = false, number, layoutScope = 'home', reveal = false, home
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
 const homeTitle = photo.homeTitle ?? photo.title ?? '';
 const homeCaption = photo.homeCaption ?? '';
+const imageSizes = photo.orientation === 'portrait'
+  ? '(max-width: 720px) 78vw, (max-width: 1100px) 42vw, 32vw'
+  : '(max-width: 720px) 100vw, (max-width: 1100px) 62vw, 56vw';
 const widthValue = layoutScope === 'category' ? photo.categoryLayoutWidth : photo.layoutWidth;
 const offsetXValue = layoutScope === 'category' ? photo.categoryLayoutOffsetX : photo.layoutOffsetX;
 const offsetYValue = layoutScope === 'category' ? photo.categoryLayoutOffsetY : photo.layoutOffsetY;
@@ -48,7 +53,7 @@ const layoutStyle = layoutScope !== 'none' ? [
     <>
       <button class="photo-card__trigger" type="button" aria-expanded="false" aria-label={`Show caption for ${label}`}>
         <div class="photo-card__image">
-          <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+          <ResponsiveImage src={photo.image} alt={photo.alt} loading="lazy" sizes={imageSizes} />
         </div>
         <div class="photo-card__meta">
           <span>{label}</span>
@@ -63,7 +68,7 @@ const layoutStyle = layoutScope !== 'none' ? [
   ) : (
     <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>
       <div class="photo-card__image">
-        <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+        <ResponsiveImage src={photo.image} alt={photo.alt} loading="lazy" sizes={imageSizes} />
       </div>
       <div class="photo-card__meta">
         <span>{label}</span>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ResponsiveImage from '../../components/ResponsiveImage.astro';
 import photos from '../../data/photos.json';
 import series from '../../data/series.json';
 import site from '../../data/site.json';
@@ -75,7 +76,14 @@ const imageStyle = (photo) => {
               class:list={['series-flow__item', `is-${photo.orientation === 'portrait' ? 'portrait' : 'landscape'}`]}
               style={layoutStyle(photo) || undefined}
             >
-              <a href={`/photo/${photo.id}`}><img src={photo.image} alt={photo.alt} loading={number === 1 ? 'eager' : 'lazy'} style={imageStyle(photo)} /></a>
+              <a href={`/photo/${photo.id}`}>
+                <ResponsiveImage
+                  src={photo.image}
+                  alt={photo.alt}
+                  sizes={photo.orientation === 'portrait' ? '(max-width: 720px) 78vw, 32vw' : '(max-width: 720px) 100vw, 48vw'}
+                  style={imageStyle(photo)}
+                />
+              </a>
               <figcaption>{String(number).padStart(2, '0')}{photo.location ? ` / ${photo.location}` : ''}</figcaption>
             </figure>
           ))}

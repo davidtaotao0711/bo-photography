@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 import site from '../data/site.json';
 ---
 
@@ -9,7 +10,9 @@ import site from '../data/site.json';
       <p class="eyebrow">About</p>
       <h1>{site.name}</h1>
     </header>
-    <div class="about__portrait"><img src="/images/about-portrait.jpg" alt={`Portrait by ${site.name}`} /></div>
+    <div class="about__portrait">
+      <ResponsiveImage src="/images/about-portrait.jpg" alt={`Portrait by ${site.name}`} sizes="(max-width: 720px) 78vw, 28vw" />
+    </div>
     <div class="about__copy">
       <p class="about__lead">{site.about}</p>
       <div class="about__links">

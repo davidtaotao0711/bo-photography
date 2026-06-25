@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PhotoCard from '../components/PhotoCard.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 import photos from '../data/photos.json';
 import site from '../data/site.json';
 const featured = photos.filter((photo) => photo.featured).slice(0, 12);
@@ -8,7 +9,13 @@ const featured = photos.filter((photo) => photo.featured).slice(0, 12);
 
 <BaseLayout transparentHeader>
   <section class="home-hero">
-    <img src="/images/home/cover.jpg" alt="Landscape photograph by Bo David" loading="eager" />
+    <ResponsiveImage
+      src="/images/home/cover.jpg"
+      alt="Landscape photograph by Bo David"
+      loading="eager"
+      fetchpriority="high"
+      sizes="100vw"
+    />
     <div class="home-hero__wash"></div>
     <div class="home-hero__content">
       <p class="eyebrow">Street / Portrait / Scenes / Nature</p>
