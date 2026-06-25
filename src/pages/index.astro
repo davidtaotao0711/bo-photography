@@ -26,8 +26,82 @@ const featured = photos.filter((photo) => photo.featured).slice(0, 12);
       <h2>Photographs from<br />near and elsewhere.</h2>
     </header>
     <div class="selected-grid">
-      {featured.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 2} />)}
+      {featured.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 2} homeCaptionMode />)}
     </div>
     <div class="section-end"><a class="text-link" href="/portfolio">View all work <span>↗</span></a></div>
   </section>
 </BaseLayout>
+
+<script>
+  const initHomeCaptions = () => {
+    const grid = document.querySelector('.selected-grid');
+    if (!grid || grid.dataset.homeCaptionsReady === 'true') return;
+    grid.dataset.homeCaptionsReady = 'true';
+
+    const cards = Array.from(grid.querySelectorAll('[data-home-caption]'));
+    let activeCard = null;
+    let animationToken = 0;
+
+    const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+    const typeText = async (element, text, delay, token) => {
+      element.textContent = '';
+      for (const character of Array.from(text || '')) {
+        if (token !== animationToken) return;
+        element.textContent += character;
+        await wait(delay);
+      }
+    };
+
+    cards.forEach((card) => {
+      const trigger = card.querySelector('.photo-card__trigger');
+      const caption = card.querySelector('.photo-card__home-caption');
+      const titleElement = card.querySelector('.photo-card__home-title');
+      const copyElement = card.querySelector('.photo-card__home-copy');
+      if (!trigger || !caption || !titleElement || !copyElement) return;
+
+      trigger.addEventListener('click', async () => {
+        if (activeCard === card) return;
+
+        animationToken += 1;
+        const token = animationToken;
+
+        cards.forEach((item) => {
+          const itemCaption = item.querySelector('.photo-card__home-caption');
+          const itemTrigger = item.querySelector('.photo-card__trigger');
+          const itemTitle = item.querySelector('.photo-card__home-title');
+          const itemCopy = item.querySelector('.photo-card__home-copy');
+
+          if (item !== card) {
+            item.classList.remove('is-caption-active');
+            if (itemCaption) itemCaption.hidden = true;
+            if (itemTrigger) itemTrigger.setAttribute('aria-expanded', 'false');
+            if (itemTitle) itemTitle.textContent = '';
+            if (itemCopy) itemCopy.textContent = '';
+          }
+        });
+
+        activeCard = card;
+        card.classList.add('is-caption-active');
+        trigger.setAttribute('aria-expanded', 'true');
+        caption.hidden = false;
+
+        const title = card.getAttribute('data-home-title') || '';
+        const copy = card.getAttribute('data-home-caption-text') || '';
+
+        await typeText(titleElement, title, 68, token);
+        if (token !== animationToken) return;
+        await wait(220);
+        await typeText(copyElement, copy, 46, token);
+      });
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHomeCaptions, { once: true });
+  } else {
+    initHomeCaptions();
+  }
+
+  document.addEventListener('astro:page-load', initHomeCaptions);
+</script>

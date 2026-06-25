@@ -12,10 +12,14 @@ interface Photo {
   categoryLayoutWidth?: number;
   categoryLayoutOffsetX?: number;
   categoryLayoutOffsetY?: number;
+  homeTitle?: string;
+  homeCaption?: string;
 }
-interface Props { photo: Photo; eager?: boolean; number?: number; layoutScope?: 'home' | 'category' | 'none'; reveal?: boolean }
-const { photo, eager = false, number, layoutScope = 'home', reveal = false } = Astro.props;
+interface Props { photo: Photo; eager?: boolean; number?: number; layoutScope?: 'home' | 'category' | 'none'; reveal?: boolean; homeCaptionMode?: boolean }
+const { photo, eager = false, number, layoutScope = 'home', reveal = false, homeCaptionMode = false } = Astro.props;
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
+const homeTitle = photo.homeTitle ?? photo.title ?? '';
+const homeCaption = photo.homeCaption ?? '';
 const widthValue = layoutScope === 'category' ? photo.categoryLayoutWidth : photo.layoutWidth;
 const offsetXValue = layoutScope === 'category' ? photo.categoryLayoutOffsetX : photo.layoutOffsetX;
 const offsetYValue = layoutScope === 'category' ? photo.categoryLayoutOffsetY : photo.layoutOffsetY;
@@ -34,16 +38,37 @@ const layoutStyle = layoutScope !== 'none' ? [
 <article
   class:list={["photo-card", `photo-card--${photo.orientation}`]}
   data-photo-id={photo.id}
+  data-home-caption={homeCaptionMode ? '' : undefined}
+  data-home-title={homeCaptionMode ? homeTitle : undefined}
+  data-home-caption-text={homeCaptionMode ? homeCaption : undefined}
   data-scroll-reveal={reveal ? '' : undefined}
   style={layoutStyle || undefined}
 >
-  <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>
-    <div class="photo-card__image">
-      <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
-    </div>
-    <div class="photo-card__meta">
-      <span>{label}</span>
-      <span>{photo.location}</span>
-    </div>
-  </a>
+  {homeCaptionMode ? (
+    <>
+      <button class="photo-card__trigger" type="button" aria-expanded="false" aria-label={`Show caption for ${label}`}>
+        <div class="photo-card__image">
+          <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+        </div>
+        <div class="photo-card__meta">
+          <span>{label}</span>
+          <span>{photo.location}</span>
+        </div>
+      </button>
+      <div class="photo-card__home-caption" hidden aria-live="polite">
+        <p class="photo-card__home-title"></p>
+        <p class="photo-card__home-copy"></p>
+      </div>
+    </>
+  ) : (
+    <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>
+      <div class="photo-card__image">
+        <img src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      </div>
+      <div class="photo-card__meta">
+        <span>{label}</span>
+        <span>{photo.location}</span>
+      </div>
+    </a>
+  )}
 </article>
