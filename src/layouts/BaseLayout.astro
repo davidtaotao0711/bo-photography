@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
 import site from '../data/site.json';
 import '../styles/global.css';
 
@@ -15,6 +16,9 @@ const {
   description = `${site.tagline} Photography by ${site.name}, based in ${site.location}.`,
   transparentHeader = false,
 } = Astro.props;
+
+const normalizedPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const showBackToTop = normalizedPath !== '/' && normalizedPath !== '/editor';
 ---
 
 <!doctype html>
@@ -27,9 +31,10 @@ const {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
   </head>
-  <body>
+  <body id="top">
     <Header transparent={transparentHeader} />
     <main><slot /></main>
+    {showBackToTop && <BackToTop />}
     <Footer />
   </body>
 </html>
