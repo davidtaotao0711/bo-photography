@@ -634,20 +634,23 @@
     "categoryLayoutOffsetY": -3
   },
   {
-    "id": "portrait-019",
-    "title": "No. 77",
-    "category": "portrait",
+    "id": "nature-001",
+    "title": "No. 01",
+    "category": "nature",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/portrait/portrait-019.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 019",
+    "image": "/images/nature/nature-001.jpg",
+    "featured": true,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
     "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": 2,
-    "categoryLayoutWidth": 45,
-    "categoryRowSize": 1
+    "categoryLayoutOffsetY": 1,
+    "categoryLayoutWidth": 75,
+    "categoryRowSize": 1,
+    "layoutWidth": 157,
+    "layoutOffsetX": 13,
+    "layoutOffsetY": -44
   },
   {
     "id": "portrait-018",
@@ -1276,20 +1279,23 @@
     "alt": "B&W photograph 13 by Bo David"
   },
   {
-    "id": "nature-001",
-    "title": "No. 01",
-    "category": "nature",
+    "id": "portrait-019",
+    "title": "No. 77",
+    "category": "portrait",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/nature/nature-001.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Nature photograph by Bo David",
+    "image": "/images/portrait/portrait-019.jpg",
+    "featured": true,
+    "orientation": "portrait",
+    "alt": "Portrait photograph: portrait 019",
     "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": 1,
-    "categoryLayoutWidth": 75,
-    "categoryRowSize": 1
+    "categoryLayoutOffsetY": 2,
+    "categoryLayoutWidth": 45,
+    "categoryRowSize": 1,
+    "layoutOffsetX": 4,
+    "layoutOffsetY": -38,
+    "layoutWidth": 66
   },
   {
     "id": "nature-002",
@@ -1344,32 +1350,21 @@
     "alt": "Nature photograph by Bo David"
   },
   {
-    "id": "nature-008",
-    "title": "No. 08",
-    "category": "nature",
+    "id": "portrait-022",
+    "title": "No. 22",
+    "category": "portrait",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/nature/nature-008.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Nature photograph by Bo David",
-    "categoryLayoutWidth": 75,
-    "categoryRowSize": 1
-  },
-  {
-    "id": "nature-005",
-    "title": "No. 05",
-    "category": "nature",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/nature/nature-005.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Nature photograph by Bo David",
-    "categoryRowSize": 1,
-    "categoryLayoutWidth": 75
+    "image": "/images/portrait/portrait-022.jpg",
+    "featured": true,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0,
+    "layoutOffsetX": -14,
+    "layoutOffsetY": -38,
+    "layoutWidth": 56
   },
   {
     "id": "nature-003",
@@ -1437,7 +1432,9 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "categoryLayoutWidth": 80
+    "categoryLayoutWidth": 80,
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": -1
   },
   {
     "id": "portrait-025",
@@ -1465,16 +1462,21 @@
     "alt": "Portrait photograph by Bo David"
   },
   {
-    "id": "portrait-022",
-    "title": "No. 22",
-    "category": "portrait",
+    "id": "nature-005",
+    "title": "No. 05",
+    "category": "nature",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/portrait/portrait-022.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph by Bo David"
+    "image": "/images/nature/nature-005.jpg",
+    "featured": true,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "categoryRowSize": 1,
+    "categoryLayoutWidth": 70,
+    "layoutOffsetX": -30,
+    "layoutOffsetY": -77,
+    "layoutWidth": 150
   },
   {
     "id": "portrait-024",
@@ -1623,13 +1625,16 @@
     "location": "",
     "date": "2026",
     "image": "/images/scenes/scenes-059.jpg",
-    "featured": false,
+    "featured": true,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
     "categoryLayoutWidth": 70,
     "categoryLayoutOffsetX": -4,
     "categoryLayoutOffsetY": 2,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "layoutOffsetX": 37,
+    "layoutOffsetY": -64,
+    "layoutWidth": 200
   },
   {
     "id": "scenes-063",
