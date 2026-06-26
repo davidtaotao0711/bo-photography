@@ -9,7 +9,7 @@
     "image": "/images/home/008.jpg",
     "featured": true,
     "homeTitle": "Street Signal",
-    "homeCaption": "A brief pause inside the movement of the city.",
+    "homeCaption": "Early morning of the Shibuya",
     "orientation": "portrait",
     "alt": "An urban street scene with passing traffic",
     "layoutWidth": 106,
@@ -18,7 +18,8 @@
     "categoryLayoutWidth": 100,
     "categoryLayoutOffsetX": -1,
     "categoryLayoutOffsetY": 0,
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "detailScale": 100
   },
   {
     "id": "home-002",
@@ -36,7 +37,8 @@
     "layoutWidth": 71,
     "layoutOffsetX": 4,
     "layoutOffsetY": -2,
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "detailScale": 100
   },
   {
     "id": "street-049",
@@ -47,15 +49,14 @@
     "date": "2026",
     "image": "/images/street/street-049.jpg",
     "featured": true,
-    "homeTitle": "Low Noise",
-    "homeCaption": "A muted street scene, held just before it disappears.",
     "orientation": "landscape",
     "alt": "Street photograph: street 049",
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
     "layoutOffsetX": 1,
     "layoutOffsetY": -2,
-    "layoutWidth": 135
+    "layoutWidth": 135,
+    "detailScale": 100
   },
   {
     "id": "street-050",
@@ -66,13 +67,13 @@
     "date": "2026",
     "image": "/images/street/street-050.jpg",
     "featured": true,
-    "homeTitle": "Passing Weather",
-    "homeCaption": "A street fragment shaped by timing and atmosphere.",
+    "homeTitle": "The touch",
     "orientation": "portrait",
     "alt": "Street photograph: street 050",
     "layoutOffsetX": 1,
     "layoutOffsetY": -11,
-    "layoutWidth": 71
+    "layoutWidth": 71,
+    "detailScale": 100
   },
   {
     "id": "street-005",
@@ -227,8 +228,6 @@
     "date": "2026",
     "image": "/images/home/009.jpg",
     "featured": true,
-    "homeTitle": "Quiet Figure",
-    "homeCaption": "A portrait held between shadow, posture, and distance.",
     "orientation": "portrait",
     "alt": "Portrait of a woman in a black dress",
     "layoutWidth": 63,
@@ -236,7 +235,8 @@
     "layoutOffsetY": -13,
     "categoryLayoutOffsetX": -1,
     "categoryLayoutOffsetY": 9,
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "detailScale": 100
   },
   {
     "id": "street-015",
@@ -424,14 +424,14 @@
     "image": "/images/home/007.jpg",
     "featured": true,
     "homeTitle": "Window Hours",
-    "homeCaption": "A room softened by daylight and the silence after movement.",
     "orientation": "landscape",
     "alt": "A quiet room lit through large windows",
     "layoutOffsetX": -18,
     "layoutOffsetY": -45,
     "layoutWidth": 154,
     "categoryLayoutWidth": 70,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "detailScale": 100
   },
   {
     "id": "portrait-003",
@@ -650,7 +650,9 @@
     "categoryRowSize": 1,
     "layoutWidth": 157,
     "layoutOffsetX": 13,
-    "layoutOffsetY": -44
+    "layoutOffsetY": -44,
+    "detailScale": 100,
+    "homeTitle": "Embrace Nature"
   },
   {
     "id": "portrait-018",
@@ -1295,7 +1297,9 @@
     "categoryRowSize": 1,
     "layoutOffsetX": 4,
     "layoutOffsetY": -38,
-    "layoutWidth": 66
+    "layoutWidth": 66,
+    "detailScale": 100,
+    "homeTitle": "\"Pink Princess\""
   },
   {
     "id": "nature-002",
@@ -1364,7 +1368,9 @@
     "categoryLayoutOffsetY": 0,
     "layoutOffsetX": -14,
     "layoutOffsetY": -38,
-    "layoutWidth": 56
+    "layoutWidth": 56,
+    "detailScale": 100,
+    "homeTitle": "Cannot slow down"
   },
   {
     "id": "nature-003",
@@ -1476,7 +1482,9 @@
     "categoryLayoutWidth": 70,
     "layoutOffsetX": -30,
     "layoutOffsetY": -77,
-    "layoutWidth": 150
+    "layoutWidth": 150,
+    "detailScale": 100,
+    "homeTitle": "Waves of green"
   },
   {
     "id": "portrait-024",
@@ -1634,7 +1642,9 @@
     "categoryRowSize": 1,
     "layoutOffsetX": 37,
     "layoutOffsetY": -64,
-    "layoutWidth": 200
+    "layoutWidth": 200,
+    "detailScale": 100,
+    "homeTitle": "\"We are in a line\""
   },
   {
     "id": "scenes-063",

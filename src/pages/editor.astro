@@ -193,6 +193,8 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           <label>日期<input id="form-date" /></label>
           <label>所属系列<input id="form-series" placeholder="没有可留空" /></label>
           <label>图片路径<input id="form-image" required /></label>
+          <label>首页点击标题<input id="form-home-title" placeholder="留空则使用普通标题" /></label>
+          <label>首页点击文案<input id="form-home-caption" placeholder="留空则不显示文案" /></label>
           <label class="full">图片描述<textarea id="form-alt" rows="3" required></textarea></label>
           <label class="toggle full"><input id="form-featured" type="checkbox" /><span></span>显示在首页精选</label>
         </div>
@@ -758,6 +760,8 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#form-date').value = photo.date || '';
         $('#form-series').value = photo.series || '';
         $('#form-image').value = photo.image;
+        $('#form-home-title').value = photo.homeTitle || '';
+        $('#form-home-caption').value = photo.homeCaption || '';
         $('#form-alt').value = photo.alt || '';
         $('#form-featured').checked = Boolean(photo.featured);
         $('#form-preview').src = photo.image;
@@ -791,8 +795,12 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           featured: $('#form-featured').checked,
           orientation: $('#form-orientation').value,
           detailScale: Math.min(140, Math.max(60, Math.round(Number($('#form-detail-scale').value) || 100))),
+          homeTitle: $('#form-home-title').value.trim(),
+          homeCaption: $('#form-home-caption').value.trim(),
           alt: $('#form-alt').value.trim(),
         };
+        if (!photoData[index].homeTitle) delete photoData[index].homeTitle;
+        if (!photoData[index].homeCaption) delete photoData[index].homeCaption;
         if (layoutScope) {
           setLayoutWidth(photoData[index], Number($('#form-layout-width').value), layoutScope);
           setLayoutOffset(photoData[index], 'x', Number($('#form-offset-x').value), layoutScope);
