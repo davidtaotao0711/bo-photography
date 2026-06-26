@@ -9,9 +9,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "images:generate": "node scripts/generate-responsive-images.mjs",
-    "import:photos": "node scripts/import-photos.mjs"
+    "import:photos": "node scripts/import-photos.mjs",
+    "compress:images": "node scripts/compress-images.mjs"
   },
   "dependencies": {
-    "astro": "^5.0.0"
+    "astro": "^5.0.0",
+    "sharp": "^0.35.2"
   }
 }

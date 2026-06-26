@@ -767,21 +767,34 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 012",
+<<<<<<< HEAD
     "categoryLayoutWidth": 80,
+=======
+    "categoryLayoutWidth": 63,
+    "detailScale": 80,
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0,
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "categoryRowSize": 1
   },
   {
-    "id": "scenes-017",
-    "title": "No. 94",
+    "id": "scenes-058",
+    "title": "No. 46",
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/scenes/scenes-017.jpg",
+    "image": "/images/scenes/scenes-058.jpg",
     "featured": false,
     "orientation": "landscape",
+<<<<<<< HEAD
     "alt": "Scene photograph: scenes 017",
     "categoryRowSize": 2
+=======
+    "alt": "Scenes photograph by Bo David",
+    "categoryLayoutWidth": 75,
+    "categoryRowSize": 1
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
   },
   {
     "id": "scenes-039",
@@ -796,6 +809,22 @@
     "alt": "Scene photograph: scenes 039"
   },
   {
+<<<<<<< HEAD
+=======
+    "id": "scenes-017",
+    "title": "No. 94",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-017.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 017",
+    "categoryRowSize": 2
+  },
+  {
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "id": "scenes-008",
     "title": "No. 85",
     "category": "scenes",
@@ -821,6 +850,21 @@
     "categoryRowSize": 3
   },
   {
+<<<<<<< HEAD
+=======
+    "id": "scenes-020",
+    "title": "No. 97",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-020.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 020"
+  },
+  {
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "id": "scenes-015",
     "title": "No. 92",
     "category": "scenes",
@@ -845,8 +889,26 @@
     "alt": "Scene photograph: scenes 016"
   },
   {
+<<<<<<< HEAD
     "id": "scenes-055",
     "title": "No. 132",
+=======
+    "id": "scenes-021",
+    "title": "No. 98",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-021.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 021",
+    "categoryRowSize": 2
+  },
+  {
+    "id": "scenes-050",
+    "title": "No. 127",
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "category": "scenes",
     "series": "",
     "location": "",
@@ -854,19 +916,34 @@
     "image": "/images/scenes/scenes-055.jpg",
     "featured": false,
     "orientation": "landscape",
+<<<<<<< HEAD
     "alt": "Scene photograph: scenes 055"
   },
   {
     "id": "scenes-051",
     "title": "No. 128",
+=======
+    "alt": "Scene photograph: scenes 050"
+  },
+  {
+    "id": "scenes-026",
+    "title": "No. 103",
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
+<<<<<<< HEAD
     "image": "/images/scenes/scenes-051.jpg",
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 051",
+=======
+    "image": "/images/scenes/scenes-026.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 026",
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "categoryRowSize": 2
   },
   {
@@ -883,6 +960,18 @@
     "categoryRowSize": 3
   },
   {
+    "id": "scenes-051",
+    "title": "No. 128",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-051.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 051"
+  },
+  {
     "id": "scenes-011",
     "title": "No. 88",
     "category": "scenes",
@@ -892,7 +981,11 @@
     "image": "/images/scenes/scenes-011.jpg",
     "featured": false,
     "orientation": "landscape",
+<<<<<<< HEAD
     "alt": "Scene photograph: scenes 011"
+=======
+    "alt": "Scene photograph: scenes 011",
+    "categoryRowSize": 2
   },
   {
     "id": "scenes-035",
@@ -907,12 +1000,48 @@
     "alt": "Scene photograph: scenes 035"
   },
   {
+    "id": "scenes-023",
+    "title": "No. 100",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-023.jpg",
+    "featured": true,
+    "homeTitle": "Elsewhere",
+    "homeCaption": "A quiet frame from the edge of a longer walk.",
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 023",
+    "layoutOffsetX": -4,
+    "layoutOffsetY": 4,
+    "layoutWidth": 92
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
+  },
+  {
     "id": "scenes-018",
     "title": "No. 95",
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
+    "image": "/images/scenes/scenes-018.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scene photograph: scenes 018"
+  },
+  {
+<<<<<<< HEAD
+    "id": "scenes-018",
+    "title": "No. 95",
+=======
+    "id": "scenes-041",
+    "title": "No. 118",
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+<<<<<<< HEAD
     "image": "/images/scenes/scenes-018.jpg",
     "featured": false,
     "orientation": "portrait",
@@ -929,6 +1058,12 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 045",
+=======
+    "image": "/images/scenes/scenes-041.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 041",
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "categoryRowSize": 2
   },
   {
@@ -994,16 +1129,16 @@
     "alt": "Scene photograph: scenes 040"
   },
   {
-    "id": "scenes-031",
-    "title": "No. 108",
+    "id": "scenes-055",
+    "title": "No. 132",
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/scenes/scenes-031.jpg",
+    "image": "/images/scenes/scenes-055.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 031"
+    "alt": "Scene photograph: scenes 055"
   },
   {
     "id": "scenes-043",
@@ -1018,6 +1153,19 @@
     "alt": "Scene photograph: scenes 043"
   },
   {
+    "id": "scenes-031",
+    "title": "No. 108",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-031.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 031",
+    "categoryRowSize": 2
+  },
+  {
     "id": "scenes-044",
     "title": "No. 121",
     "category": "scenes",
@@ -1027,10 +1175,25 @@
     "image": "/images/scenes/scenes-044.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Scene photograph: scenes 044",
+    "alt": "Scene photograph: scenes 044"
+  },
+  {
+<<<<<<< HEAD
+=======
+    "id": "scenes-045",
+    "title": "No. 122",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-045.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 045",
     "categoryRowSize": 2
   },
   {
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "id": "scenes-047",
     "title": "No. 124",
     "category": "scenes",
@@ -1041,6 +1204,7 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 047"
+<<<<<<< HEAD
   },
   {
     "id": "scenes-048",
@@ -1072,6 +1236,8 @@
     "categoryLayoutWidth": 100,
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": -3
+=======
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
   },
   {
     "id": "scenes-046",
@@ -1105,18 +1271,31 @@
     "categoryLayoutWidth": 75
   },
   {
+<<<<<<< HEAD
     "id": "scenes-050",
     "title": "No. 127",
+=======
+    "id": "scenes-048",
+    "title": "No. 125",
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
+<<<<<<< HEAD
     "image": "/images/scenes/scenes-050.jpg",
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 050",
     "categoryLayoutWidth": 80,
     "categoryRowSize": 1
+=======
+    "image": "/images/scenes/scenes-048.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 048",
+    "categoryRowSize": 2
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
   },
   {
     "id": "b-and-w-001",
@@ -1324,10 +1503,15 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
+<<<<<<< HEAD
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 1,
     "categoryLayoutWidth": 75,
     "categoryRowSize": 1
+=======
+    "categoryRowSize": 1,
+    "categoryLayoutWidth": 72
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
   },
   {
     "id": "nature-002",
@@ -1340,6 +1524,7 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
+<<<<<<< HEAD
     "categoryLayoutWidth": 75,
     "categoryRowSize": 1
   },
@@ -1408,6 +1593,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David"
+=======
+    "categoryRowSize": 1,
+    "categoryLayoutWidth": 72
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
   },
   {
     "id": "nature-003",
@@ -1420,6 +1609,7 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
+<<<<<<< HEAD
     "categoryRowSize": 2
   },
   {
@@ -1625,10 +1815,19 @@
   {
     "id": "scenes-061",
     "title": "No. 37",
+=======
+    "categoryRowSize": 1,
+    "categoryLayoutWidth": 72
+  },
+  {
+    "id": "scenes-049",
+    "title": "No. 126",
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
     "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
+<<<<<<< HEAD
     "image": "/images/scenes/scenes-061.jpg",
     "featured": false,
     "orientation": "landscape",
@@ -1724,5 +1923,11 @@
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
     "categoryLayoutWidth": 90
+=======
+    "image": "/images/scenes/scenes-049.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scene photograph: scenes 049"
+>>>>>>> 86aab745afb8e4a1e5c9b286cb7e53c086ac4c93
   }
 ]

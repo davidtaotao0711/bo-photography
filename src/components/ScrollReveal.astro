@@ -6,15 +6,21 @@
     document.documentElement.classList.add('has-scroll-reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-revealed');
-        observer.unobserve(entry.target);
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+        } else {
+          entry.target.classList.remove('is-revealed');
+        }
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    }, { rootMargin: '-6% 0px -12% 0px', threshold: 0.12 });
 
-    items.forEach((item, index) => {
-      item.style.setProperty('--reveal-delay', `${(index % 6) * 55}ms`);
-      observer.observe(item);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        items.forEach((item, index) => {
+          item.style.setProperty('--reveal-delay', `${(index % 6) * 120}ms`);
+          observer.observe(item);
+        });
+      });
     });
   } else {
     items.forEach((item) => item.classList.add('is-revealed'));

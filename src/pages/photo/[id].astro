@@ -9,17 +9,26 @@ export function getStaticPaths() {
 }
 
 const { photo } = Astro.props;
-const categoryUrl = `/portfolio/${photo.category}`;
+const categoryUrl = photo.series ? `/series/${photo.series}` : `/portfolio/${photo.category}`;
+const backLabel = photo.series || photo.category;
+const detailScale = Number.isFinite(Number(photo.detailScale))
+  ? Math.min(140, Math.max(60, Number(photo.detailScale)))
+  : 100;
+const detailStyle = [
+  `--detail-width:${(94 * detailScale) / 100}vw`,
+  `--detail-portrait-width:${(74 * detailScale) / 100}vw`,
+  `--detail-portrait-max:${(980 * detailScale) / 100}px`,
+].join('; ');
 ---
 
 <BaseLayout title={`${photo.title} — ${site.name}`} description={photo.alt}>
-  <article class="photo-detail page-shell">
-    <a class="back-link" href={categoryUrl}>← {photo.category}</a>
-    <figure class:list={["photo-detail__figure", `photo-detail__figure--${photo.orientation}`]}>
+  <article class="photo-detail page-shell" data-photo-detail data-fallback-url={categoryUrl}>
+    <a class="back-link" href={categoryUrl} data-photo-back>← {backLabel}</a>
+    <figure class:list={["photo-detail__figure", `photo-detail__figure--${photo.orientation}`]} style={detailStyle}>
       <ResponsiveImage
         src={photo.image}
         alt={photo.alt}
-        sizes={photo.orientation === 'portrait' ? '(max-width: 720px) 100vw, 58vw' : '82vw'}
+        sizes={photo.orientation === 'portrait' ? '(max-width: 720px) 94vw, 74vw' : '96vw'}
       />
       <figcaption>
         <h1>{photo.title}</h1>
@@ -28,3 +37,24 @@ const categoryUrl = `/portfolio/${photo.category}`;
     </figure>
   </article>
 </BaseLayout>
+
+<script>
+  const detail = document.querySelector('[data-photo-detail]');
+  const backControl = document.querySelector('[data-photo-back]');
+
+  const goBack = (event) => {
+    event?.preventDefault();
+    const fallbackUrl = detail?.getAttribute('data-fallback-url') || '/portfolio';
+    if (window.history.length > 1 && document.referrer && new URL(document.referrer).origin === window.location.origin) {
+      window.history.back();
+      return;
+    }
+    window.location.href = fallbackUrl;
+  };
+
+  backControl?.addEventListener('click', goBack);
+  detail?.addEventListener('click', (event) => {
+    if (event.target.closest('.photo-detail__figure, [data-photo-back]')) return;
+    goBack(event);
+  });
+</script>

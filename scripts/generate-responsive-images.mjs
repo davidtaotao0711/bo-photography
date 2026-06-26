@@ -7,6 +7,7 @@ const sourceRoot = path.join(root, 'public', 'images');
 const outputRoot = path.join(sourceRoot, 'generated');
 const manifestPath = path.join(root, 'src', 'data', 'image-manifest.json');
 const targetWidths = [480, 800, 1200, 1600];
+const heroTargetWidths = [960, 1600, 2400, 3200, 3840];
 const sourceExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const exists = async (filePath) => {
   try {
@@ -52,19 +53,24 @@ for (const file of files) {
   if (!width || !height) continue;
 
   const relative = path.relative(sourceRoot, file);
-  const usableWidths = targetWidths.filter((targetWidth) => targetWidth < width);
-  const largestGeneratedWidth = Math.min(width, 1600);
+  const normalizedRelative = relative.replace(/\\/g, '/');
+  const isHomeCover = normalizedRelative === 'home/cover.jpg';
+  const widthsForImage = isHomeCover ? heroTargetWidths : targetWidths;
+  const maxGeneratedWidth = isHomeCover ? 3840 : 1600;
+  const webpQuality = isHomeCover ? 90 : 76;
+  const usableWidths = widthsForImage.filter((targetWidth) => targetWidth < width);
+  const largestGeneratedWidth = Math.min(width, maxGeneratedWidth);
   if (!usableWidths.includes(largestGeneratedWidth)) usableWidths.push(largestGeneratedWidth);
 
   const variants = [];
   for (const targetWidth of [...new Set(usableWidths)].sort((a, b) => a - b)) {
     const outputName = toOutputName(relative, targetWidth);
     const outputPath = path.join(outputRoot, outputName);
-    if (!await exists(outputPath)) {
+    if (isHomeCover || !await exists(outputPath)) {
       await sharp(file)
         .rotate()
         .resize({ width: targetWidth, withoutEnlargement: true })
-        .webp({ quality: 76, effort: 3 })
+        .webp({ quality: webpQuality, effort: isHomeCover ? 5 : 3 })
         .toFile(outputPath);
     }
 

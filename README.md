@@ -331,3 +331,58 @@ vercel
 - 优先使用 WebP 或 AVIF；JPG 品质建议约 75–85。
 - 使用一致的色彩空间（推荐 sRGB）。
 - 同一系列尽量保持接近的色调与明暗关系。
+## 本地压缩原始照片
+
+这个功能用来先把相机原图压成适合网站展示的图片。原始照片不会被覆盖，压缩后的图片会输出到单独文件夹。
+
+### 使用步骤
+
+1. 把原图复制到：
+
+```text
+import/originals/
+```
+
+2. 在项目文件夹打开终端，运行：
+
+```bash
+npm run compress:images
+```
+
+3. 压缩完成后，检查输出文件夹：
+
+```text
+import/compressed/
+```
+
+脚本会扫描 `import/originals/` 里的 JPG、JPEG、PNG、WebP。小于等于 1MB 的 JPG 会直接复制；更大的图片会限制长边到 2400px，并从 85 质量开始尝试压缩。如果还超过 1MB，会依次尝试 80、75、70、68，尽量保持画质，不会为了体积把照片压得太差。输出文件统一是 `.jpg`。
+
+4. 确认压缩效果后，把 `import/compressed/` 里的图片复制到对应的网站图片文件夹：
+
+```text
+public/images/street/
+public/images/portrait/
+public/images/scenes/
+public/images/nature/
+public/images/series/[series-slug]/
+```
+
+5. 运行批量导入，让网站记录这些新图片：
+
+```bash
+npm run import:photos
+```
+
+6. 本地检查构建：
+
+```bash
+npm run build
+```
+
+7. 确认没问题后提交并推送，Vercel 会自动上线：
+
+```bash
+git add .
+git commit -m "Add new photos"
+git push
+```

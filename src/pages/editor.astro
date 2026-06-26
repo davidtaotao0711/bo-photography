@@ -186,6 +186,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             </select>
           </label>
           <label>显示尺寸（%）<input id="form-layout-width" type="number" min="45" max="200" step="1" required /></label>
+          <label>点开尺寸（%）<input id="form-detail-scale" type="number" min="60" max="140" step="1" required /></label>
           <label>水平位置（%）<input id="form-offset-x" type="number" min="-80" max="80" step="1" required /></label>
           <label>垂直位置（%）<input id="form-offset-y" type="number" min="-80" max="80" step="1" required /></label>
           <label>地点<input id="form-location" /></label>
@@ -747,6 +748,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#form-category').value = photo.category;
         $('#form-orientation').value = photo.orientation;
         $('#form-layout-width').value = String(getLayoutWidth(photo, layoutScope));
+        $('#form-detail-scale').value = String(Number.isFinite(Number(photo.detailScale)) ? Math.min(140, Math.max(60, Math.round(Number(photo.detailScale)))) : 100);
         $('#form-offset-x').value = String(getLayoutOffset(photo, 'x', layoutScope));
         $('#form-offset-y').value = String(getLayoutOffset(photo, 'y', layoutScope));
         $('#form-layout-width').disabled = layoutLocked;
@@ -788,6 +790,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           image: $('#form-image').value.trim(),
           featured: $('#form-featured').checked,
           orientation: $('#form-orientation').value,
+          detailScale: Math.min(140, Math.max(60, Math.round(Number($('#form-detail-scale').value) || 100))),
           alt: $('#form-alt').value.trim(),
         };
         if (layoutScope) {

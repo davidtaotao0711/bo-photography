@@ -198,24 +198,28 @@
     ]
   },
   "/images/home/cover.jpg": {
-    "width": 5400,
-    "height": 3571,
+    "width": 5813,
+    "height": 3844,
     "variants": [
       {
-        "width": 480,
-        "src": "/images/generated/home__cover-480.webp"
-      },
-      {
-        "width": 800,
-        "src": "/images/generated/home__cover-800.webp"
-      },
-      {
-        "width": 1200,
-        "src": "/images/generated/home__cover-1200.webp"
+        "width": 960,
+        "src": "/images/generated/home__cover-960.webp"
       },
       {
         "width": 1600,
         "src": "/images/generated/home__cover-1600.webp"
+      },
+      {
+        "width": 2400,
+        "src": "/images/generated/home__cover-2400.webp"
+      },
+      {
+        "width": 3200,
+        "src": "/images/generated/home__cover-3200.webp"
+      },
+      {
+        "width": 3840,
+        "src": "/images/generated/home__cover-3840.webp"
       }
     ]
   },
@@ -652,6 +656,28 @@
       {
         "width": 1600,
         "src": "/images/generated/portrait__portrait-019-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-020.jpg": {
+    "width": 5578,
+    "height": 2756,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-020-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-020-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-020-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-020-1600.webp"
       }
     ]
   },
