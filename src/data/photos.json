@@ -1421,7 +1421,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "categoryLayoutWidth": 78,
+    "categoryLayoutWidth": 80,
     "categoryLayoutOffsetX": 1,
     "categoryLayoutOffsetY": -1,
     "categoryRowSize": 2
@@ -1436,7 +1436,8 @@
     "image": "/images/portrait/portrait-021.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph by Bo David"
+    "alt": "Portrait photograph by Bo David",
+    "categoryLayoutWidth": 80
   },
   {
     "id": "portrait-025",
