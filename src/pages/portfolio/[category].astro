@@ -23,6 +23,19 @@ const rows = useOrientationRows
       items: row.items.map((photo) => ({ photo, number: ++displayNumber })),
     }))
   : [];
+const lightboxItems = useOrientationRows
+  ? rows.flatMap((row) => row.items)
+  : items.map((photo, index) => ({ photo, number: index + 1 }));
+const lightboxData = lightboxItems.map(({ photo, number }) => ({
+  id: photo.id,
+  title: photo.title,
+  image: photo.image,
+  alt: photo.alt,
+  orientation: photo.orientation,
+  location: photo.location,
+  date: photo.date,
+  number,
+}));
 ---
 
 <BaseLayout title={`${title} — ${site.name}`}>
@@ -41,5 +54,112 @@ const rows = useOrientationRows
       </div>
     )) : items.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 3} layoutScope="category" reveal />)}
   </section>
+  <div class="photo-lightbox" data-photo-lightbox hidden aria-hidden="true">
+    <button class="photo-lightbox__close" type="button" data-lightbox-close aria-label="Close image">×</button>
+    <button class="photo-lightbox__zone photo-lightbox__zone--prev" type="button" data-lightbox-prev aria-label="Previous image">
+      <span>←</span>
+    </button>
+    <figure class="photo-lightbox__figure" data-lightbox-figure>
+      <img class="photo-lightbox__image" data-lightbox-image alt="" />
+      <figcaption class="photo-lightbox__caption">
+        <span data-lightbox-title></span>
+        <span data-lightbox-meta></span>
+      </figcaption>
+    </figure>
+    <button class="photo-lightbox__zone photo-lightbox__zone--next" type="button" data-lightbox-next aria-label="Next image">
+      <span>→</span>
+    </button>
+  </div>
+  <script type="application/json" id="category-lightbox-data" set:html={JSON.stringify(lightboxData)}></script>
   <ScrollReveal />
 </BaseLayout>
+
+<script>
+  const dataNode = document.querySelector('#category-lightbox-data');
+  const lightbox = document.querySelector('[data-photo-lightbox]');
+  const figure = document.querySelector('[data-lightbox-figure]');
+  const image = document.querySelector('[data-lightbox-image]');
+  const title = document.querySelector('[data-lightbox-title]');
+  const meta = document.querySelector('[data-lightbox-meta]');
+  const closeButton = document.querySelector('[data-lightbox-close]');
+  const prevButton = document.querySelector('[data-lightbox-prev]');
+  const nextButton = document.querySelector('[data-lightbox-next]');
+  const cards = Array.from(document.querySelectorAll('.gallery .photo-card'));
+  const links = cards.map((card) => card.querySelector('a'));
+  const photos = dataNode ? JSON.parse(dataNode.textContent || '[]') : [];
+  let currentIndex = 0;
+  let previousFocus = null;
+
+  const currentPhoto = () => photos[currentIndex];
+  const photoCard = (index) => {
+    const id = photos[index]?.id;
+    return id ? document.querySelector(`.gallery .photo-card[data-photo-id="${CSS.escape(id)}"]`) : cards[index];
+  };
+
+  const setImage = (index, animate = true) => {
+    if (!photos.length) return;
+    currentIndex = (index + photos.length) % photos.length;
+    const photo = currentPhoto();
+    if (!photo) return;
+
+    figure.classList.toggle('photo-lightbox__figure--portrait', photo.orientation === 'portrait');
+    figure.classList.toggle('is-changing', animate);
+
+    window.setTimeout(() => {
+      image.src = photo.image;
+      image.alt = photo.alt || photo.title || '';
+      title.textContent = `No. ${String(photo.number).padStart(2, '0')}`;
+      meta.textContent = [photo.location, String(photo.date || '').slice(0, 4)].filter(Boolean).join(' · ');
+    }, animate ? 90 : 0);
+  };
+
+  image.addEventListener('load', () => {
+    figure.classList.remove('is-changing');
+  });
+
+  const openLightbox = (index, trigger) => {
+    previousFocus = trigger || document.activeElement;
+    lightbox.hidden = false;
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('lightbox-open');
+    setImage(index, false);
+    requestAnimationFrame(() => {
+      lightbox.classList.add('is-open');
+      closeButton.focus({ preventScroll: true });
+    });
+  };
+
+  const closeLightbox = () => {
+    const targetCard = photoCard(currentIndex);
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('lightbox-open');
+    window.setTimeout(() => {
+      lightbox.hidden = true;
+      targetCard?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      previousFocus?.focus?.({ preventScroll: true });
+    }, 260);
+  };
+
+  links.forEach((link, index) => {
+    if (!link) return;
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      openLightbox(index, link);
+    });
+  });
+
+  closeButton.addEventListener('click', closeLightbox);
+  prevButton.addEventListener('click', () => setImage(currentIndex - 1));
+  nextButton.addEventListener('click', () => setImage(currentIndex + 1));
+  lightbox.addEventListener('click', (event) => {
+    if (event.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (lightbox.hidden) return;
+    if (event.key === 'Escape') closeLightbox();
+    if (event.key === 'ArrowLeft') setImage(currentIndex - 1);
+    if (event.key === 'ArrowRight') setImage(currentIndex + 1);
+  });
+</script>
