@@ -1,0 +1,73 @@
+---
+import PhotoCard from './PhotoCard.astro';
+import { normalizeCollageLayout } from '../utils/collage-layout.js';
+
+interface Props {
+  photos: any[];
+  class?: string;
+  reveal?: boolean;
+}
+
+const { photos, class: className, reveal = true } = Astro.props;
+---
+
+<div class:list={['collage-gallery', className]} data-masonry-gallery>
+  {photos.map((photo, index) => (
+    <PhotoCard
+      photo={photo}
+      number={index + 1}
+      eager={index < 3}
+      layoutScope="none"
+      layout={normalizeCollageLayout(photo)}
+      collage
+      reveal={reveal}
+    />
+  ))}
+</div>
+
+<script>
+  const mobileLayout = window.matchMedia('(max-width: 720px)');
+
+  function packGallery(gallery) {
+    const cards = Array.from(gallery.querySelectorAll(':scope > .photo-card'));
+    cards.forEach((card) => card.style.removeProperty('grid-row-end'));
+
+    if (mobileLayout.matches) {
+      gallery.classList.add('is-packed');
+      return;
+    }
+
+    void gallery.offsetWidth;
+    const rowSpans = cards.map((card) => Math.max(1, card.offsetHeight));
+    cards.forEach((card, index) => {
+      card.style.gridRowEnd = `span ${rowSpans[index]}`;
+    });
+    gallery.classList.add('is-packed');
+  }
+
+  function setupGallery(gallery) {
+    let frame = 0;
+    let lastWidth = 0;
+    const schedule = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => packGallery(gallery));
+    };
+
+    gallery.querySelectorAll('img').forEach((image) => {
+      if (!image.complete) image.addEventListener('load', schedule, { once: true });
+    });
+
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      const width = Math.round(entry.contentRect.width);
+      if (width === lastWidth) return;
+      lastWidth = width;
+      schedule();
+    });
+    resizeObserver.observe(gallery);
+    mobileLayout.addEventListener('change', schedule);
+    document.fonts?.ready.then(schedule);
+    schedule();
+  }
+
+  document.querySelectorAll('[data-masonry-gallery]').forEach(setupGallery);
+</script>

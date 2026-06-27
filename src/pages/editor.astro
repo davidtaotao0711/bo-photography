@@ -35,7 +35,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         <div class="sidebar-heading">
           <p class="eyebrow">Layout studio</p>
           <h1>排版<br />编辑器</h1>
-          <p>首页与各分类页都可以独立拖动、缩放和调整照片。所有操作只发生在你的电脑上。</p>
+          <p>首页保持原有排版；作品页使用稳定的 12 列隐形网格调整顺序、尺寸和裁切。所有操作只发生在你的电脑上。</p>
         </div>
 
         <div class="field-group">
@@ -62,11 +62,11 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         <div class="help">
           <p class="eyebrow">使用方法</p>
           <ol>
-            <li>在首页或分类中按住照片自由移动</li>
-            <li>使用上下箭头改变前后顺序</li>
-            <li>点尺寸按钮或拖右下角缩放</li>
+            <li>在作品页拖动照片即可调整顺序</li>
+            <li>选择照片后使用 S / M / L / W / T / Full</li>
+            <li>所有尺寸都会吸附到隐形 12 列网格</li>
             <li>点击照片编辑属性</li>
-            <li>Street / Scenes / Nature 会按横竖方向自动成行</li>
+            <li>Street / Portrait / Scenes / Nature 与 Series 共用同一套拼贴规则</li>
             <li>进入分类页后可一次添加单张或多张照片</li>
             <li>Series 先新建影集，再进入影集上传与选择封面</li>
             <li>删除只移除网站记录，不删除磁盘原图</li>
@@ -101,6 +101,29 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
               <span class="add-photos__icon" aria-hidden="true">+</span>
               <span>New Series</span>
             </button>
+          </div>
+        </div>
+        <div id="layout-toolbar" class="layout-toolbar" hidden>
+          <div class="layout-toolbar__selection">
+            <span>Selected photo</span>
+            <strong id="layout-selection">选择一张照片调整版面</strong>
+          </div>
+          <div class="layout-toolbar__controls" aria-label="照片尺寸预设">
+            <div class="layout-toolbar__presets">
+              <button type="button" data-layout-preset="S">S</button>
+              <button type="button" data-layout-preset="M">M</button>
+              <button type="button" data-layout-preset="L">L</button>
+              <button type="button" data-layout-preset="W">W</button>
+              <button type="button" data-layout-preset="T">T</button>
+              <button type="button" data-layout-preset="Full">Full</button>
+            </div>
+            <div class="layout-toolbar__crop">
+              <button type="button" data-layout-crop>Crop</button>
+            </div>
+            <div class="layout-toolbar__fit">
+              <button type="button" data-layout-fit="contain">Contain</button>
+              <button type="button" data-layout-fit="cover">Cover</button>
+            </div>
           </div>
         </div>
 
@@ -141,7 +164,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
                 <button class="button" id="edit-active-series" type="button">Edit Series</button>
               </div>
             </header>
-            <div class="series-layout-toolbar">
+            <div class="series-layout-toolbar" hidden>
               <div>
                 <button class="text-button" id="add-portrait-row" type="button">+ Portrait Row</button>
                 <button class="text-button" id="add-landscape-row" type="button">+ Landscape Row</button>
@@ -185,10 +208,25 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
               <option value="portrait">竖图</option>
             </select>
           </label>
-          <label>显示尺寸（%）<input id="form-layout-width" type="number" min="45" max="200" step="1" required /></label>
+          <div class="form-grid-sub full" id="legacy-layout-fields">
+            <label>显示尺寸（%）<input id="form-layout-width" type="number" min="45" max="200" step="1" required /></label>
+            <label>水平位置（%）<input id="form-offset-x" type="number" min="-80" max="80" step="1" required /></label>
+            <label>垂直位置（%）<input id="form-offset-y" type="number" min="-80" max="80" step="1" required /></label>
+          </div>
+          <div class="form-grid-sub full" id="collage-layout-fields" hidden>
+            <label>占用列数<input id="form-col-span" type="number" min="3" max="12" step="1" /></label>
+            <label class="toggle"><input id="form-crop" type="checkbox" /><span aria-hidden="true"></span>裁切模式</label>
+            <label id="form-row-span-field">裁切比例高度<input id="form-row-span" type="number" min="3" max="8" step="1" /></label>
+            <label>图片适配
+              <select id="form-fit">
+                <option value="contain">Contain</option>
+                <option value="cover">Cover</option>
+              </select>
+            </label>
+            <label>水平焦点（%）<input id="form-focal-x" type="number" min="0" max="100" step="1" /></label>
+            <label>垂直焦点（%）<input id="form-focal-y" type="number" min="0" max="100" step="1" /></label>
+          </div>
           <label>点开尺寸（%）<input id="form-detail-scale" type="number" min="60" max="140" step="1" required /></label>
-          <label>水平位置（%）<input id="form-offset-x" type="number" min="-80" max="80" step="1" required /></label>
-          <label>垂直位置（%）<input id="form-offset-y" type="number" min="-80" max="80" step="1" required /></label>
           <label>地点<input id="form-location" /></label>
           <label>日期<input id="form-date" /></label>
           <label>所属系列<input id="form-series" placeholder="没有可留空" /></label>
@@ -318,6 +356,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
     <script>
       import { buildOrientationRows } from '../utils/photo-layout.js';
+      import { collageLayoutPresets, normalizeCollageLayout, sortPhotosByOrder } from '../utils/collage-layout.js';
 
       const initialNode = document.querySelector('#initial-photos');
       const initialSeriesNode = document.querySelector('#initial-series');
@@ -333,6 +372,8 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       let layoutDraftSlug = '';
       let layoutDraftRows = [];
       let layoutDirty = false;
+      let selectedLayoutPhotoId = '';
+      let draggedLayoutPhotoId = '';
       const history = [];
       const maxRecommendedFileSize = 5 * 1024 * 1024;
       const photoCategories = photoCategoryConfig.map((category) => category.slug);
@@ -357,6 +398,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       const seriesDialog = document.querySelector('#series-dialog');
       const seriesEditDialog = document.querySelector('#series-edit-dialog');
       const seriesDeleteDialog = document.querySelector('#series-delete-dialog');
+      const layoutToolbar = document.querySelector('#layout-toolbar');
 
       const savedView = sessionStorage.getItem('editorView');
       if (['featured', 'all', ...photoCategories, 'series'].includes(savedView)) viewFilter.value = savedView;
@@ -387,14 +429,150 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         showToast.timer = window.setTimeout(() => toast.classList.remove('is-visible'), 2400);
       }
 
+      const editorMasonryMedia = window.matchMedia('(max-width: 620px)');
+      const editorMasonryFrames = new WeakMap();
+
+      function packEditorMasonry(container) {
+        const cards = Array.from(container.querySelectorAll(':scope > .editor-card--collage'));
+        cards.forEach((card) => card.style.removeProperty('grid-row-end'));
+        if (editorMasonryMedia.matches) return;
+
+        void container.offsetWidth;
+        const rowSpans = cards.map((card) => Math.max(1, card.offsetHeight));
+        cards.forEach((card, index) => {
+          card.style.gridRowEnd = `span ${rowSpans[index]}`;
+        });
+      }
+
+      function scheduleEditorMasonry(container) {
+        if (!container) return;
+        const previousFrame = editorMasonryFrames.get(container);
+        if (previousFrame) window.cancelAnimationFrame(previousFrame);
+        container.querySelectorAll('img').forEach((image) => {
+          if (!image.complete && image.dataset.masonryBound !== 'true') {
+            image.dataset.masonryBound = 'true';
+            image.addEventListener('load', () => scheduleEditorMasonry(container), { once: true });
+          }
+        });
+        editorMasonryFrames.set(container, window.requestAnimationFrame(() => {
+          editorMasonryFrames.delete(container);
+          packEditorMasonry(container);
+        }));
+      }
+
       function getVisiblePhotos() {
         const filter = viewFilter.value;
         const query = searchInput.value.trim().toLowerCase();
-        return photoData.filter((photo) => {
+        const visible = photoData.filter((photo) => {
           const matchesView = filter === 'all' || (filter === 'featured' ? photo.featured : photo.category === filter);
           const haystack = [photo.id, photo.title, photo.location, photo.series, photo.alt].join(' ').toLowerCase();
           return matchesView && (!query || haystack.includes(query));
         });
+        return photoCategories.includes(filter) ? sortPhotosByOrder(visible) : visible;
+      }
+
+      function isCollageContext() {
+        return photoCategories.includes(viewFilter.value) || (viewFilter.value === 'series' && Boolean(activeSeriesSlug));
+      }
+
+      function currentCollagePhotos() {
+        if (photoCategories.includes(viewFilter.value)) {
+          return sortPhotosByOrder(photoData.filter((photo) => photo.category === viewFilter.value));
+        }
+        if (viewFilter.value === 'series' && activeSeriesSlug) return photosForSeries(activeSeriesSlug);
+        return [];
+      }
+
+      function saveableLayout(photo) {
+        const layout = normalizeCollageLayout(photo);
+        return {
+          colSpan: layout.colSpan,
+          rowSpan: layout.rowSpan,
+          crop: layout.crop,
+          fit: layout.fit,
+          focalX: layout.focalX,
+          focalY: layout.focalY,
+        };
+      }
+
+      function setPhotoLayout(photo, values) {
+        photo.layout = saveableLayout({ ...photo, layout: { ...saveableLayout(photo), ...values } });
+      }
+
+      function presetName(layout) {
+        return Object.entries(collageLayoutPresets)
+          .find(([, preset]) => preset.colSpan === layout.colSpan)?.[0] || '';
+      }
+
+      function updateLayoutToolbar() {
+        const isVisible = isCollageContext();
+        layoutToolbar.hidden = !isVisible;
+        if (!isVisible) return;
+
+        const photo = currentCollagePhotos().find((item) => item.id === selectedLayoutPhotoId);
+        const selection = $('#layout-selection');
+        const buttons = layoutToolbar.querySelectorAll('[data-layout-preset], [data-layout-fit], [data-layout-crop]');
+        buttons.forEach((button) => {
+          button.disabled = !photo;
+          button.classList.remove('is-active');
+        });
+        document.querySelectorAll('.editor-card.is-selected').forEach((card) => card.classList.remove('is-selected'));
+
+        if (!photo) {
+          selection.textContent = '选择一张照片调整版面';
+          return;
+        }
+
+        const layout = normalizeCollageLayout(photo);
+        selection.textContent = `${photo.title || photo.id} · ${layout.colSpan} columns · ${layout.crop ? `Crop ${layout.rowSpan}` : 'Natural ratio'}`;
+        document.querySelectorAll(`.editor-card[data-id="${CSS.escape(photo.id)}"]`).forEach((card) => card.classList.add('is-selected'));
+        layoutToolbar.querySelector(`[data-layout-preset="${presetName(layout)}"]`)?.classList.add('is-active');
+        layoutToolbar.querySelector('[data-layout-crop]')?.classList.toggle('is-active', layout.crop);
+        layoutToolbar.querySelectorAll('[data-layout-fit]').forEach((button) => {
+          button.disabled = !layout.crop;
+          button.classList.toggle('is-active', layout.crop && button.dataset.layoutFit === layout.fit);
+        });
+      }
+
+      function selectLayoutPhoto(id) {
+        selectedLayoutPhotoId = id;
+        updateLayoutToolbar();
+      }
+
+      function collageEditorCard(photo, index, cover = '') {
+        const layout = normalizeCollageLayout(photo);
+        const isSeriesPhoto = viewFilter.value === 'series';
+        const isCover = Boolean(cover && photo.image === cover);
+        const preset = presetName(layout) || `${layout.colSpan}×${layout.rowSpan}`;
+        const scopeItems = currentCollagePhotos();
+        const scopeIndex = scopeItems.findIndex((item) => item.id === photo.id);
+        return `
+          <article
+            class="editor-card editor-card--collage ${layout.crop ? 'editor-card--cropped' : ''} ${selectedLayoutPhotoId === photo.id ? 'is-selected' : ''}"
+            data-id="${escapeHtml(photo.id)}"
+            style="--editor-col-span:${layout.colSpan}; --editor-aspect:${layout.colSpan}/${layout.rowSpan}; --editor-fit:${layout.fit}; --editor-focal-x:${layout.focalX}%; --editor-focal-y:${layout.focalY}%"
+          >
+            <div class="editor-card__image" data-layout-select>
+              <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" loading="lazy" />
+              <span class="card-badge">${String(index + 1).padStart(2, '0')}</span>
+              ${isCover ? '<span class="cover-badge">Cover</span>' : ''}
+              ${isSeriesPhoto ? '' : `
+                <button class="favorite ${photo.featured ? 'is-active' : ''}" type="button" data-action="featured" aria-label="${photo.featured ? '取消首页精选' : '加入首页精选'}" title="首页精选">★</button>
+                <button class="delete-control" type="button" data-action="delete" aria-label="删除照片" title="从网站中删除">×</button>
+              `}
+            </div>
+            <div class="editor-card__footer">
+              <button class="editor-card__meta" type="button" data-action="edit">
+                <span><strong>${escapeHtml(photo.title || photo.id)}</strong>${escapeHtml(preset)} · ${layout.crop ? `crop ${escapeHtml(layout.fit)}` : 'natural'}</span>
+                <span>编辑</span>
+              </button>
+              <div class="collage-order-controls" aria-label="调整照片顺序">
+                <button type="button" data-action="up" aria-label="与前一张交换" title="与前一张交换" ${scopeIndex <= 0 ? 'disabled' : ''}>←</button>
+                <button type="button" data-action="down" aria-label="与后一张交换" title="与后一张交换" ${scopeIndex < 0 || scopeIndex === scopeItems.length - 1 ? 'disabled' : ''}>→</button>
+              </div>
+              ${isSeriesPhoto && !isCover ? `<button class="cover-control" type="button" data-cover-image="${escapeHtml(photo.image)}">Set cover</button>` : ''}
+            </div>
+          </article>`;
       }
 
       function getLayoutScope() {
@@ -525,37 +703,9 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       }
 
       function renderSeriesRows(items, cover) {
-        const byId = new Map(items.map((photo) => [photo.id, photo]));
-        seriesPhotoGrid.innerHTML = layoutDraftRows.map((row, rowIndex) => {
-          const rowPhotos = row.photoIds.map((id) => byId.get(id)).filter(Boolean);
-          const max = maxRowPhotos(row.orientation);
-          return `
-            <section class="series-layout-row" data-row-index="${rowIndex}">
-              <header class="series-layout-row__head">
-                <span>${rowPhotos.length}/${max}</span>
-                <div>
-                  <button type="button" data-row-action="decrease" aria-label="减少本行照片" ${rowPhotos.length <= 1 ? 'disabled' : ''}>−</button>
-                  <button type="button" data-row-action="increase" aria-label="增加本行照片" ${rowPhotos.length >= max ? 'disabled' : ''}>+</button>
-                  <button type="button" data-row-action="up" aria-label="本行上移" ${rowIndex === 0 ? 'disabled' : ''}>↑</button>
-                  <button type="button" data-row-action="down" aria-label="本行下移" ${rowIndex === layoutDraftRows.length - 1 ? 'disabled' : ''}>↓</button>
-                </div>
-              </header>
-              <div class="series-layout-row__photos series-layout-row__photos--${row.orientation}" style="--row-columns:${Math.max(1, rowPhotos.length)}">
-                ${rowPhotos.map((photo, index) => `
-                  <article class="series-photo-card ${photo.image === cover ? 'is-cover' : ''}">
-                    <div class="series-photo-card__image">
-                      <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" loading="lazy" />
-                      <span>${String(index + 1).padStart(2, '0')}</span>
-                      ${photo.image === cover ? '<strong>Cover</strong>' : ''}
-                    </div>
-                    <div class="series-photo-card__meta">
-                      <span>${photo.orientation === 'portrait' ? '竖图' : '横图'}</span>
-                      ${photo.image === cover ? '<span>当前封面</span>' : `<button type="button" data-cover-image="${escapeHtml(photo.image)}">Set as Cover</button>`}
-                    </div>
-                  </article>`).join('')}
-              </div>
-            </section>`;
-        }).join('');
+        seriesPhotoGrid.innerHTML = items.map((photo, index) => collageEditorCard(photo, index, cover)).join('');
+        scheduleEditorMasonry(seriesPhotoGrid);
+        updateLayoutToolbar();
       }
 
       function renderSeries() {
@@ -577,6 +727,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#total-label').textContent = '照片总数';
 
         if (!activeItem) {
+          layoutToolbar.hidden = true;
           $('#view-title').textContent = `Series · ${ordered.length} 本影集`;
           seriesEditorGrid.innerHTML = ordered.map((item, index) => {
             const items = photosForSeries(item.slug);
@@ -605,7 +756,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
         const items = photosForSeries(activeItem.slug);
         const cover = seriesCover(activeItem, items);
-        ensureLayoutDraft(activeItem, items);
+        layoutToolbar.hidden = false;
         $('#view-title').textContent = `${activeItem.title} · Series manager`;
         $('#series-manager-title').textContent = activeItem.title;
         $('#series-manager-meta').textContent = `${activeItem.year || '未填写年份'} · ${items.length} photographs · ${activeItem.slug}`;
@@ -625,6 +776,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#photo-search-field').hidden = isSeriesView;
         addPhotosButton.hidden = true;
         newSeriesButton.hidden = !isSeriesView || Boolean(activeSeriesSlug);
+        layoutToolbar.hidden = true;
         $('#canvas-scale').textContent = '';
         if (isSeriesView) {
           grid.hidden = true;
@@ -637,13 +789,14 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#featured-label').textContent = '首页精选';
         $('#total-label').textContent = '照片总数';
         const layoutScope = getLayoutScope();
-        const isFreeLayout = Boolean(layoutScope);
-        const isOrientationLayout = rowLayoutCategories.includes(viewFilter.value);
-        const orientationRows = isOrientationLayout ? buildOrientationRows(visible) : [];
-        const displayPhotos = isOrientationLayout ? orientationRows.flatMap((row) => row.items) : visible;
+        const isFreeLayout = layoutScope === 'home';
+        const isCollageLayout = photoCategories.includes(viewFilter.value);
+        const displayPhotos = isCollageLayout ? sortPhotosByOrder(visible) : visible;
         const filterLabel = viewFilter.options[viewFilter.selectedIndex]?.textContent || '';
         const importCategory = photoCategories.includes(viewFilter.value) ? viewFilter.value : null;
-        $('#view-title').textContent = isFreeLayout ? `${filterLabel} · 独立拖动与缩放` : `${filterLabel} · 数据总览`;
+        $('#view-title').textContent = isCollageLayout
+          ? `${filterLabel} · 12-column collage`
+          : isFreeLayout ? `${filterLabel} · 首页独立排版` : `${filterLabel} · 数据总览`;
         addPhotosButton.hidden = !importCategory;
         newSeriesButton.hidden = true;
         if (importCategory && !addPhotosButton.disabled) addPhotosLabel.textContent = `添加到 ${filterLabel}`;
@@ -653,7 +806,16 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#empty-state').hidden = visible.length > 0;
         grid.hidden = visible.length === 0;
         grid.dataset.view = viewFilter.value;
-        grid.classList.toggle('photo-grid--rows', isOrientationLayout);
+        grid.classList.remove('photo-grid--rows');
+        grid.classList.toggle('photo-grid--collage', isCollageLayout);
+
+        if (isCollageLayout) {
+          grid.innerHTML = displayPhotos.map((photo, index) => collageEditorCard(photo, index)).join('');
+          updateLayoutToolbar();
+          scheduleEditorMasonry(grid);
+          window.requestAnimationFrame(syncCanvasScale);
+          return;
+        }
 
         let featuredPosition = 0;
         const cards = displayPhotos.map((photo, index) => {
@@ -684,29 +846,11 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
               </div>
               <button class="editor-card__meta" type="button" data-action="edit">
                 <span><strong>${escapeHtml(photo.title || photo.id)}</strong>${escapeHtml(photo.location || '未填写地点')}</span>
-                <span>${isOrientationLayout ? '方向分行 · 可编辑' : `${photo.orientation === 'portrait' ? '竖图' : '横图'} · 编辑`}</span>
+                <span>${photo.orientation === 'portrait' ? '竖图' : '横图'} · 编辑</span>
               </button>
             </article>`;
         });
-        if (isOrientationLayout) {
-          let cardIndex = 0;
-          grid.innerHTML = orientationRows.map((row, rowIndex) => {
-            const max = maxRowPhotos(row.orientation);
-            const hasLaterPhoto = orientationRows.slice(rowIndex + 1).some((candidate) => candidate.orientation === row.orientation);
-            return `<section class="editor-row-wrap" data-category-row-index="${rowIndex}">
-              <header class="category-row-controls">
-                <span>${row.items.length}/${max}</span>
-                <div>
-                  <button type="button" data-category-row-action="decrease" aria-label="减少本行照片" ${row.items.length <= 1 ? 'disabled' : ''}>−</button>
-                  <button type="button" data-category-row-action="increase" aria-label="增加本行照片" ${row.items.length >= max || !hasLaterPhoto ? 'disabled' : ''}>+</button>
-                </div>
-              </header>
-              <div class="editor-row editor-row--${row.orientation}" style="--category-row-columns:${row.items.length}">${row.items.map(() => cards[cardIndex++]).join('')}</div>
-            </section>`;
-          }).join('');
-        } else {
-          grid.innerHTML = cards.join('');
-        }
+        grid.innerHTML = cards.join('');
         window.requestAnimationFrame(syncCanvasScale);
       }
 
@@ -721,21 +865,44 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       }
 
       function movePhoto(id, direction) {
-        const visible = getVisiblePhotos();
-        const current = visible.find((photo) => photo.id === id);
-        if (!current) return;
-        const orderedPhotos = rowLayoutCategories.includes(viewFilter.value)
-          ? visible.filter((photo) => photo.orientation === current.orientation)
-          : visible;
+        if (!isCollageContext()) {
+          const visible = getVisiblePhotos();
+          const index = visible.findIndex((photo) => photo.id === id);
+          const nextIndex = index + direction;
+          if (index < 0 || nextIndex < 0 || nextIndex >= visible.length) return;
+          snapshot();
+          const ids = visible.map((photo) => photo.id);
+          [ids[index], ids[nextIndex]] = [ids[nextIndex], ids[index]];
+          replaceVisibleOrder(ids);
+          setDirty(true);
+          render();
+          return;
+        }
+
+        const orderedPhotos = currentCollagePhotos();
         const index = orderedPhotos.findIndex((photo) => photo.id === id);
         const nextIndex = index + direction;
         if (index < 0 || nextIndex < 0 || nextIndex >= orderedPhotos.length) return;
         snapshot();
         const ids = orderedPhotos.map((photo) => photo.id);
         [ids[index], ids[nextIndex]] = [ids[nextIndex], ids[index]];
-        replaceVisibleOrder(ids);
+        const orderById = new Map(ids.map((photoId, orderIndex) => [photoId, orderIndex + 1]));
+        photoData.forEach((photo) => {
+          if (orderById.has(photo.id)) photo.order = orderById.get(photo.id);
+        });
+        selectedLayoutPhotoId = id;
         setDirty(true);
         render();
+        showToast(direction < 0 ? '已与前一张交换顺序' : '已与后一张交换顺序');
+      }
+
+      function updateInspectorCropControls() {
+        const crop = $('#form-crop').checked;
+        $('#form-row-span').disabled = !crop;
+        $('#form-fit').disabled = !crop;
+        $('#form-focal-x').disabled = !crop;
+        $('#form-focal-y').disabled = !crop;
+        $('#form-row-span-field').classList.toggle('is-disabled', !crop);
       }
 
       function openInspector(id) {
@@ -743,7 +910,10 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         if (!photo) return;
         const layoutScope = getLayoutScope();
         const layoutLocked = !layoutScope;
+        const collageMode = isCollageContext();
+        const collageLayout = normalizeCollageLayout(photo);
         inspector.dataset.layoutScope = layoutScope || '';
+        inspector.dataset.collageMode = collageMode ? 'true' : 'false';
         $('#form-original-id').value = photo.id;
         $('#form-id').value = photo.id;
         $('#form-title').value = photo.title || '';
@@ -753,6 +923,15 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#form-detail-scale').value = String(Number.isFinite(Number(photo.detailScale)) ? Math.min(140, Math.max(60, Math.round(Number(photo.detailScale)))) : 100);
         $('#form-offset-x').value = String(getLayoutOffset(photo, 'x', layoutScope));
         $('#form-offset-y').value = String(getLayoutOffset(photo, 'y', layoutScope));
+        $('#legacy-layout-fields').hidden = collageMode || layoutLocked;
+        $('#collage-layout-fields').hidden = !collageMode;
+        $('#form-col-span').value = String(collageLayout.colSpan);
+        $('#form-crop').checked = collageLayout.crop;
+        $('#form-row-span').value = String(collageLayout.rowSpan);
+        $('#form-fit').value = collageLayout.fit;
+        $('#form-focal-x').value = String(collageLayout.focalX);
+        $('#form-focal-y').value = String(collageLayout.focalY);
+        updateInspectorCropControls();
         $('#form-layout-width').disabled = layoutLocked;
         $('#form-offset-x').disabled = layoutLocked;
         $('#form-offset-y').disabled = layoutLocked;
@@ -805,6 +984,16 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           setLayoutWidth(photoData[index], Number($('#form-layout-width').value), layoutScope);
           setLayoutOffset(photoData[index], 'x', Number($('#form-offset-x').value), layoutScope);
           setLayoutOffset(photoData[index], 'y', Number($('#form-offset-y').value), layoutScope);
+        }
+        if (inspector.dataset.collageMode === 'true') {
+          setPhotoLayout(photoData[index], {
+            colSpan: Number($('#form-col-span').value),
+            crop: $('#form-crop').checked,
+            rowSpan: Number($('#form-row-span').value),
+            fit: $('#form-fit').value,
+            focalX: Number($('#form-focal-x').value),
+            focalY: Number($('#form-focal-y').value),
+          });
         }
         inspector.close();
         setDirty(true);
@@ -1251,6 +1440,19 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           if (photo.categoryLayoutWidth !== undefined && (!Number.isFinite(Number(photo.categoryLayoutWidth)) || Number(photo.categoryLayoutWidth) < 45 || Number(photo.categoryLayoutWidth) > 200)) throw new Error(`${photo.id} 的分类页显示尺寸应在 45–200 之间。`);
           if (photo.categoryLayoutOffsetX !== undefined && (!Number.isFinite(Number(photo.categoryLayoutOffsetX)) || Math.abs(Number(photo.categoryLayoutOffsetX)) > 80)) throw new Error(`${photo.id} 的分类页水平位置应在 -80–80 之间。`);
           if (photo.categoryLayoutOffsetY !== undefined && (!Number.isFinite(Number(photo.categoryLayoutOffsetY)) || Math.abs(Number(photo.categoryLayoutOffsetY)) > 80)) throw new Error(`${photo.id} 的分类页垂直位置应在 -80–80 之间。`);
+          if (photo.layout !== undefined) {
+            if (!photo.layout || typeof photo.layout !== 'object' || Array.isArray(photo.layout)) throw new Error(`${photo.id} 的 layout 必须是对象。`);
+            const colSpan = Number(photo.layout.colSpan ?? 4);
+            const rowSpan = Number(photo.layout.rowSpan ?? 4);
+            const focalX = Number(photo.layout.focalX ?? 50);
+            const focalY = Number(photo.layout.focalY ?? 50);
+            if (!Number.isFinite(colSpan) || colSpan < 3 || colSpan > 12) throw new Error(`${photo.id} 的 colSpan 应在 3–12 之间。`);
+            if (!Number.isFinite(rowSpan) || rowSpan < 3 || rowSpan > 8) throw new Error(`${photo.id} 的 rowSpan 应在 3–8 之间。`);
+            if (photo.layout.crop !== undefined && typeof photo.layout.crop !== 'boolean') throw new Error(`${photo.id} 的 crop 应为 true 或 false。`);
+            if (!['cover', 'contain'].includes(photo.layout.fit || 'contain')) throw new Error(`${photo.id} 的 fit 应为 cover 或 contain。`);
+            if (!Number.isFinite(focalX) || focalX < 0 || focalX > 100) throw new Error(`${photo.id} 的 focalX 应在 0–100 之间。`);
+            if (!Number.isFinite(focalY) || focalY < 0 || focalY > 100) throw new Error(`${photo.id} 的 focalY 应在 0–100 之间。`);
+          }
           ids.add(photo.id);
         });
         return value;
@@ -1293,6 +1495,23 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
       async function saveJson() {
         try {
+          const response = await fetch('/__editor/photos/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ photos: photoData }),
+          });
+          if (response.ok) {
+            const result = await response.json();
+            photoData = validatePhotos(result.photos || photoData);
+            setDirty(false);
+            showToast(`已保存 ${photoData.length} 张照片到 photos.json`);
+            return;
+          }
+          if (response.status !== 404) {
+            const result = await response.json().catch(() => ({}));
+            throw new Error(result.error || '本地保存接口失败。');
+          }
+
           if (!fileHandle && 'showSaveFilePicker' in window) {
             fileHandle = await window.showSaveFilePicker({
               suggestedName: 'photos.json',
@@ -1314,6 +1533,86 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         }
       }
 
+      function reorderCollagePhoto(draggedId, targetId, placeAfter) {
+        const items = currentCollagePhotos();
+        const currentIds = items.map((photo) => photo.id);
+        if (!currentIds.includes(draggedId) || !currentIds.includes(targetId) || draggedId === targetId) return;
+
+        const orderedIds = currentIds.filter((id) => id !== draggedId);
+        const targetIndex = orderedIds.indexOf(targetId);
+        orderedIds.splice(targetIndex + (placeAfter ? 1 : 0), 0, draggedId);
+        if (orderedIds.join('|') === currentIds.join('|')) return;
+
+        snapshot();
+        const orderById = new Map(orderedIds.map((id, index) => [id, index + 1]));
+        photoData.forEach((photo) => {
+          if (orderById.has(photo.id)) photo.order = orderById.get(photo.id);
+        });
+        selectedLayoutPhotoId = draggedId;
+        setDirty(true);
+        render();
+        showToast('照片顺序已更新，其他照片已向后顺延');
+      }
+
+      function clearDropIndicators(container) {
+        container.querySelectorAll('.is-drop-before, .is-drop-after').forEach((card) => {
+          card.classList.remove('is-drop-before', 'is-drop-after');
+        });
+      }
+
+      function bindCollageDrag(container) {
+        container.addEventListener('pointerdown', (event) => {
+          const handle = event.target.closest('[data-layout-select]');
+          const card = event.target.closest('.editor-card--collage');
+          if (!handle || !card || event.target.closest('button')) return;
+
+          const pointerId = event.pointerId;
+          const startX = event.clientX;
+          const startY = event.clientY;
+          let moved = false;
+          let targetId = '';
+          let placeAfter = false;
+          draggedLayoutPhotoId = card.dataset.id;
+          selectLayoutPhoto(draggedLayoutPhotoId);
+          handle.setPointerCapture?.(pointerId);
+
+          const onMove = (moveEvent) => {
+            if (!moved && Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) < 8) return;
+            moved = true;
+            card.classList.add('is-dragging');
+            clearDropIndicators(container);
+
+            const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)?.closest('.editor-card--collage');
+            if (!target || !container.contains(target) || target.dataset.id === draggedLayoutPhotoId) {
+              targetId = '';
+              return;
+            }
+
+            const rect = target.getBoundingClientRect();
+            placeAfter = moveEvent.clientY > rect.top + rect.height / 2
+              || (Math.abs(moveEvent.clientY - (rect.top + rect.height / 2)) < rect.height * .2
+                && moveEvent.clientX > rect.left + rect.width / 2);
+            targetId = target.dataset.id;
+            target.classList.add(placeAfter ? 'is-drop-after' : 'is-drop-before');
+          };
+
+          const onEnd = () => {
+            if (handle.hasPointerCapture?.(pointerId)) handle.releasePointerCapture(pointerId);
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onEnd);
+            window.removeEventListener('pointercancel', onEnd);
+            card.classList.remove('is-dragging');
+            clearDropIndicators(container);
+            if (moved && targetId) reorderCollagePhoto(draggedLayoutPhotoId, targetId, placeAfter);
+            draggedLayoutPhotoId = '';
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onEnd);
+          window.addEventListener('pointercancel', onEnd);
+        });
+      }
+
       grid.addEventListener('click', (event) => {
         const categoryRowButton = event.target.closest('[data-category-row-action]');
         const categoryRow = event.target.closest('[data-category-row-index]');
@@ -1321,8 +1620,12 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           adjustCategoryRow(Number(categoryRow.dataset.categoryRowIndex), categoryRowButton.dataset.categoryRowAction);
           return;
         }
-        const button = event.target.closest('button');
         const card = event.target.closest('.editor-card');
+        const button = event.target.closest('button');
+        if (card?.classList.contains('editor-card--collage') && event.target.closest('[data-layout-select]') && !button) {
+          selectLayoutPhoto(card.dataset.id);
+          return;
+        }
         if (!button || !card) return;
         const { id } = card.dataset;
         const action = button.dataset.action;
@@ -1364,6 +1667,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       });
 
       grid.addEventListener('pointerdown', (event) => {
+        if (isCollageContext()) return;
         const handle = event.target.closest('[data-action="resize"]');
         const card = event.target.closest('.editor-card');
         if (!handle || !card) return;
@@ -1405,6 +1709,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       });
 
       grid.addEventListener('pointerdown', (event) => {
+        if (isCollageContext()) return;
         const image = event.target.closest('.editor-card__image');
         const card = event.target.closest('.editor-card');
         const layoutScope = getLayoutScope();
@@ -1446,6 +1751,36 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         window.addEventListener('pointerup', onEnd);
         window.addEventListener('pointercancel', onEnd);
       });
+
+      layoutToolbar.addEventListener('click', (event) => {
+        const presetButton = event.target.closest('[data-layout-preset]');
+        const fitButton = event.target.closest('[data-layout-fit]');
+        const cropButton = event.target.closest('[data-layout-crop]');
+        if (!presetButton && !fitButton && !cropButton) return;
+        const photo = currentCollagePhotos().find((item) => item.id === selectedLayoutPhotoId);
+        if (!photo) return;
+
+        snapshot();
+        if (presetButton) {
+          const preset = collageLayoutPresets[presetButton.dataset.layoutPreset];
+          if (preset) setPhotoLayout(photo, preset);
+        }
+        if (cropButton) {
+          const crop = !normalizeCollageLayout(photo).crop;
+          setPhotoLayout(photo, { crop, fit: crop ? 'cover' : 'contain' });
+        }
+        if (fitButton && normalizeCollageLayout(photo).crop) {
+          setPhotoLayout(photo, { fit: fitButton.dataset.layoutFit });
+        }
+        setDirty(true);
+        render();
+        showToast('版面设置已更新，点击保存写入 photos.json');
+      });
+
+      $('#form-crop').addEventListener('change', updateInspectorCropControls);
+
+      bindCollageDrag(grid);
+      bindCollageDrag(seriesPhotoGrid);
 
       viewFilter.addEventListener('change', () => {
         if (layoutDirty && viewFilter.value !== 'series' && !window.confirm('当前 Series 行布局尚未保存，确定放弃吗？')) {
@@ -1493,6 +1828,24 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         if (action === 'down') moveSeries(card.dataset.slug, 1);
       });
       seriesPhotoGrid.addEventListener('click', (event) => {
+        const card = event.target.closest('.editor-card--collage');
+        const actionButton = event.target.closest('[data-action]');
+        if (card && event.target.closest('[data-layout-select]') && !event.target.closest('button')) {
+          selectLayoutPhoto(card.dataset.id);
+          return;
+        }
+        if (card && actionButton?.dataset.action === 'edit') {
+          openInspector(card.dataset.id);
+          return;
+        }
+        if (card && actionButton?.dataset.action === 'up') {
+          movePhoto(card.dataset.id, -1);
+          return;
+        }
+        if (card && actionButton?.dataset.action === 'down') {
+          movePhoto(card.dataset.id, 1);
+          return;
+        }
         const coverButton = event.target.closest('[data-cover-image]');
         if (coverButton) setSeriesCover(coverButton.dataset.coverImage);
         const rowButton = event.target.closest('[data-row-action]');
@@ -1574,7 +1927,15 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         event.preventDefault();
         event.returnValue = '';
       });
-      window.addEventListener('resize', syncCanvasScale);
+      window.addEventListener('resize', () => {
+        syncCanvasScale();
+        scheduleEditorMasonry(grid);
+        scheduleEditorMasonry(seriesPhotoGrid);
+      });
+      editorMasonryMedia.addEventListener('change', () => {
+        scheduleEditorMasonry(grid);
+        scheduleEditorMasonry(seriesPhotoGrid);
+      });
 
       render();
     </script>
@@ -1640,6 +2001,43 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   #save-status[data-state='dirty']::before { background: #d38b32; }
   .canvas-viewport { width: 100%; overflow: hidden; }
   .canvas-stage { width: calc(100vw - 2 * clamp(1.25rem, 4vw, 4.5rem)); transform-origin: top left; }
+  .layout-toolbar[hidden] { display: none; }
+  .layout-toolbar {
+    margin: 0 0 1.25rem;
+    padding: .9rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--line);
+    background: rgba(250,249,246,.96);
+    backdrop-filter: blur(10px);
+  }
+  .layout-toolbar__selection { min-width: 0; display: flex; flex-direction: column; gap: .2rem; }
+  .layout-toolbar__selection span { color: var(--muted); font-size: .54rem; letter-spacing: .1em; text-transform: uppercase; }
+  .layout-toolbar__selection strong { overflow: hidden; font: 400 1rem var(--serif); text-overflow: ellipsis; white-space: nowrap; }
+  .layout-toolbar__controls, .layout-toolbar__presets, .layout-toolbar__crop, .layout-toolbar__fit { display: flex; align-items: center; }
+  .layout-toolbar__controls { gap: .8rem; }
+  .layout-toolbar button {
+    min-width: 2.35rem;
+    height: 2.25rem;
+    padding: 0 .65rem;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    background: transparent;
+    font-size: .58rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .layout-toolbar button + button { border-left: 0; }
+  .layout-toolbar__crop button,
+  .layout-toolbar__fit button:first-child { border-left: 1px solid var(--line); }
+  .layout-toolbar button:hover:not(:disabled),
+  .layout-toolbar button.is-active { border-color: var(--ink); color: #fff; background: var(--ink); }
+  .layout-toolbar button:disabled { opacity: .28; cursor: default; }
   .series-workspace { padding-top: clamp(2.5rem, 5vw, 5rem); }
   .series-workspace[hidden], #series-list-view[hidden], #series-detail-view[hidden], .series-photo-grid[hidden], .series-photo-empty[hidden] { display: none; }
   .series-editor-head { margin-bottom: 3rem; display: grid; grid-template-columns: minmax(14rem, 1fr) minmax(16rem, 1fr); gap: 3rem; align-items: end; }
@@ -1669,6 +2067,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .series-manager__head > div > p:last-child { margin: 1rem 0 0; color: var(--muted); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
   .series-manager__actions { display: flex; align-items: center; gap: .7rem; }
   .series-layout-toolbar { margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .series-layout-toolbar[hidden] { display: none; }
   .series-layout-toolbar > div { display: flex; gap: 1rem; }
   .series-photo-grid { display: block; }
   .series-layout-row { margin-bottom: clamp(3.5rem, 6vw, 6rem); padding-top: 1rem; border-top: 1px solid var(--line); }
@@ -1692,6 +2091,118 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .series-photo-empty p { margin: 0 0 .5rem; color: var(--ink); font: 400 2rem var(--serif); }
   .series-photo-empty span { font-size: .7rem; }
   .photo-grid { width: 100%; display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
+  .photo-grid--collage,
+  .series-photo-grid {
+    --gallery-gap: 12px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-flow: row dense;
+    grid-auto-rows: 1px;
+    column-gap: var(--gallery-gap);
+    row-gap: 0;
+    align-items: start;
+  }
+  .photo-grid--collage .editor-card--collage,
+  .series-photo-grid .editor-card--collage {
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding-bottom: var(--gallery-gap);
+    grid-column: span var(--editor-col-span);
+    justify-self: stretch;
+    align-self: start;
+    transform: none;
+    display: block;
+    transition: opacity 140ms ease;
+  }
+  .editor-card--collage .editor-card__image {
+    overflow: visible;
+    background: transparent;
+    cursor: grab;
+  }
+  .editor-card--collage .editor-card__image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
+    object-position: center;
+  }
+  .editor-card--collage.editor-card--cropped .editor-card__image {
+    aspect-ratio: var(--editor-aspect);
+    overflow: hidden;
+    background: #e4e2dc;
+  }
+  .editor-card--collage.editor-card--cropped .editor-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: var(--editor-fit);
+    object-position: var(--editor-focal-x) var(--editor-focal-y);
+  }
+  .editor-card--collage .editor-card__footer {
+    min-height: 2.3rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .6rem;
+  }
+  .collage-order-controls {
+    flex: 0 0 auto;
+    margin-top: .55rem;
+    display: flex;
+  }
+  .collage-order-controls button {
+    width: 1.9rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    background: transparent;
+    font-size: .8rem;
+  }
+  .collage-order-controls button + button { border-left: 0; }
+  .collage-order-controls button:hover:not(:disabled) { color: #fff; background: var(--ink); }
+  .collage-order-controls button:disabled { opacity: .22; cursor: default; }
+  .editor-card--collage .editor-card__meta {
+    height: auto;
+    min-width: 0;
+    overflow: visible;
+    flex: 1 1 auto;
+    font-size: .56rem;
+    line-height: 1.25;
+    letter-spacing: .08em;
+  }
+  .photo-grid--collage .editor-card__meta span,
+  .series-photo-grid .editor-card__meta span { display: flex; }
+  .photo-grid--collage .editor-card__meta strong,
+  .series-photo-grid .editor-card__meta strong { display: block; }
+  .editor-card--collage.is-selected { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .editor-card--collage.is-dragging { opacity: .32; }
+  .editor-card--collage.is-drop-before { box-shadow: inset 4px 0 0 var(--accent); }
+  .editor-card--collage.is-drop-after { box-shadow: inset -4px 0 0 var(--accent); }
+  .cover-badge {
+    position: absolute;
+    top: .65rem;
+    right: .65rem;
+    padding: .35rem .5rem;
+    color: #fff;
+    background: var(--accent);
+    font-size: .54rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .cover-control {
+    flex: 0 0 auto;
+    margin-top: .7rem;
+    padding: 0 0 .2rem;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    color: var(--muted);
+    background: transparent;
+    font-size: .54rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
   .editor-card { width: var(--card-width, 100%); min-width: 0; overflow: visible; grid-column: span 4; justify-self: center; transform: translate(var(--offset-x, 0), var(--offset-y, 0)); transition: opacity 150ms, transform 150ms, width 120ms ease; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(4n+1) { grid-column: 1 / span 7; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(4n+2) { grid-column: 9 / span 4; margin-top: 15vw; }
@@ -1700,8 +2211,8 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .photo-grid[data-view='featured'] .editor-card:nth-child(1) { grid-column: 1 / span 4; }
   .photo-grid[data-view='featured'] .editor-card:nth-child(2) { grid-column: 6 / span 7; margin-top: 8vw; }
   .photo-grid[data-view='featured'] .editor-card[data-id='home-006'] { grid-column: 2 / span 5; }
-  .photo-grid[data-view='portrait'] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); }
-  .photo-grid[data-view='portrait'] .editor-card { grid-column: auto; justify-self: center; }
+  .photo-grid:not(.photo-grid--collage)[data-view='portrait'] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); }
+  .photo-grid:not(.photo-grid--collage)[data-view='portrait'] .editor-card { grid-column: auto; justify-self: center; }
   .photo-grid--rows { display: block; }
   .editor-row-wrap { margin-bottom: clamp(5rem, 10vw, 10rem); padding-top: .8rem; border-top: 1px solid var(--line); }
   .category-row-controls { margin-bottom: 1rem; display: flex; align-items: center; justify-content: flex-end; gap: .8rem; color: var(--muted); font-size: .58rem; letter-spacing: .1em; }
@@ -1713,7 +2224,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .editor-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); margin-bottom: clamp(5rem, 10vw, 10rem); }
   .editor-row-wrap .editor-row { grid-template-columns: repeat(var(--category-row-columns), minmax(0, 1fr)); margin-bottom: 0; }
   .editor-row .editor-card { grid-column: auto; justify-self: center; }
-  .photo-grid[data-view='portrait'] > .editor-card:nth-child(3n+2) { margin-top: clamp(3rem, 9vw, 9rem); }
+  .photo-grid:not(.photo-grid--collage)[data-view='portrait'] > .editor-card:nth-child(3n+2) { margin-top: clamp(3rem, 9vw, 9rem); }
   .editor-card__image { position: relative; overflow: hidden; background: #e4e2dc; cursor: grab; touch-action: none; }
   .editor-card.is-positioning { z-index: 6; transition: none; }
   .editor-card.is-positioning .editor-card__image { cursor: grabbing; box-shadow: 0 1.2rem 3rem rgba(0,0,0,.18); }
@@ -1751,9 +2262,12 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .dialog-preview { height: 12rem; margin: 2rem -2rem; background: #1d1d1b; }
   .dialog-preview img { width: 100%; height: 100%; object-fit: contain; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-grid-sub { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .form-grid-sub[hidden] { display: none; }
   .form-grid label { color: var(--muted); font-size: .61rem; letter-spacing: .09em; text-transform: uppercase; }
   .form-grid input, .form-grid select, .form-grid textarea { margin-top: .4rem; font-size: .78rem; letter-spacing: 0; text-transform: none; }
   .form-grid .full { grid-column: 1/-1; }
+  .form-grid label.is-disabled { opacity: .42; }
   .toggle { min-height: 2.5rem; display: flex; align-items: center; gap: .65rem; cursor: pointer; }
   .toggle input { width: 1px; height: 1px; position: absolute; opacity: 0; }
   .toggle span { width: 2.4rem; height: 1.3rem; padding: .15rem; border-radius: 2rem; background: #ccc9c1; transition: background 150ms; }
@@ -1798,6 +2312,10 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     .toolbar .button { flex: 1; }
     .status-row { margin-top: 2rem; align-items: flex-start; }
     .status-actions { align-items: flex-end; flex-direction: column-reverse; gap: .75rem; }
+    .layout-toolbar { position: static; align-items: stretch; flex-direction: column; }
+    .layout-toolbar__controls { align-items: stretch; flex-direction: column; }
+    .layout-toolbar__presets, .layout-toolbar__crop, .layout-toolbar__fit { width: 100%; }
+    .layout-toolbar__presets button, .layout-toolbar__crop button, .layout-toolbar__fit button { flex: 1; padding-inline: .3rem; }
     .series-editor-head { grid-template-columns: 1fr; gap: 1rem; }
     .series-manager__head { align-items: flex-start; flex-direction: column; }
     .series-manager__actions, .series-manager__head .add-photos, .series-manager__actions .button { width: 100%; }
@@ -1808,6 +2326,17 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     .series-layout-row__photos { grid-template-columns: 1fr; }
     .canvas-stage { width: 100%; }
     .photo-grid { display: block; }
+    .photo-grid--collage,
+    .series-photo-grid { display: grid; grid-template-columns: 1fr; grid-auto-rows: auto; gap: var(--gallery-gap); }
+    .photo-grid--collage .editor-card--collage,
+    .series-photo-grid .editor-card--collage {
+      width: 100% !important;
+      margin: 0 !important;
+      padding-bottom: 0;
+      grid-column: 1;
+      grid-row: auto;
+    }
+    .editor-card--collage.editor-card--cropped .editor-card__image { aspect-ratio: var(--editor-aspect); }
     .photo-grid .editor-card,
     .photo-grid[data-view='featured'] .editor-card:nth-child(n),
     .photo-grid:not([data-view='featured']) .editor-card:nth-child(n) { grid-column: auto; margin-top: 0; }
@@ -1820,6 +2349,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     .delete-control { opacity: 1; }
     .editor-card__meta > span:last-child { display: none; }
     .form-grid { grid-template-columns: 1fr; }
+    .form-grid-sub { grid-template-columns: 1fr; }
     .form-grid .full { grid-column: auto; }
     dialog form { padding: 1.25rem; }
     .dialog-preview { margin-inline: -1.25rem; }

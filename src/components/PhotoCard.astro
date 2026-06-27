@@ -17,8 +17,34 @@ interface Photo {
   homeTitle?: string;
   homeCaption?: string;
 }
-interface Props { photo: Photo; eager?: boolean; number?: number; layoutScope?: 'home' | 'category' | 'none'; reveal?: boolean; homeCaptionMode?: boolean }
-const { photo, eager = false, number, layoutScope = 'home', reveal = false, homeCaptionMode = false } = Astro.props;
+interface CollageLayout {
+  colSpan: number;
+  rowSpan: number;
+  fit: 'cover' | 'contain';
+  crop: boolean;
+  focalX: number;
+  focalY: number;
+}
+interface Props {
+  photo: Photo;
+  eager?: boolean;
+  number?: number;
+  layoutScope?: 'home' | 'category' | 'none';
+  reveal?: boolean;
+  homeCaptionMode?: boolean;
+  collage?: boolean;
+  layout?: CollageLayout;
+}
+const {
+  photo,
+  eager = false,
+  number,
+  layoutScope = 'home',
+  reveal = false,
+  homeCaptionMode = false,
+  collage = false,
+  layout,
+} = Astro.props;
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
 const homeTitle = photo.homeTitle ?? photo.title ?? '';
 const homeCaption = photo.homeCaption ?? '';
@@ -38,16 +64,27 @@ const layoutStyle = layoutScope !== 'none' ? [
   layoutWidth ? 'justify-self: center' : '',
   offsetX || offsetY ? `transform: translate(${offsetX}%, ${offsetY}%)` : '',
 ].filter(Boolean).join('; ') : '';
+const collageStyle = collage && layout ? [
+  `--collage-col-span: ${layout.colSpan}`,
+  `--collage-aspect: ${layout.colSpan} / ${layout.rowSpan}`,
+  `--collage-fit: ${layout.fit}`,
+  `--collage-focal-x: ${layout.focalX}%`,
+  `--collage-focal-y: ${layout.focalY}%`,
+].join('; ') : '';
 ---
 
 <article
-  class:list={["photo-card", `photo-card--${photo.orientation}`]}
+  class:list={[
+    "photo-card",
+    `photo-card--${photo.orientation}`,
+    { "photo-card--collage": collage, "photo-card--cropped": collage && layout?.crop },
+  ]}
   data-photo-id={photo.id}
   data-home-caption={homeCaptionMode ? '' : undefined}
   data-home-title={homeCaptionMode ? homeTitle : undefined}
   data-home-caption-text={homeCaptionMode ? homeCaption : undefined}
   data-scroll-reveal={reveal ? '' : undefined}
-  style={layoutStyle || undefined}
+  style={collageStyle || layoutStyle || undefined}
 >
   {homeCaptionMode ? (
     <>

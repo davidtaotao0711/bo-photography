@@ -11,6 +11,7 @@ const SERIES_REORDER_ENDPOINT = '/__editor/series/reorder';
 const SERIES_UPDATE_ENDPOINT = '/__editor/series/update';
 const SERIES_DELETE_ENDPOINT = '/__editor/series/delete';
 const SERIES_LAYOUT_ENDPOINT = '/__editor/series/layout';
+const PHOTOS_SAVE_ENDPOINT = '/__editor/photos/save';
 const CATEGORIES = new Set(photoCategorySlugs);
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -43,6 +44,29 @@ async function readJson(filePath) {
 
 async function writeJson(filePath, value) {
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
+}
+
+async function savePhotos(request, projectRoot) {
+  const body = await webRequestFrom(request, PHOTOS_SAVE_ENDPOINT).json().catch(() => {
+    throw new RequestError(400, '保存内容不是有效 JSON。');
+  });
+  const photos = body?.photos;
+  if (!Array.isArray(photos)) throw new RequestError(400, 'photos 必须是数组。');
+
+  const ids = new Set();
+  photos.forEach((photo, index) => {
+    if (!photo || typeof photo !== 'object' || !photo.id || !photo.image) {
+      throw new RequestError(400, `第 ${index + 1} 张照片缺少 id 或 image。`);
+    }
+    if (ids.has(photo.id)) throw new RequestError(400, `发现重复 ID：${photo.id}`);
+    if (![...CATEGORIES, 'series'].includes(photo.category)) {
+      throw new RequestError(400, `${photo.id} 的 category 无效。`);
+    }
+    ids.add(photo.id);
+  });
+
+  await writeJson(dataPaths(projectRoot).photos, photos);
+  return { photos, count: photos.length };
 }
 
 function dataPaths(projectRoot) {
@@ -414,6 +438,7 @@ export function editorUploadPlugin() {
           [SERIES_UPDATE_ENDPOINT, updateSeries],
           [SERIES_DELETE_ENDPOINT, deleteSeries],
           [SERIES_LAYOUT_ENDPOINT, saveSeriesLayout],
+          [PHOTOS_SAVE_ENDPOINT, savePhotos],
         ]);
         const handler = handlers.get(pathname);
         if (!handler) return next();
