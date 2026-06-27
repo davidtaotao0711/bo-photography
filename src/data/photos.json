@@ -1567,7 +1567,15 @@
     "orientation": "landscape",
     "alt": "Street photograph by Bo David",
     "categoryLayoutWidth": 90,
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "street-059",
