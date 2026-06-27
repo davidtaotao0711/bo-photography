@@ -1412,22 +1412,6 @@
     "categoryLayoutWidth": 75
   },
   {
-    "id": "portrait-020",
-    "title": "No. 20",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-020.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph by Bo David",
-    "categoryLayoutWidth": 80,
-    "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": -1,
-    "categoryRowSize": 2
-  },
-  {
     "id": "portrait-021",
     "title": "No. 21",
     "category": "portrait",
@@ -1497,7 +1481,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "categoryLayoutWidth": 45,
+    "categoryLayoutWidth": 78,
     "categoryRowSize": 1
   },
   {
