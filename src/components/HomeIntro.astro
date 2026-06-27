@@ -1,0 +1,289 @@
+---
+import ResponsiveImage from './ResponsiveImage.astro';
+
+interface IntroImage {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  images: IntroImage[];
+  name: string;
+  tagline: string;
+}
+
+const { images, name, tagline } = Astro.props;
+---
+
+<section
+  class="home-intro"
+  data-home-intro
+  data-state="locked"
+  aria-label={`${name} photography introduction`}
+>
+  <div class="home-intro__images" aria-hidden="true">
+    {images.map((image, index) => (
+      <div class:list={['home-intro__slide', { 'is-active': index === 0 }]} data-intro-slide>
+        <ResponsiveImage
+          src={image.src}
+          alt=""
+          loading={index === 0 ? 'eager' : 'lazy'}
+          fetchpriority={index === 0 ? 'high' : 'low'}
+          sizes="100vw"
+        />
+      </div>
+    ))}
+  </div>
+
+  <div class="home-intro__wash"></div>
+
+  <div class="home-intro__content">
+    <div class="home-intro__identity">
+      <p class="home-intro__name">{name}</p>
+      <h1>{tagline}</h1>
+    </div>
+
+    <button class="home-intro__enter" type="button" data-intro-enter>
+      <span>Enter</span>
+    </button>
+  </div>
+</section>
+
+<noscript>
+  <style>html { overflow: auto !important; }</style>
+</noscript>
+
+<script>
+  const initializeHomeIntro = () => {
+    const intro = document.querySelector('[data-home-intro]');
+    if (!(intro instanceof HTMLElement) || intro.dataset.ready === 'true') return;
+
+    intro.dataset.ready = 'true';
+    intro.dataset.state = 'locked';
+
+    const root = document.documentElement;
+    const enter = intro.querySelector('[data-intro-enter]');
+    const slides = Array.from(intro.querySelectorAll('[data-intro-slide]'));
+    const selectedWork = document.querySelector('#selected-work');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let activeIndex = 0;
+    let rotationId;
+
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    root.classList.add('home-intro-locked');
+
+    const holdIntroAtTop = () => {
+      if (intro.dataset.state === 'locked' && window.scrollY !== 0) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      }
+    };
+
+    window.addEventListener('scroll', holdIntroAtTop, { passive: true });
+
+    const showNextSlide = () => {
+      if (slides.length < 2) return;
+      slides[activeIndex]?.classList.remove('is-active');
+      activeIndex = (activeIndex + 1) % slides.length;
+      slides[activeIndex]?.classList.add('is-active');
+    };
+
+    if (!reduceMotion && slides.length > 1) {
+      rotationId = window.setInterval(showNextSlide, 4800);
+    }
+
+    const enterSite = () => {
+      if (rotationId) window.clearInterval(rotationId);
+      intro.dataset.state = 'entered';
+      root.classList.remove('home-intro-locked');
+      window.removeEventListener('scroll', holdIntroAtTop);
+
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          if (!selectedWork) return;
+
+          const targetTop = selectedWork.getBoundingClientRect().top + window.scrollY;
+          if (reduceMotion) {
+            window.scrollTo({ top: targetTop, left: 0, behavior: 'auto' });
+            return;
+          }
+
+          const startTop = window.scrollY;
+          const distance = targetTop - startTop;
+          const duration = 950;
+          const startedAt = performance.now();
+          const previousScrollBehavior = root.style.scrollBehavior;
+          root.style.scrollBehavior = 'auto';
+
+          const scrollFrame = (now) => {
+            const progress = Math.min((now - startedAt) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            window.scrollTo(0, startTop + distance * eased);
+
+            if (progress < 1) {
+              window.requestAnimationFrame(scrollFrame);
+            } else {
+              root.style.scrollBehavior = previousScrollBehavior;
+            }
+          };
+
+          window.requestAnimationFrame(scrollFrame);
+        });
+      });
+    };
+
+    enter?.addEventListener('click', enterSite, { once: true });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeHomeIntro, { once: true });
+  } else {
+    initializeHomeIntro();
+  }
+
+  window.addEventListener('pageshow', () => {
+    const intro = document.querySelector('[data-home-intro]');
+    if (intro instanceof HTMLElement && intro.dataset.state === 'locked') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  });
+</script>
+
+<style>
+  :global(html:has(.home-intro[data-state='locked'])),
+  :global(html.home-intro-locked) {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  :global(body:has(.home-intro[data-state='locked'])) {
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .home-intro {
+    min-height: 100vh;
+    height: 100svh;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background: #161615;
+  }
+
+  .home-intro__images,
+  .home-intro__slide,
+  .home-intro__slide :global(.responsive-image),
+  .home-intro__slide :global(img),
+  .home-intro__wash {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .home-intro__slide {
+    opacity: 0;
+    transition: opacity 1600ms cubic-bezier(.22, .61, .36, 1);
+  }
+
+  .home-intro__slide.is-active {
+    opacity: 1;
+  }
+
+  .home-intro__slide :global(img) {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .home-intro__wash {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, .24), transparent 28%),
+      linear-gradient(0deg, rgba(0, 0, 0, .42), transparent 45%);
+  }
+
+  .home-intro__content {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 8rem var(--pad) clamp(2rem, 5vw, 4.5rem);
+  }
+
+  .home-intro__identity {
+    max-width: min(48rem, 76vw);
+  }
+
+  .home-intro__name {
+    margin-bottom: 1.15rem;
+    font-size: .66rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: .19em;
+  }
+
+  .home-intro h1 {
+    max-width: 11ch;
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6.4vw, 6.75rem);
+    font-weight: 400;
+    line-height: .94;
+    letter-spacing: -.035em;
+  }
+
+  .home-intro__enter {
+    flex: 0 0 auto;
+    padding: .7rem 0 .55rem;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .72);
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    cursor: pointer;
+    transition: opacity 220ms ease, border-color 220ms ease;
+  }
+
+  .home-intro__enter:hover,
+  .home-intro__enter:focus-visible {
+    opacity: .64;
+    border-color: currentColor;
+  }
+
+  .home-intro__enter:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: .65rem;
+  }
+
+  @media (max-width: 720px) {
+    .home-intro__content {
+      align-items: flex-start;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 7rem var(--pad) 2rem;
+    }
+
+    .home-intro__identity {
+      max-width: 100%;
+    }
+
+    .home-intro h1 {
+      font-size: clamp(3.1rem, 15vw, 5rem);
+    }
+
+    .home-intro__enter {
+      margin-top: 1rem;
+      align-self: flex-end;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-intro__slide {
+      transition: none;
+    }
+  }
+</style>

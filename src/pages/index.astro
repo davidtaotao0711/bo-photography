@@ -1,34 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeIntro from '../components/HomeIntro.astro';
 import PhotoCard from '../components/PhotoCard.astro';
-import ResponsiveImage from '../components/ResponsiveImage.astro';
 import ScrollReveal from '../components/ScrollReveal.astro';
 import photos from '../data/photos.json';
 import site from '../data/site.json';
 const featured = photos.filter((photo) => photo.featured).slice(0, 12);
+const introImages = site.homeIntroImages
+  .map((src) => {
+    const photo = photos.find((item) => item.image === src);
+    return { src, alt: photo?.alt || `Nature photograph by ${site.name}` };
+  })
+  .slice(0, 6);
 ---
 
 <BaseLayout transparentHeader>
-  <section class="home-hero">
-    <ResponsiveImage
-      src="/images/home/cover.jpg"
-      alt="Landscape photograph by Bo David"
-      loading="eager"
-      fetchpriority="high"
-      sizes="100vw"
-    />
-    <div class="home-hero__wash"></div>
-    <div class="home-hero__content">
-      <p class="eyebrow">Street / Portrait / Scenes / Nature</p>
-      <h1>{site.tagline}</h1>
-      <div class="home-hero__footer">
-        <p>Based in {site.location}</p>
-        <a class="button button--light" href="/portfolio">View Portfolio</a>
-      </div>
-    </div>
-  </section>
+  <HomeIntro images={introImages} name={site.name} tagline={site.tagline} />
 
-  <section class="selected page-shell">
+  <section class="selected page-shell" id="selected-work">
     <header class="section-intro">
       <p class="eyebrow">Selected Work</p>
       <h2>Photographs from<br />near and elsewhere.</h2>

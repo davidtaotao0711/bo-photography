@@ -3,6 +3,14 @@
   "tagline": "Light, people, and quiet places.",
   "location": "Shanghai",
   "email": "idoadoreuo@gmail.com",
+  "homeIntroImages": [
+    "/images/nature/nature-001.jpg",
+    "/images/nature/nature-002.jpg",
+    "/images/nature/nature-003.jpg",
+    "/images/nature/nature-004.jpg",
+    "/images/nature/nature-006.jpg",
+    "/images/nature/nature-007.jpg"
+  ],
   "instagram": "https://www.instagram.com/",
   "xiaohongshu": "https://www.xiaohongshu.com/",
   "about": "Bo David is an independent photographer based in Shanghai, working across street, portrait, and natural landscape photography. His work follows ordinary light, unguarded gestures, and the quiet distance between people and places. This site is a personal archive of ongoing observations."
