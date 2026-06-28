@@ -1,0 +1,84 @@
+<canvas class="canvas-grain" data-canvas-grain aria-hidden="true"></canvas>
+
+<script>
+  const initializeCanvasGrain = () => {
+    const canvases = document.querySelectorAll('[data-canvas-grain]');
+
+    canvases.forEach((canvas) => {
+      if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.ready === 'true') return;
+
+      const context = canvas.getContext('2d', { alpha: false });
+      if (!context) return;
+
+      canvas.dataset.ready = 'true';
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const sourceWidth = window.innerWidth <= 720 ? 360 : 640;
+      const viewportRatio = window.innerHeight / Math.max(window.innerWidth, 1);
+      const sourceHeight = Math.max(240, Math.round(sourceWidth * viewportRatio));
+
+      canvas.width = sourceWidth;
+      canvas.height = sourceHeight;
+
+      const image = context.createImageData(sourceWidth, sourceHeight);
+      const pixels = new Uint32Array(image.data.buffer);
+      let seed = (Date.now() ^ sourceWidth ^ sourceHeight) | 0;
+
+      const nextNoiseValue = () => {
+        seed ^= seed << 13;
+        seed ^= seed >>> 17;
+        seed ^= seed << 5;
+        return seed & 255;
+      };
+
+      const drawNoise = () => {
+        if (document.visibilityState === 'hidden') return;
+
+        for (let index = 0; index < pixels.length; index += 1) {
+          const value = nextNoiseValue();
+          pixels[index] = 0xff000000 | (value << 16) | (value << 8) | value;
+        }
+
+        context.putImageData(image, 0, 0);
+      };
+
+      drawNoise();
+
+      if (reduceMotion) return;
+
+      const intervalId = window.setInterval(drawNoise, 90);
+      document.addEventListener('astro:before-swap', () => {
+        window.clearInterval(intervalId);
+      }, { once: true });
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeCanvasGrain, { once: true });
+  } else {
+    initializeCanvasGrain();
+  }
+
+  document.addEventListener('astro:page-load', initializeCanvasGrain);
+</script>
+
+<style>
+  .canvas-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: var(--canvas-grain-opacity, .09);
+    mix-blend-mode: overlay;
+    filter: contrast(145%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .canvas-grain {
+      opacity: .05;
+    }
+  }
+</style>
