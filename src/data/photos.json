@@ -388,7 +388,19 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 012",
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "detailScale": 100,
+    "categoryLayoutWidth": 100,
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "street-033",
@@ -431,7 +443,17 @@
     "layoutWidth": 154,
     "categoryLayoutWidth": 70,
     "categoryRowSize": 1,
-    "detailScale": 100
+    "detailScale": 100,
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "portrait-003",
@@ -835,7 +857,18 @@
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 050",
     "categoryLayoutWidth": 80,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "detailScale": 100,
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "scenes-051",
