@@ -1,5 +1,6 @@
 ---
 import ResponsiveImage from './ResponsiveImage.astro';
+import FilmGrain from './FilmGrain.astro';
 
 interface IntroImage {
   src: string;
@@ -36,6 +37,7 @@ const { images, name, tagline } = Astro.props;
   </div>
 
   <div class="home-intro__wash"></div>
+  <FilmGrain />
 
   <div class="home-intro__content">
     <div class="home-intro__identity">
@@ -167,6 +169,9 @@ const { images, name, tagline } = Astro.props;
   }
 
   .home-intro {
+    --grain-opacity: .055;
+    --grain-size: 360px;
+    --grain-speed: 9s;
     min-height: 100vh;
     height: 100svh;
     position: relative;
@@ -209,7 +214,7 @@ const { images, name, tagline } = Astro.props;
   .home-intro__content {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -265,6 +270,12 @@ const { images, name, tagline } = Astro.props;
   }
 
   @media (max-width: 720px) {
+    .home-intro {
+      --grain-opacity: .045;
+      --grain-size: 280px;
+      --grain-speed: 10.5s;
+    }
+
     .home-intro__content {
       align-items: flex-start;
       flex-direction: column;
