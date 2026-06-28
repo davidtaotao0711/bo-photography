@@ -169,9 +169,10 @@ const { images, name, tagline } = Astro.props;
   }
 
   .home-intro {
-    --grain-opacity: .055;
-    --grain-size: 360px;
-    --grain-speed: 9s;
+    --grain-opacity: .09;
+    --grain-size: 220px;
+    --grain-size-secondary: 139px;
+    --grain-speed: 1.6s;
     min-height: 100vh;
     height: 100svh;
     position: relative;
@@ -191,6 +192,10 @@ const { images, name, tagline } = Astro.props;
     height: 100%;
   }
 
+  .home-intro__images {
+    z-index: 0;
+  }
+
   .home-intro__slide {
     opacity: 0;
     transition: opacity 2200ms cubic-bezier(.22, .61, .36, 1);
@@ -206,6 +211,7 @@ const { images, name, tagline } = Astro.props;
   }
 
   .home-intro__wash {
+    z-index: 1;
     background:
       linear-gradient(180deg, rgba(0, 0, 0, .24), transparent 28%),
       linear-gradient(0deg, rgba(0, 0, 0, .42), transparent 45%);
@@ -214,7 +220,7 @@ const { images, name, tagline } = Astro.props;
   .home-intro__content {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -271,9 +277,10 @@ const { images, name, tagline } = Astro.props;
 
   @media (max-width: 720px) {
     .home-intro {
-      --grain-opacity: .045;
-      --grain-size: 280px;
-      --grain-speed: 10.5s;
+      --grain-opacity: .08;
+      --grain-size: 180px;
+      --grain-size-secondary: 113px;
+      --grain-speed: 1.8s;
     }
 
     .home-intro__content {
