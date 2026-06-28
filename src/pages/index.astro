@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CanvasGrain from '../components/CanvasGrain.astro';
 import HomeIntro from '../components/HomeIntro.astro';
 import PhotoCard from '../components/PhotoCard.astro';
 import ScrollReveal from '../components/ScrollReveal.astro';
@@ -15,7 +16,9 @@ const introImages = site.homeIntroImages
 ---
 
 <BaseLayout transparentHeader>
-  <HomeIntro images={introImages} name={site.name} tagline={site.tagline} />
+  <div class="homepage-root">
+    <CanvasGrain />
+    <HomeIntro images={introImages} name={site.name} tagline={site.tagline} />
 
   <section class="selected page-shell" id="selected-work">
     <header class="section-intro">
@@ -27,8 +30,25 @@ const introImages = site.homeIntroImages
     </div>
     <div class="section-end"><a class="text-link" href="/portfolio">View all work <span>↗</span></a></div>
   </section>
-  <ScrollReveal />
+    <ScrollReveal />
+  </div>
 </BaseLayout>
+
+<style>
+  :global(html:has(.homepage-root)),
+  :global(body:has(.homepage-root)) {
+    --home-bg: #f4f0e6;
+    background: var(--home-bg);
+  }
+
+  .homepage-root {
+    --home-bg: #f4f0e6;
+    --grain-opacity: .045;
+    min-height: 100vh;
+    position: relative;
+    background: var(--home-bg);
+  }
+</style>
 
 <script>
   const initHomeCaptions = () => {

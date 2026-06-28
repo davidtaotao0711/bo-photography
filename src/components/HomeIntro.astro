@@ -1,6 +1,5 @@
 ---
 import ResponsiveImage from './ResponsiveImage.astro';
-import CanvasGrain from './CanvasGrain.astro';
 
 interface IntroImage {
   src: string;
@@ -37,7 +36,6 @@ const { images, name, tagline } = Astro.props;
   </div>
 
   <div class="home-intro__wash"></div>
-  <CanvasGrain />
 
   <div class="home-intro__content">
     <div class="home-intro__identity">
@@ -169,7 +167,6 @@ const { images, name, tagline } = Astro.props;
   }
 
   .home-intro {
-    --canvas-grain-opacity: .09;
     min-height: 100vh;
     height: 100svh;
     position: relative;
@@ -273,10 +270,6 @@ const { images, name, tagline } = Astro.props;
   }
 
   @media (max-width: 720px) {
-    .home-intro {
-      --canvas-grain-opacity: .09;
-    }
-
     .home-intro__content {
       align-items: flex-start;
       flex-direction: column;

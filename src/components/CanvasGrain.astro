@@ -13,16 +13,11 @@
       canvas.dataset.ready = 'true';
 
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const sourceWidth = window.innerWidth <= 720 ? 360 : 640;
-      const viewportRatio = window.innerHeight / Math.max(window.innerWidth, 1);
-      const sourceHeight = Math.max(240, Math.round(sourceWidth * viewportRatio));
-
-      canvas.width = sourceWidth;
-      canvas.height = sourceHeight;
-
-      const image = context.createImageData(sourceWidth, sourceHeight);
-      const pixels = new Uint32Array(image.data.buffer);
-      let seed = (Date.now() ^ sourceWidth ^ sourceHeight) | 0;
+      let image;
+      let pixels;
+      let levels;
+      let resizeTimer;
+      let seed = (Date.now() ^ window.innerWidth ^ window.innerHeight) | 0;
 
       const nextNoiseValue = () => {
         seed ^= seed << 13;
@@ -31,25 +26,69 @@
         return seed & 255;
       };
 
+      const sizeCanvas = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const viewportRatio = window.innerHeight / Math.max(window.innerWidth, 1);
+        const sourceWidth = Math.min(
+          1024,
+          Math.max(512, Math.round(window.innerWidth * dpr * .8)),
+        );
+        const sourceHeight = Math.min(
+          768,
+          Math.max(320, Math.round(sourceWidth * viewportRatio)),
+        );
+
+        canvas.width = sourceWidth;
+        canvas.height = sourceHeight;
+        image = context.createImageData(sourceWidth, sourceHeight);
+        pixels = new Uint32Array(image.data.buffer);
+        levels = new Uint8Array(pixels.length);
+
+        for (let index = 0; index < levels.length; index += 1) {
+          levels[index] = 108 + (nextNoiseValue() % 73);
+        }
+      };
+
       const drawNoise = () => {
-        if (document.visibilityState === 'hidden') return;
+        if (!image || !pixels || !levels || document.visibilityState === 'hidden') return;
 
         for (let index = 0; index < pixels.length; index += 1) {
-          const value = nextNoiseValue();
-          pixels[index] = 0xff000000 | (value << 16) | (value << 8) | value;
+          const target = 108 + (nextNoiseValue() % 73);
+          const value = Math.round(levels[index] * .74 + target * .26);
+          const red = Math.min(255, value + 6);
+          const green = Math.min(255, value + 3);
+
+          levels[index] = value;
+          pixels[index] = 0xff000000 | (value << 16) | (green << 8) | red;
         }
 
         context.putImageData(image, 0, 0);
       };
 
+      sizeCanvas();
       drawNoise();
 
-      if (reduceMotion) return;
+      let intervalId;
+      if (!reduceMotion) {
+        intervalId = window.setInterval(drawNoise, 160);
+      }
 
-      const intervalId = window.setInterval(drawNoise, 90);
-      document.addEventListener('astro:before-swap', () => {
-        window.clearInterval(intervalId);
-      }, { once: true });
+      const handleResize = () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+          sizeCanvas();
+          drawNoise();
+        }, 200);
+      };
+
+      const cleanup = () => {
+        if (intervalId) window.clearInterval(intervalId);
+        window.clearTimeout(resizeTimer);
+        window.removeEventListener('resize', handleResize);
+      };
+
+      window.addEventListener('resize', handleResize, { passive: true });
+      document.addEventListener('astro:before-swap', cleanup, { once: true });
     });
   };
 
@@ -64,21 +103,21 @@
 
 <style>
   .canvas-grain {
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: 2;
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     pointer-events: none;
-    opacity: var(--canvas-grain-opacity, .09);
-    mix-blend-mode: overlay;
-    filter: contrast(145%);
+    opacity: var(--grain-opacity, .045);
+    mix-blend-mode: soft-light;
+    filter: contrast(110%);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .canvas-grain {
-      opacity: .05;
+      opacity: .035;
     }
   }
 </style>
