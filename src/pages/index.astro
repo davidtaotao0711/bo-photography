@@ -6,11 +6,25 @@ import PhotoCard from '../components/PhotoCard.astro';
 import ScrollReveal from '../components/ScrollReveal.astro';
 import photos from '../data/photos.json';
 import site from '../data/site.json';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 const featured = photos.filter((photo) => photo.featured).slice(0, 12);
+const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
 const introImages = site.homeIntroImages
-  .map((src) => {
+  .map((src, index) => {
     const photo = photos.find((item) => item.image === src);
-    return { src, alt: photo?.alt || `Nature photograph by ${site.name}` };
+    const mobileFilename = `mobile-${String(index + 1).padStart(2, '0')}.jpg`;
+    const mobileSrc = `/images/home-mobile/${mobileFilename}`;
+
+    return {
+      src,
+      mobileSrc: existsSync(join(publicDir, 'images', 'home-mobile', mobileFilename))
+        ? mobileSrc
+        : undefined,
+      alt: photo?.alt || `Nature photograph by ${site.name}`,
+    };
   })
   .slice(0, 6);
 ---
@@ -43,10 +57,17 @@ const introImages = site.homeIntroImages
 
   .homepage-root {
     --home-bg: #f4f0e6;
-    --grain-opacity: .045;
     min-height: 100vh;
     position: relative;
     background: var(--home-bg);
+  }
+
+  :global(.homepage-root .section-intro),
+  :global(.homepage-root .photo-card__meta),
+  :global(.homepage-root .photo-card__home-caption),
+  :global(.homepage-root .section-end) {
+    position: relative;
+    z-index: 21;
   }
 </style>
 

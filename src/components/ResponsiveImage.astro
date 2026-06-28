@@ -3,6 +3,7 @@ import { getResponsiveImage } from '../utils/responsive-image.js';
 
 interface Props {
   src: string;
+  mobileSrc?: string;
   alt: string;
   sizes: string;
   loading?: 'eager' | 'lazy';
@@ -15,6 +16,7 @@ interface Props {
 
 const {
   src,
+  mobileSrc,
   alt,
   sizes,
   loading = 'lazy',
@@ -28,6 +30,7 @@ const responsive = getResponsiveImage(src);
 ---
 
 <picture class:list={['responsive-image', className]}>
+  {mobileSrc && <source media="(max-width: 768px)" srcset={mobileSrc} sizes="100vw" />}
   {responsive?.webpSrcset && <source type="image/webp" srcset={responsive.webpSrcset} sizes={sizes} />}
   <img
     class={imgClass}

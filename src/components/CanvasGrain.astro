@@ -1,123 +1,41 @@
-<canvas class="canvas-grain" data-canvas-grain aria-hidden="true"></canvas>
-
-<script>
-  const initializeCanvasGrain = () => {
-    const canvases = document.querySelectorAll('[data-canvas-grain]');
-
-    canvases.forEach((canvas) => {
-      if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.ready === 'true') return;
-
-      const context = canvas.getContext('2d', { alpha: false });
-      if (!context) return;
-
-      canvas.dataset.ready = 'true';
-
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let image;
-      let pixels;
-      let levels;
-      let resizeTimer;
-      let seed = (Date.now() ^ window.innerWidth ^ window.innerHeight) | 0;
-
-      const nextNoiseValue = () => {
-        seed ^= seed << 13;
-        seed ^= seed >>> 17;
-        seed ^= seed << 5;
-        return seed & 255;
-      };
-
-      const sizeCanvas = () => {
-        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        const viewportRatio = window.innerHeight / Math.max(window.innerWidth, 1);
-        const sourceWidth = Math.min(
-          1024,
-          Math.max(512, Math.round(window.innerWidth * dpr * .8)),
-        );
-        const sourceHeight = Math.min(
-          768,
-          Math.max(320, Math.round(sourceWidth * viewportRatio)),
-        );
-
-        canvas.width = sourceWidth;
-        canvas.height = sourceHeight;
-        image = context.createImageData(sourceWidth, sourceHeight);
-        pixels = new Uint32Array(image.data.buffer);
-        levels = new Uint8Array(pixels.length);
-
-        for (let index = 0; index < levels.length; index += 1) {
-          levels[index] = 108 + (nextNoiseValue() % 73);
-        }
-      };
-
-      const drawNoise = () => {
-        if (!image || !pixels || !levels || document.visibilityState === 'hidden') return;
-
-        for (let index = 0; index < pixels.length; index += 1) {
-          const target = 108 + (nextNoiseValue() % 73);
-          const value = Math.round(levels[index] * .74 + target * .26);
-          const red = Math.min(255, value + 6);
-          const green = Math.min(255, value + 3);
-
-          levels[index] = value;
-          pixels[index] = 0xff000000 | (value << 16) | (green << 8) | red;
-        }
-
-        context.putImageData(image, 0, 0);
-      };
-
-      sizeCanvas();
-      drawNoise();
-
-      let intervalId;
-      if (!reduceMotion) {
-        intervalId = window.setInterval(drawNoise, 160);
-      }
-
-      const handleResize = () => {
-        window.clearTimeout(resizeTimer);
-        resizeTimer = window.setTimeout(() => {
-          sizeCanvas();
-          drawNoise();
-        }, 200);
-      };
-
-      const cleanup = () => {
-        if (intervalId) window.clearInterval(intervalId);
-        window.clearTimeout(resizeTimer);
-        window.removeEventListener('resize', handleResize);
-      };
-
-      window.addEventListener('resize', handleResize, { passive: true });
-      document.addEventListener('astro:before-swap', cleanup, { once: true });
-    });
-  };
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeCanvasGrain, { once: true });
-  } else {
-    initializeCanvasGrain();
-  }
-
-  document.addEventListener('astro:page-load', initializeCanvasGrain);
-</script>
+<div class="grain-overlay" aria-hidden="true">
+  <div class="grain-overlay__texture"></div>
+</div>
 
 <style>
-  .canvas-grain {
+  .grain-overlay {
     position: fixed;
     inset: 0;
-    z-index: 2;
-    display: block;
+    z-index: 20;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
     pointer-events: none;
-    opacity: var(--grain-opacity, .045);
-    mix-blend-mode: soft-light;
-    filter: contrast(110%);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .canvas-grain {
-      opacity: .035;
-    }
+  .grain-overlay__texture {
+    position: absolute;
+    inset: -200%;
+    width: 400%;
+    height: 400%;
+    opacity: .5;
+    background-image: url("/images/grain.png");
+    background-size: 256px 256px;
+    background-repeat: repeat;
+    animation: grainMove 8s steps(10, start) infinite;
+  }
+
+  @keyframes grainMove {
+    0% { transform: translate(0%, 0%); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+    100% { transform: translate(0%, 0%); }
   }
 </style>

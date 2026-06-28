@@ -20,7 +20,7 @@ p, h1, h2, figure { margin: 0; }
 .page-shell { padding-inline: var(--pad); }
 .eyebrow { font-size: 0.68rem; line-height: 1.3; text-transform: uppercase; letter-spacing: 0.19em; }
 
-.site-header { height: 6rem; padding: 0 var(--pad); display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 10; }
+.site-header { height: 6rem; padding: 0 var(--pad); display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 30; }
 .site-header--overlay { position: absolute; inset: 0 0 auto; color: white; }
 .wordmark { font-family: var(--serif); font-size: 0.88rem; letter-spacing: 0.17em; }
 .site-header nav { display: flex; gap: clamp(1.5rem, 4vw, 3.75rem); }

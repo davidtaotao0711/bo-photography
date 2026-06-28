@@ -3,6 +3,7 @@ import ResponsiveImage from './ResponsiveImage.astro';
 
 interface IntroImage {
   src: string;
+  mobileSrc?: string;
   alt: string;
 }
 
@@ -26,6 +27,7 @@ const { images, name, tagline } = Astro.props;
       <div class:list={['home-intro__slide', { 'is-active': index === 0 }]} data-intro-slide>
         <ResponsiveImage
           src={image.src}
+          mobileSrc={image.mobileSrc}
           alt=""
           loading={index === 0 ? 'eager' : 'lazy'}
           fetchpriority={index === 0 ? 'high' : 'low'}
@@ -214,7 +216,7 @@ const { images, name, tagline } = Astro.props;
   .home-intro__content {
     position: absolute;
     inset: 0;
-    z-index: 3;
+    z-index: 30;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -270,6 +272,17 @@ const { images, name, tagline } = Astro.props;
   }
 
   @media (max-width: 720px) {
+    .home-intro__slide :global(.responsive-image),
+    .home-intro__slide :global(img) {
+      width: 100%;
+      height: 100svh;
+    }
+
+    .home-intro__slide :global(img) {
+      object-fit: cover;
+      object-position: center center;
+    }
+
     .home-intro__content {
       align-items: flex-start;
       flex-direction: column;
