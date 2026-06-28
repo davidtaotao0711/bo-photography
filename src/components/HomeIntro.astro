@@ -68,6 +68,7 @@ const { images, name, tagline } = Astro.props;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let activeIndex = 0;
     let rotationId;
+    let firstRotationId;
 
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -89,10 +90,14 @@ const { images, name, tagline } = Astro.props;
     };
 
     if (!reduceMotion && slides.length > 1) {
-      rotationId = window.setInterval(showNextSlide, 4800);
+      firstRotationId = window.setTimeout(() => {
+        showNextSlide();
+        rotationId = window.setInterval(showNextSlide, 5600);
+      }, 3000);
     }
 
     const enterSite = () => {
+      if (firstRotationId) window.clearTimeout(firstRotationId);
       if (rotationId) window.clearInterval(rotationId);
       intro.dataset.state = 'entered';
       root.classList.remove('home-intro-locked');
@@ -183,7 +188,7 @@ const { images, name, tagline } = Astro.props;
 
   .home-intro__slide {
     opacity: 0;
-    transition: opacity 1600ms cubic-bezier(.22, .61, .36, 1);
+    transition: opacity 2200ms cubic-bezier(.22, .61, .36, 1);
   }
 
   .home-intro__slide.is-active {

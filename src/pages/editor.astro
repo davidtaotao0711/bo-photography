@@ -1,10 +1,12 @@
 ---
 import photos from '../data/photos.json';
 import series from '../data/series.json';
+import site from '../data/site.json';
 import { photoCategories as categoryConfig } from '../data/categories.js';
 
 const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
+const serializedSite = JSON.stringify(site).replace(/</g, '\\u003c');
 const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u003c');
 ---
 
@@ -20,6 +22,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   <body>
     <script id="initial-photos" type="application/json" set:html={serializedPhotos}></script>
     <script id="initial-series" type="application/json" set:html={serializedSeries}></script>
+    <script id="initial-site" type="application/json" set:html={serializedSite}></script>
     <script id="initial-categories" type="application/json" set:html={serializedCategories}></script>
 
     <header class="editor-header">
@@ -235,6 +238,13 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           <label>首页点击文案<input id="form-home-caption" placeholder="留空则不显示文案" /></label>
           <label class="full">图片描述<textarea id="form-alt" rows="3" required></textarea></label>
           <label class="toggle full"><input id="form-featured" type="checkbox" /><span></span>显示在首页精选</label>
+          <div class="home-intro-control full" id="home-intro-control" hidden>
+            <div>
+              <strong>首页封面轮播</strong>
+              <span id="home-intro-status">这张横图尚未设为首页封面</span>
+            </div>
+            <button class="button" id="set-home-intro" type="button">设为首页封面</button>
+          </div>
         </div>
         <p id="form-error" class="form-error" role="alert"></p>
         <div class="dialog-actions">
@@ -243,6 +253,24 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             <button class="text-button" value="cancel" type="submit">取消</button>
             <button class="button button--primary" id="apply-photo" type="button">应用修改</button>
           </div>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="home-intro-dialog" class="home-intro-dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Home cover</p>
+            <h2>选择封面顺序</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+        </div>
+        <p class="home-intro-dialog__copy">选择第几张封面。确认后会替换原来占据该位置的图片。</p>
+        <div class="home-intro-slots" id="home-intro-slots"></div>
+        <div class="dialog-actions">
+          <span></span>
+          <button class="text-button" value="cancel" type="submit">取消</button>
         </div>
       </form>
     </dialog>
@@ -360,12 +388,16 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
       const initialNode = document.querySelector('#initial-photos');
       const initialSeriesNode = document.querySelector('#initial-series');
+      const initialSiteNode = document.querySelector('#initial-site');
       const initialCategoriesNode = document.querySelector('#initial-categories');
       const initialPhotos = JSON.parse(initialNode?.textContent || '[]');
       const initialSeries = JSON.parse(initialSeriesNode?.textContent || '[]');
+      const initialSite = JSON.parse(initialSiteNode?.textContent || '{}');
       const photoCategoryConfig = JSON.parse(initialCategoriesNode?.textContent || '[]');
       let photoData = structuredClone(initialPhotos);
       let seriesData = structuredClone(initialSeries);
+      let siteData = structuredClone(initialSite);
+      let siteDirty = false;
       let fileHandle = null;
       let dirty = false;
       let activeSeriesSlug = sessionStorage.getItem('editorSeriesSlug') || '';
@@ -905,6 +937,60 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#form-row-span-field').classList.toggle('is-disabled', !crop);
       }
 
+      function updateHomeIntroControl(photo) {
+        const control = $('#home-intro-control');
+        const status = $('#home-intro-status');
+        const isLandscape = photo?.orientation === 'landscape';
+        control.hidden = !isLandscape;
+        if (!isLandscape) return;
+
+        const positions = (siteData.homeIntroImages || [])
+          .map((image, index) => image === photo.image ? index + 1 : 0)
+          .filter(Boolean);
+        status.textContent = positions.length
+          ? `当前位于首页第 ${positions.join('、')} 张`
+          : '这张横图尚未设为首页封面';
+      }
+
+      function openHomeIntroDialog() {
+        const photo = photoData.find((item) => item.id === $('#form-original-id').value);
+        if (!photo || photo.orientation !== 'landscape') {
+          window.alert('首页封面只允许选择横图。');
+          return;
+        }
+
+        const images = Array.isArray(siteData.homeIntroImages) ? siteData.homeIntroImages : [];
+        $('#home-intro-slots').innerHTML = Array.from({ length: 6 }, (_, index) => {
+          const image = images[index] || '';
+          return `
+            <button class="home-intro-slot" type="button" data-intro-slot="${index}">
+              <span>第 ${index + 1} 张</span>
+              ${image ? `<img src="${escapeHtml(image)}" alt="" />` : '<i>空</i>'}
+            </button>`;
+        }).join('');
+        $('#home-intro-dialog').dataset.photoId = photo.id;
+        $('#home-intro-dialog').showModal();
+      }
+
+      function setHomeIntroSlot(slot) {
+        const dialog = $('#home-intro-dialog');
+        const photo = photoData.find((item) => item.id === dialog.dataset.photoId);
+        if (!photo || photo.orientation !== 'landscape' || slot < 0 || slot > 5) return;
+
+        const images = Array.isArray(siteData.homeIntroImages) ? [...siteData.homeIntroImages] : [];
+        while (images.length < 6) images.push('');
+        const previousSlot = images.indexOf(photo.image);
+        const replacedImage = images[slot];
+        images[slot] = photo.image;
+        if (previousSlot >= 0 && previousSlot !== slot) images[previousSlot] = replacedImage;
+        siteData.homeIntroImages = images.slice(0, 6);
+        siteDirty = true;
+        setDirty(true, `首页第 ${slot + 1} 张封面已更新，尚未保存`);
+        dialog.close();
+        updateHomeIntroControl(photo);
+        showToast(`已设为首页第 ${slot + 1} 张封面，点击保存后生效`);
+      }
+
       function openInspector(id) {
         const photo = photoData.find((item) => item.id === id);
         if (!photo) return;
@@ -945,6 +1031,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         $('#form-featured').checked = Boolean(photo.featured);
         $('#form-preview').src = photo.image;
         $('#form-preview').alt = photo.alt || '';
+        updateHomeIntroControl(photo);
         formError.textContent = '';
         inspector.showModal();
       }
@@ -1503,8 +1590,22 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           if (response.ok) {
             const result = await response.json();
             photoData = validatePhotos(result.photos || photoData);
+            const savedSite = siteDirty;
+            if (siteDirty) {
+              const siteResponse = await fetch('/__editor/site/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ homeIntroImages: siteData.homeIntroImages }),
+              });
+              const siteResult = await siteResponse.json().catch(() => ({}));
+              if (!siteResponse.ok) throw new Error(siteResult.error || '首页封面保存失败。');
+              siteData = structuredClone(siteResult.site || siteData);
+              siteDirty = false;
+            }
             setDirty(false);
-            showToast(`已保存 ${photoData.length} 张照片到 photos.json`);
+            showToast(savedSite
+              ? `已保存 ${photoData.length} 张照片和首页封面设置`
+              : `已保存 ${photoData.length} 张照片到 photos.json`);
             return;
           }
           if (response.status !== 404) {
@@ -1885,6 +1986,11 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       $('#clear-search').addEventListener('click', () => { searchInput.value = ''; render(); });
       $('#apply-photo').addEventListener('click', applyInspector);
       $('#delete-photo').addEventListener('click', () => deletePhoto($('#form-original-id').value));
+      $('#set-home-intro').addEventListener('click', openHomeIntroDialog);
+      $('#home-intro-slots').addEventListener('click', (event) => {
+        const button = event.target.closest('[data-intro-slot]');
+        if (button) setHomeIntroSlot(Number(button.dataset.introSlot));
+      });
       $('#form-image').addEventListener('input', (event) => { $('#form-preview').src = event.target.value; });
       $('#open-file').addEventListener('click', async () => {
         if ('showOpenFilePicker' in window) {
@@ -1919,11 +2025,13 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         if (!window.confirm('确定恢复到页面最初载入的数据吗？当前修改会丢失。')) return;
         snapshot();
         photoData = structuredClone(initialPhotos);
+        siteData = structuredClone(initialSite);
+        siteDirty = false;
         setDirty(true, '已恢复初始数据，尚未保存');
         render();
       });
       window.addEventListener('beforeunload', (event) => {
-        if (!dirty && !layoutDirty) return;
+        if (!dirty && !siteDirty && !layoutDirty) return;
         event.preventDefault();
         event.returnValue = '';
       });
@@ -2268,6 +2376,19 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .form-grid input, .form-grid select, .form-grid textarea { margin-top: .4rem; font-size: .78rem; letter-spacing: 0; text-transform: none; }
   .form-grid .full { grid-column: 1/-1; }
   .form-grid label.is-disabled { opacity: .42; }
+  .home-intro-control {
+    padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-block: 1px solid var(--line);
+  }
+  .home-intro-control[hidden] { display: none; }
+  .home-intro-control > div { min-width: 0; display: flex; flex-direction: column; gap: .25rem; }
+  .home-intro-control strong { font-size: .64rem; font-weight: 400; letter-spacing: .09em; text-transform: uppercase; }
+  .home-intro-control span { color: var(--muted); font-size: .68rem; }
+  .home-intro-control .button { flex: 0 0 auto; }
   .toggle { min-height: 2.5rem; display: flex; align-items: center; gap: .65rem; cursor: pointer; }
   .toggle input { width: 1px; height: 1px; position: absolute; opacity: 0; }
   .toggle span { width: 2.4rem; height: 1.3rem; padding: .15rem; border-radius: 2rem; background: #ccc9c1; transition: background 150ms; }
@@ -2278,6 +2399,15 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .dialog-actions { padding-top: 1rem; border-top: 1px solid var(--line); }
   .dialog-actions > div { display: flex; align-items: center; gap: .75rem; }
   .warning-dialog { width: min(36rem, calc(100vw - 2rem)); }
+  .home-intro-dialog { width: min(48rem, calc(100vw - 2rem)); }
+  .home-intro-dialog__copy { margin: 2rem 0 1.25rem; color: var(--muted); line-height: 1.65; }
+  .home-intro-slots { margin-bottom: 2rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+  .home-intro-slot { min-width: 0; padding: 0; border: 1px solid var(--line); color: var(--ink); background: transparent; text-align: left; }
+  .home-intro-slot span { display: block; padding: .65rem .75rem; color: var(--muted); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; }
+  .home-intro-slot img, .home-intro-slot i { width: 100%; aspect-ratio: 16/9; display: block; }
+  .home-intro-slot img { object-fit: cover; }
+  .home-intro-slot i { display: grid; place-items: center; color: var(--muted); background: #e7e4dc; font: 400 1rem var(--serif); }
+  .home-intro-slot:hover, .home-intro-slot:focus-visible { border-color: var(--ink); }
   .series-dialog { width: min(42rem, calc(100vw - 2rem)); }
   .series-dialog__intro { margin: 2rem 0 1.5rem; color: var(--muted); line-height: 1.65; }
   .series-dialog input[readonly] { color: var(--muted); background: rgba(0,0,0,.035); cursor: not-allowed; }
@@ -2350,6 +2480,9 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     .editor-card__meta > span:last-child { display: none; }
     .form-grid { grid-template-columns: 1fr; }
     .form-grid-sub { grid-template-columns: 1fr; }
+    .home-intro-control { align-items: stretch; flex-direction: column; }
+    .home-intro-control .button { width: 100%; }
+    .home-intro-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .form-grid .full { grid-column: auto; }
     dialog form { padding: 1.25rem; }
     .dialog-preview { margin-inline: -1.25rem; }

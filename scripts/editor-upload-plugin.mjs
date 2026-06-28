@@ -12,6 +12,7 @@ const SERIES_UPDATE_ENDPOINT = '/__editor/series/update';
 const SERIES_DELETE_ENDPOINT = '/__editor/series/delete';
 const SERIES_LAYOUT_ENDPOINT = '/__editor/series/layout';
 const PHOTOS_SAVE_ENDPOINT = '/__editor/photos/save';
+const SITE_SAVE_ENDPOINT = '/__editor/site/save';
 const CATEGORIES = new Set(photoCategorySlugs);
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -69,10 +70,36 @@ async function savePhotos(request, projectRoot) {
   return { photos, count: photos.length };
 }
 
+async function saveSiteIntro(request, projectRoot) {
+  const body = await webRequestFrom(request, SITE_SAVE_ENDPOINT).json().catch(() => {
+    throw new RequestError(400, '首页封面设置不是有效 JSON。');
+  });
+  const homeIntroImages = body?.homeIntroImages;
+  if (!Array.isArray(homeIntroImages) || homeIntroImages.length !== 6) {
+    throw new RequestError(400, '首页封面必须正好包含 6 张图片。');
+  }
+  if (new Set(homeIntroImages).size !== homeIntroImages.length) {
+    throw new RequestError(400, '首页封面不能重复使用同一张图片。');
+  }
+
+  const paths = dataPaths(projectRoot);
+  const [site, photos] = await Promise.all([readJson(paths.site), readJson(paths.photos)]);
+  homeIntroImages.forEach((image, index) => {
+    const photo = photos.find((item) => item.image === image);
+    if (!photo) throw new RequestError(400, `第 ${index + 1} 张封面不在 photos.json 中。`);
+    if (photo.orientation !== 'landscape') throw new RequestError(400, `第 ${index + 1} 张封面不是横图。`);
+  });
+
+  const updatedSite = { ...site, homeIntroImages };
+  await writeJson(paths.site, updatedSite);
+  return { site: updatedSite };
+}
+
 function dataPaths(projectRoot) {
   return {
     photos: path.join(projectRoot, 'src', 'data', 'photos.json'),
     series: path.join(projectRoot, 'src', 'data', 'series.json'),
+    site: path.join(projectRoot, 'src', 'data', 'site.json'),
   };
 }
 
@@ -439,6 +466,7 @@ export function editorUploadPlugin() {
           [SERIES_DELETE_ENDPOINT, deleteSeries],
           [SERIES_LAYOUT_ENDPOINT, saveSeriesLayout],
           [PHOTOS_SAVE_ENDPOINT, savePhotos],
+          [SITE_SAVE_ENDPOINT, saveSiteIntro],
         ]);
         const handler = handlers.get(pathname);
         if (!handler) return next();
