@@ -6,6 +6,7 @@ const root = process.cwd();
 const sourceRoot = path.join(root, 'public', 'images');
 const outputRoot = path.join(sourceRoot, 'generated');
 const manifestPath = path.join(root, 'src', 'data', 'image-manifest.json');
+const sitePath = path.join(root, 'src', 'data', 'site.json');
 const targetWidths = [480, 800, 1200, 1600];
 const heroTargetWidths = [960, 1600, 2400, 3200, 3840];
 const sourceExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
@@ -45,6 +46,8 @@ await fs.mkdir(outputRoot, { recursive: true });
 
 const files = await walk(sourceRoot);
 const manifest = {};
+const site = JSON.parse(await fs.readFile(sitePath, 'utf8'));
+const introImages = new Set(Array.isArray(site.homeIntroImages) ? site.homeIntroImages : []);
 
 for (const file of files) {
   const metadata = await sharp(file).metadata();
@@ -54,10 +57,11 @@ for (const file of files) {
 
   const relative = path.relative(sourceRoot, file);
   const normalizedRelative = relative.replace(/\\/g, '/');
-  const isHomeCover = normalizedRelative === 'home/cover.jpg';
-  const widthsForImage = isHomeCover ? heroTargetWidths : targetWidths;
-  const maxGeneratedWidth = isHomeCover ? 3840 : 1600;
-  const webpQuality = isHomeCover ? 90 : 76;
+  const publicPath = toPublicPath(file);
+  const isHeroImage = normalizedRelative === 'home/cover.jpg' || introImages.has(publicPath);
+  const widthsForImage = isHeroImage ? heroTargetWidths : targetWidths;
+  const maxGeneratedWidth = isHeroImage ? 3840 : 1600;
+  const webpQuality = isHeroImage ? 90 : 76;
   const usableWidths = widthsForImage.filter((targetWidth) => targetWidth < width);
   const largestGeneratedWidth = Math.min(width, maxGeneratedWidth);
   if (!usableWidths.includes(largestGeneratedWidth)) usableWidths.push(largestGeneratedWidth);
@@ -66,11 +70,11 @@ for (const file of files) {
   for (const targetWidth of [...new Set(usableWidths)].sort((a, b) => a - b)) {
     const outputName = toOutputName(relative, targetWidth);
     const outputPath = path.join(outputRoot, outputName);
-    if (isHomeCover || !await exists(outputPath)) {
+    if (isHeroImage || !await exists(outputPath)) {
       await sharp(file)
         .rotate()
         .resize({ width: targetWidth, withoutEnlargement: true })
-        .webp({ quality: webpQuality, effort: isHomeCover ? 5 : 3 })
+        .webp({ quality: webpQuality, effort: isHeroImage ? 5 : 3 })
         .toFile(outputPath);
     }
 
@@ -80,7 +84,7 @@ for (const file of files) {
     });
   }
 
-  manifest[toPublicPath(file)] = {
+  manifest[publicPath] = {
     width,
     height,
     variants,

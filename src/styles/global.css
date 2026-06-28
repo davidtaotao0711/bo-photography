@@ -86,9 +86,10 @@ p, h1, h2, figure { margin: 0; }
 .back-link { align-self: start; width: max-content; font-size: .66rem; text-transform: uppercase; letter-spacing: .13em; color: var(--muted); }
 .category-head__count { align-self: end; justify-self: end; color: var(--muted); font-size: .68rem; text-transform: uppercase; letter-spacing: .13em; }
 .gallery { padding-bottom: clamp(8rem, 15vw, 14rem); }
-.gallery:not(.gallery--rows) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); align-items: start; }
-.gallery:not(.gallery--rows) > .photo-card:nth-child(3n + 2) { margin-top: clamp(3rem, 9vw, 9rem); }
-.gallery:not(.gallery--rows) > .photo-card--portrait { width: 78%; justify-self: center; }
+.gallery:not(.gallery--rows):not(.gallery--collage) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(5rem, 10vw, 10rem) clamp(2rem, 6vw, 7rem); align-items: start; }
+.gallery:not(.gallery--rows):not(.gallery--collage) > .photo-card:nth-child(3n + 2) { margin-top: clamp(3rem, 9vw, 9rem); }
+.gallery:not(.gallery--rows):not(.gallery--collage) > .photo-card--portrait { width: 78%; justify-self: center; }
+.gallery--collage { display: block; }
 .gallery--rows { display: flex; flex-direction: column; gap: clamp(5rem, 10vw, 10rem); }
 .gallery-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); }
 .gallery-row { grid-template-columns: repeat(var(--gallery-row-count), minmax(0, 1fr)); }
@@ -269,8 +270,8 @@ p, h1, h2, figure { margin: 0; }
   .index-row p { display: none; }
   .category-head { min-height: 40vh; padding-top: 3rem; }
   .category-head__count { justify-self: start; }
-  .gallery:not(.gallery--rows) { grid-template-columns: 1fr; gap: 4.5rem; }
-  .gallery:not(.gallery--rows) > .photo-card:nth-child(3n + 2) { margin-top: 0; }
+  .gallery:not(.gallery--rows):not(.gallery--collage) { grid-template-columns: 1fr; gap: 4.5rem; }
+  .gallery:not(.gallery--rows):not(.gallery--collage) > .photo-card:nth-child(3n + 2) { margin-top: 0; }
   .gallery .photo-card { width: 100% !important; transform: none !important; justify-self: stretch !important; margin: 0 0 4.5rem; }
   .gallery .photo-card--portrait { width: 82% !important; margin-inline: auto; }
   .gallery--rows { display: block; }

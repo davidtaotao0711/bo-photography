@@ -228,20 +228,24 @@
     "height": 4032,
     "variants": [
       {
-        "width": 480,
-        "src": "/images/generated/nature__nature-001-480.webp"
-      },
-      {
-        "width": 800,
-        "src": "/images/generated/nature__nature-001-800.webp"
-      },
-      {
-        "width": 1200,
-        "src": "/images/generated/nature__nature-001-1200.webp"
+        "width": 960,
+        "src": "/images/generated/nature__nature-001-960.webp"
       },
       {
         "width": 1600,
         "src": "/images/generated/nature__nature-001-1600.webp"
+      },
+      {
+        "width": 2400,
+        "src": "/images/generated/nature__nature-001-2400.webp"
+      },
+      {
+        "width": 3200,
+        "src": "/images/generated/nature__nature-001-3200.webp"
+      },
+      {
+        "width": 3840,
+        "src": "/images/generated/nature__nature-001-3840.webp"
       }
     ]
   },
@@ -3340,6 +3344,136 @@
       {
         "width": 1600,
         "src": "/images/generated/street__street-051-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-002.jpg": {
+    "width": 5940,
+    "height": 3859,
+    "variants": [
+      {
+        "width": 960,
+        "src": "/images/generated/nature__nature-002-960.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-002-1600.webp"
+      },
+      {
+        "width": 2400,
+        "src": "/images/generated/nature__nature-002-2400.webp"
+      },
+      {
+        "width": 3200,
+        "src": "/images/generated/nature__nature-002-3200.webp"
+      },
+      {
+        "width": 3840,
+        "src": "/images/generated/nature__nature-002-3840.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-003.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 960,
+        "src": "/images/generated/nature__nature-003-960.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-003-1600.webp"
+      },
+      {
+        "width": 2400,
+        "src": "/images/generated/nature__nature-003-2400.webp"
+      },
+      {
+        "width": 3200,
+        "src": "/images/generated/nature__nature-003-3200.webp"
+      },
+      {
+        "width": 3840,
+        "src": "/images/generated/nature__nature-003-3840.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-004.jpg": {
+    "width": 5622,
+    "height": 3408,
+    "variants": [
+      {
+        "width": 960,
+        "src": "/images/generated/nature__nature-004-960.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-004-1600.webp"
+      },
+      {
+        "width": 2400,
+        "src": "/images/generated/nature__nature-004-2400.webp"
+      },
+      {
+        "width": 3200,
+        "src": "/images/generated/nature__nature-004-3200.webp"
+      },
+      {
+        "width": 3840,
+        "src": "/images/generated/nature__nature-004-3840.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-006.jpg": {
+    "width": 5891,
+    "height": 3695,
+    "variants": [
+      {
+        "width": 960,
+        "src": "/images/generated/nature__nature-006-960.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-006-1600.webp"
+      },
+      {
+        "width": 2400,
+        "src": "/images/generated/nature__nature-006-2400.webp"
+      },
+      {
+        "width": 3200,
+        "src": "/images/generated/nature__nature-006-3200.webp"
+      },
+      {
+        "width": 3840,
+        "src": "/images/generated/nature__nature-006-3840.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-007.jpg": {
+    "width": 5539,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 960,
+        "src": "/images/generated/nature__nature-007-960.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-007-1600.webp"
+      },
+      {
+        "width": 2400,
+        "src": "/images/generated/nature__nature-007-2400.webp"
+      },
+      {
+        "width": 3200,
+        "src": "/images/generated/nature__nature-007-3200.webp"
+      },
+      {
+        "width": 3840,
+        "src": "/images/generated/nature__nature-007-3840.webp"
       }
     ]
   }
