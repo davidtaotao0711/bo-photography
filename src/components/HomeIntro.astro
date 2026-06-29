@@ -39,6 +39,21 @@ const { images, name, tagline } = Astro.props;
 
   <div class="home-intro__wash"></div>
 
+  <div class="home-intro__dots" role="group" aria-label="Intro image navigation">
+    {images.map((_, index) => (
+      <button
+        class:list={['home-intro__dot', { 'is-active': index === 0 }]}
+        type="button"
+        data-intro-dot
+        data-slide-index={index}
+        aria-label={`Show intro image ${index + 1}`}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+      >
+        <span aria-hidden="true"></span>
+      </button>
+    ))}
+  </div>
+
   <div class="home-intro__content">
     <div class="home-intro__identity">
       <p class="home-intro__name">{name}</p>
@@ -56,6 +71,10 @@ const { images, name, tagline } = Astro.props;
 </noscript>
 
 <script>
+  const FIRST_SLIDE_DELAY = 5000;
+  const SLIDE_INTERVAL = 8500;
+  const ENTER_SCROLL_DURATION = 1400;
+
   const initializeHomeIntro = () => {
     const intro = document.querySelector('[data-home-intro]');
     if (!(intro instanceof HTMLElement) || intro.dataset.ready === 'true') return;
@@ -66,11 +85,12 @@ const { images, name, tagline } = Astro.props;
     const root = document.documentElement;
     const enter = intro.querySelector('[data-intro-enter]');
     const slides = Array.from(intro.querySelectorAll('[data-intro-slide]'));
+    const dots = Array.from(intro.querySelectorAll('[data-intro-dot]'));
     const selectedWork = document.querySelector('#selected-work');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let activeIndex = 0;
     let rotationId;
-    let firstRotationId;
+    let manualTransitionId;
 
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -84,23 +104,60 @@ const { images, name, tagline } = Astro.props;
 
     window.addEventListener('scroll', holdIntroAtTop, { passive: true });
 
-    const showNextSlide = () => {
-      if (slides.length < 2) return;
+    const showSlide = (nextIndex, immediate = false) => {
+      if (nextIndex < 0 || nextIndex >= slides.length) return;
+
+      if (immediate && nextIndex !== activeIndex) {
+        if (manualTransitionId) window.clearTimeout(manualTransitionId);
+        intro.classList.add('is-manual-switch');
+        manualTransitionId = window.setTimeout(() => {
+          intro.classList.remove('is-manual-switch');
+          manualTransitionId = undefined;
+        }, 650);
+      }
+
       slides[activeIndex]?.classList.remove('is-active');
-      activeIndex = (activeIndex + 1) % slides.length;
+      dots[activeIndex]?.classList.remove('is-active');
+      dots[activeIndex]?.setAttribute('aria-pressed', 'false');
+
+      activeIndex = nextIndex;
+
       slides[activeIndex]?.classList.add('is-active');
+      dots[activeIndex]?.classList.add('is-active');
+      dots[activeIndex]?.setAttribute('aria-pressed', 'true');
     };
 
-    if (!reduceMotion && slides.length > 1) {
-      firstRotationId = window.setTimeout(() => {
-        showNextSlide();
-        rotationId = window.setInterval(showNextSlide, 6000);
-      }, 4000);
-    }
+    const clearRotation = () => {
+      if (!rotationId) return;
+      window.clearTimeout(rotationId);
+      rotationId = undefined;
+    };
+
+    const scheduleNextSlide = (delay) => {
+      clearRotation();
+      if (reduceMotion || slides.length < 2 || intro.dataset.state !== 'locked') return;
+
+      rotationId = window.setTimeout(() => {
+        showSlide((activeIndex + 1) % slides.length);
+        scheduleNextSlide(SLIDE_INTERVAL);
+      }, delay);
+    };
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const nextIndex = Number(dot.getAttribute('data-slide-index'));
+        if (!Number.isInteger(nextIndex)) return;
+        showSlide(nextIndex, true);
+        scheduleNextSlide(SLIDE_INTERVAL);
+      });
+    });
+
+    scheduleNextSlide(FIRST_SLIDE_DELAY);
 
     const enterSite = () => {
-      if (firstRotationId) window.clearTimeout(firstRotationId);
-      if (rotationId) window.clearInterval(rotationId);
+      clearRotation();
+      if (manualTransitionId) window.clearTimeout(manualTransitionId);
+      intro.classList.remove('is-manual-switch');
       intro.dataset.state = 'entered';
       root.classList.remove('home-intro-locked');
       window.removeEventListener('scroll', holdIntroAtTop);
@@ -117,7 +174,7 @@ const { images, name, tagline } = Astro.props;
 
           const startTop = window.scrollY;
           const distance = targetTop - startTop;
-          const duration = 1350;
+          const duration = ENTER_SCROLL_DURATION;
           const startedAt = performance.now();
           const previousScrollBehavior = root.style.scrollBehavior;
           root.style.scrollBehavior = 'auto';
@@ -168,6 +225,11 @@ const { images, name, tagline } = Astro.props;
     overflow: hidden;
   }
 
+  :global(.site-header--overlay) {
+    z-index: 40;
+    pointer-events: auto;
+  }
+
   .home-intro {
     min-height: 100vh;
     height: 100svh;
@@ -190,6 +252,7 @@ const { images, name, tagline } = Astro.props;
 
   .home-intro__images {
     z-index: 1;
+    pointer-events: none;
   }
 
   .home-intro__slide {
@@ -201,6 +264,10 @@ const { images, name, tagline } = Astro.props;
     opacity: 1;
   }
 
+  .home-intro.is-manual-switch .home-intro__slide {
+    transition-duration: 550ms;
+  }
+
   .home-intro__slide :global(img) {
     object-fit: cover;
     object-position: center;
@@ -208,6 +275,7 @@ const { images, name, tagline } = Astro.props;
 
   .home-intro__wash {
     z-index: 1;
+    pointer-events: none;
     background:
       linear-gradient(180deg, rgba(0, 0, 0, .24), transparent 28%),
       linear-gradient(0deg, rgba(0, 0, 0, .42), transparent 45%);
@@ -222,6 +290,56 @@ const { images, name, tagline } = Astro.props;
     justify-content: space-between;
     gap: 2rem;
     padding: 8rem var(--pad) clamp(2rem, 5vw, 4.5rem);
+    pointer-events: none;
+  }
+
+  .home-intro__dots {
+    position: absolute;
+    left: clamp(1.5rem, 3vw, 3rem);
+    top: 50%;
+    z-index: 31;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-50%);
+    pointer-events: auto;
+  }
+
+  .home-intro__dot {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .home-intro__dot span {
+    width: .25rem;
+    height: .25rem;
+    display: block;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .34;
+    transform: scale(.78);
+    transition: opacity 220ms ease, transform 220ms ease;
+  }
+
+  .home-intro__dot:hover span,
+  .home-intro__dot:focus-visible span {
+    opacity: .68;
+  }
+
+  .home-intro__dot.is-active span {
+    opacity: .92;
+    transform: scale(1);
+  }
+
+  .home-intro__dot:focus-visible {
+    outline: 1px solid rgba(255, 255, 255, .7);
+    outline-offset: -3px;
   }
 
   .home-intro__identity {
@@ -257,6 +375,7 @@ const { images, name, tagline } = Astro.props;
     text-transform: uppercase;
     letter-spacing: .2em;
     cursor: pointer;
+    pointer-events: auto;
     transition: opacity 220ms ease, border-color 220ms ease;
   }
 
@@ -301,6 +420,15 @@ const { images, name, tagline } = Astro.props;
     .home-intro__enter {
       margin-top: 1rem;
       align-self: flex-end;
+    }
+
+    .home-intro__dots {
+      left: max(.65rem, env(safe-area-inset-left));
+    }
+
+    .home-intro__dot {
+      width: 1.25rem;
+      height: 1.25rem;
     }
   }
 
