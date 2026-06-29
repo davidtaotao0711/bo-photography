@@ -94,8 +94,8 @@ const { images, name, tagline } = Astro.props;
     if (!reduceMotion && slides.length > 1) {
       firstRotationId = window.setTimeout(() => {
         showNextSlide();
-        rotationId = window.setInterval(showNextSlide, 5600);
-      }, 3000);
+        rotationId = window.setInterval(showNextSlide, 4800);
+      }, 5000);
     }
 
     const enterSite = () => {
@@ -117,7 +117,7 @@ const { images, name, tagline } = Astro.props;
 
           const startTop = window.scrollY;
           const distance = targetTop - startTop;
-          const duration = 950;
+          const duration = 1350;
           const startedAt = performance.now();
           const previousScrollBehavior = root.style.scrollBehavior;
           root.style.scrollBehavior = 'auto';
@@ -194,7 +194,7 @@ const { images, name, tagline } = Astro.props;
 
   .home-intro__slide {
     opacity: 0;
-    transition: opacity 2200ms cubic-bezier(.22, .61, .36, 1);
+    transition: opacity 3000ms cubic-bezier(.22, .61, .36, 1);
   }
 
   .home-intro__slide.is-active {
