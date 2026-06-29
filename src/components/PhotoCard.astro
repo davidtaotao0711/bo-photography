@@ -20,6 +20,7 @@ interface Photo {
 interface CollageLayout {
   colSpan: number;
   rowSpan: number;
+  ratio?: number | null;
   fit: 'cover' | 'contain';
   crop: boolean;
   focalX: number;
@@ -67,6 +68,7 @@ const layoutStyle = layoutScope !== 'none' ? [
 const collageStyle = collage && layout ? [
   `--collage-col-span: ${layout.colSpan}`,
   `--collage-aspect: ${layout.colSpan} / ${layout.rowSpan}`,
+  layout.ratio ? `--collage-display-aspect: 1 / ${layout.ratio}` : '',
   `--collage-fit: ${layout.fit}`,
   `--collage-focal-x: ${layout.focalX}%`,
   `--collage-focal-y: ${layout.focalY}%`,
@@ -77,7 +79,11 @@ const collageStyle = collage && layout ? [
   class:list={[
     "photo-card",
     `photo-card--${photo.orientation}`,
-    { "photo-card--collage": collage, "photo-card--cropped": collage && layout?.crop },
+    {
+      "photo-card--collage": collage,
+      "photo-card--cropped": collage && layout?.crop,
+      "photo-card--ratio-adjusted": collage && Boolean(layout?.ratio),
+    },
   ]}
   data-photo-id={photo.id}
   data-home-caption={homeCaptionMode ? '' : undefined}

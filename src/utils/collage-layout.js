@@ -1,6 +1,7 @@
 export const collageLayoutDefaults = Object.freeze({
   colSpan: 4,
   rowSpan: 4,
+  ratio: null,
   fit: 'contain',
   crop: false,
   focalX: 50,
@@ -21,6 +22,14 @@ const clamp = (value, min, max, fallback) => {
   return Number.isFinite(number) ? Math.min(max, Math.max(min, Math.round(number))) : fallback;
 };
 
+const clampRatio = (value) => {
+  if (value === null || value === undefined || value === '') return collageLayoutDefaults.ratio;
+  const number = Number(value);
+  return Number.isFinite(number)
+    ? Math.min(1.9, Math.max(0.55, Math.round(number * 100) / 100))
+    : collageLayoutDefaults.ratio;
+};
+
 export function normalizeCollageLayout(photo = {}) {
   const layout = photo.layout && typeof photo.layout === 'object' ? photo.layout : {};
   const colSpan = clamp(layout.colSpan, 3, 12, collageLayoutDefaults.colSpan);
@@ -30,6 +39,7 @@ export function normalizeCollageLayout(photo = {}) {
   return {
     colSpan,
     rowSpan,
+    ratio: clampRatio(layout.ratio),
     crop,
     fit: crop && layout.fit === 'cover' ? 'cover' : 'contain',
     focalX: clamp(layout.focalX, 0, 100, collageLayoutDefaults.focalX),

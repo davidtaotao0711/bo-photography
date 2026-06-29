@@ -408,6 +408,10 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       let draggedLayoutPhotoId = '';
       const history = [];
       const maxRecommendedFileSize = 5 * 1024 * 1024;
+      const COLLAGE_RATIO_MIN = 0.55;
+      const COLLAGE_RATIO_MAX = 1.9;
+      const COLLAGE_WIDTH_SPANS = [...new Set(Object.values(collageLayoutPresets).map((preset) => preset.colSpan))]
+        .sort((a, b) => a - b);
       const photoCategories = photoCategoryConfig.map((category) => category.slug);
       const rowLayoutCategories = photoCategoryConfig.filter((category) => category.rowLayout).map((category) => category.slug);
 
@@ -470,7 +474,8 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         if (editorMasonryMedia.matches) return;
 
         void container.offsetWidth;
-        const rowSpans = cards.map((card) => Math.max(1, card.offsetHeight));
+        const rowSize = Number.parseFloat(getComputedStyle(container).gridAutoRows) || 1;
+        const rowSpans = cards.map((card) => Math.max(1, Math.ceil(card.offsetHeight / rowSize)));
         cards.forEach((card, index) => {
           card.style.gridRowEnd = `span ${rowSpans[index]}`;
         });
@@ -517,7 +522,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
       function saveableLayout(photo) {
         const layout = normalizeCollageLayout(photo);
-        return {
+        const result = {
           colSpan: layout.colSpan,
           rowSpan: layout.rowSpan,
           crop: layout.crop,
@@ -525,6 +530,8 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           focalX: layout.focalX,
           focalY: layout.focalY,
         };
+        if (layout.ratio !== null) result.ratio = layout.ratio;
+        return result;
       }
 
       function setPhotoLayout(photo, values) {
@@ -556,7 +563,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         }
 
         const layout = normalizeCollageLayout(photo);
-        selection.textContent = `${photo.title || photo.id} · ${layout.colSpan} columns · ${layout.crop ? `Crop ${layout.rowSpan}` : 'Natural ratio'}`;
+        selection.textContent = `${photo.title || photo.id} · ${layout.colSpan} columns · ${layout.ratio ? `Ratio ${layout.ratio.toFixed(2)}` : layout.crop ? `Crop ${layout.rowSpan}` : 'Natural ratio'}`;
         document.querySelectorAll(`.editor-card[data-id="${CSS.escape(photo.id)}"]`).forEach((card) => card.classList.add('is-selected'));
         layoutToolbar.querySelector(`[data-layout-preset="${presetName(layout)}"]`)?.classList.add('is-active');
         layoutToolbar.querySelector('[data-layout-crop]')?.classList.toggle('is-active', layout.crop);
@@ -580,9 +587,9 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         const scopeIndex = scopeItems.findIndex((item) => item.id === photo.id);
         return `
           <article
-            class="editor-card editor-card--collage ${layout.crop ? 'editor-card--cropped' : ''} ${selectedLayoutPhotoId === photo.id ? 'is-selected' : ''}"
+            class="editor-card editor-card--collage ${layout.crop ? 'editor-card--cropped' : ''} ${layout.ratio ? 'is-ratio-adjusted' : ''} ${selectedLayoutPhotoId === photo.id ? 'is-selected' : ''}"
             data-id="${escapeHtml(photo.id)}"
-            style="--editor-col-span:${layout.colSpan}; --editor-aspect:${layout.colSpan}/${layout.rowSpan}; --editor-fit:${layout.fit}; --editor-focal-x:${layout.focalX}%; --editor-focal-y:${layout.focalY}%"
+            style="--editor-col-span:${layout.colSpan}; --editor-aspect:${layout.colSpan}/${layout.rowSpan}; ${layout.ratio ? `--editor-display-aspect:1/${layout.ratio};` : ''} --editor-fit:${layout.fit}; --editor-focal-x:${layout.focalX}%; --editor-focal-y:${layout.focalY}%"
           >
             <div class="editor-card__image" data-layout-select>
               <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" loading="lazy" />
@@ -592,10 +599,15 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
                 <button class="favorite ${photo.featured ? 'is-active' : ''}" type="button" data-action="featured" aria-label="${photo.featured ? '取消首页精选' : '加入首页精选'}" title="首页精选">★</button>
                 <button class="delete-control" type="button" data-action="delete" aria-label="删除照片" title="从网站中删除">×</button>
               `}
+              ${isSeriesPhoto ? '' : `
+                <button class="collage-resize-handle collage-resize-handle--left" type="button" data-collage-resize="width-left" aria-label="Drag to resize image width from the left" title="Drag to change width preset"></button>
+                <button class="collage-resize-handle collage-resize-handle--right" type="button" data-collage-resize="width-right" aria-label="Drag to resize image width from the right" title="Drag to change width preset"></button>
+                <button class="collage-resize-handle collage-resize-handle--height" type="button" data-collage-resize="height" aria-label="Drag to resize image container height" title="Drag to change image ratio"></button>
+              `}
             </div>
             <div class="editor-card__footer">
               <button class="editor-card__meta" type="button" data-action="edit">
-                <span><strong>${escapeHtml(photo.title || photo.id)}</strong>${escapeHtml(preset)} · ${layout.crop ? `crop ${escapeHtml(layout.fit)}` : 'natural'}</span>
+                <span data-layout-summary><strong>${escapeHtml(photo.title || photo.id)}</strong><small data-layout-summary-text>${escapeHtml(preset)} · ${layout.ratio ? `ratio ${layout.ratio.toFixed(2)}` : layout.crop ? `crop ${escapeHtml(layout.fit)}` : 'natural'}</small></span>
                 <span>编辑</span>
               </button>
               <div class="collage-order-controls" aria-label="调整照片顺序">
@@ -1533,8 +1545,10 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             const rowSpan = Number(photo.layout.rowSpan ?? 4);
             const focalX = Number(photo.layout.focalX ?? 50);
             const focalY = Number(photo.layout.focalY ?? 50);
+            const ratio = photo.layout.ratio === undefined ? null : Number(photo.layout.ratio);
             if (!Number.isFinite(colSpan) || colSpan < 3 || colSpan > 12) throw new Error(`${photo.id} 的 colSpan 应在 3–12 之间。`);
             if (!Number.isFinite(rowSpan) || rowSpan < 3 || rowSpan > 8) throw new Error(`${photo.id} 的 rowSpan 应在 3–8 之间。`);
+            if (ratio !== null && (!Number.isFinite(ratio) || ratio < COLLAGE_RATIO_MIN || ratio > COLLAGE_RATIO_MAX)) throw new Error(`${photo.id} 的 ratio 应在 ${COLLAGE_RATIO_MIN}–${COLLAGE_RATIO_MAX} 之间。`);
             if (photo.layout.crop !== undefined && typeof photo.layout.crop !== 'boolean') throw new Error(`${photo.id} 的 crop 应为 true 或 false。`);
             if (!['cover', 'contain'].includes(photo.layout.fit || 'contain')) throw new Error(`${photo.id} 的 fit 应为 cover 或 contain。`);
             if (!Number.isFinite(focalX) || focalX < 0 || focalX > 100) throw new Error(`${photo.id} 的 focalX 应在 0–100 之间。`);
@@ -1714,6 +1728,117 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         });
       }
 
+      function nearestCollageSpan(value) {
+        return COLLAGE_WIDTH_SPANS.reduce((nearest, span) => (
+          Math.abs(span - value) < Math.abs(nearest - value) ? span : nearest
+        ), COLLAGE_WIDTH_SPANS[0]);
+      }
+
+      function applyCollageLayoutPreview(card, photo) {
+        const layout = normalizeCollageLayout(photo);
+        card.style.setProperty('--editor-col-span', String(layout.colSpan));
+        card.style.setProperty('--editor-aspect', `${layout.colSpan}/${layout.rowSpan}`);
+        card.classList.toggle('is-ratio-adjusted', layout.ratio !== null);
+        if (layout.ratio !== null) {
+          card.style.setProperty('--editor-display-aspect', `1/${layout.ratio}`);
+        } else {
+          card.style.removeProperty('--editor-display-aspect');
+        }
+
+        const summary = card.querySelector('[data-layout-summary-text]');
+        const preset = presetName(layout) || `${layout.colSpan}×${layout.rowSpan}`;
+        if (summary) {
+          summary.textContent = `${preset} · ${layout.ratio ? `ratio ${layout.ratio.toFixed(2)}` : layout.crop ? `crop ${layout.fit}` : 'natural'}`;
+        }
+      }
+
+      function bindCollageResize(container) {
+        container.addEventListener('pointerdown', (event) => {
+          const handle = event.target.closest('[data-collage-resize]');
+          const card = event.target.closest('.editor-card--collage');
+          if (!handle || !card || viewFilter.value === 'series') return;
+
+          const photo = photoData.find((item) => item.id === card.dataset.id);
+          if (!photo) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+          selectLayoutPhoto(photo.id);
+
+          const pointerId = event.pointerId;
+          const mode = handle.dataset.collageResize;
+          const startX = event.clientX;
+          const startY = event.clientY;
+          const startLayout = normalizeCollageLayout(photo);
+          const image = card.querySelector('img');
+          const imageBounds = card.querySelector('.editor-card__image')?.getBoundingClientRect();
+          const naturalRatio = image?.naturalWidth && image?.naturalHeight
+            ? image.naturalHeight / image.naturalWidth
+            : imageBounds?.height && imageBounds?.width ? imageBounds.height / imageBounds.width : 1;
+          const startRatio = startLayout.ratio
+            ?? Math.min(COLLAGE_RATIO_MAX, Math.max(COLLAGE_RATIO_MIN, naturalRatio));
+          const cardWidth = Math.max(1, imageBounds?.width || card.getBoundingClientRect().width);
+          const containerStyle = getComputedStyle(container);
+          const columnGap = Number.parseFloat(containerStyle.columnGap) || 12;
+          const columnWidth = Math.max(1, (container.clientWidth - columnGap * 11) / 12);
+          const widthDirection = mode === 'width-left' ? -1 : 1;
+          let changed = false;
+          let didSnapshot = false;
+
+          card.classList.add('is-layout-resizing');
+          card.classList.toggle('is-height-resizing', mode === 'height');
+          handle.setPointerCapture?.(pointerId);
+
+          const updateLayout = (values) => {
+            if (!didSnapshot) {
+              snapshot();
+              didSnapshot = true;
+            }
+            changed = true;
+            setPhotoLayout(photo, values);
+            applyCollageLayoutPreview(card, photo);
+            scheduleEditorMasonry(container);
+          };
+
+          const onMove = (moveEvent) => {
+            if (mode === 'height') {
+              const ratio = Math.min(
+                COLLAGE_RATIO_MAX,
+                Math.max(COLLAGE_RATIO_MIN, Math.round((startRatio + (moveEvent.clientY - startY) / cardWidth) * 100) / 100),
+              );
+              if (ratio !== normalizeCollageLayout(photo).ratio) updateLayout({ ratio, crop: startLayout.crop });
+              return;
+            }
+
+            const desiredSpan = startLayout.colSpan
+              + ((moveEvent.clientX - startX) * widthDirection) / (columnWidth + columnGap);
+            const colSpan = nearestCollageSpan(desiredSpan);
+            if (colSpan !== normalizeCollageLayout(photo).colSpan) updateLayout({ colSpan });
+          };
+
+          const onEnd = () => {
+            if (handle.hasPointerCapture?.(pointerId)) handle.releasePointerCapture(pointerId);
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onEnd);
+            window.removeEventListener('pointercancel', onEnd);
+            card.classList.remove('is-layout-resizing', 'is-height-resizing');
+            scheduleEditorMasonry(container);
+
+            if (!changed) return;
+            setDirty(true);
+            updateLayoutToolbar();
+            const layout = normalizeCollageLayout(photo);
+            showToast(mode === 'height'
+              ? `容器比例已调整为 ${layout.ratio.toFixed(2)}，点击保存写入 photos.json`
+              : `照片宽度已吸附到 ${presetName(layout) || `${layout.colSpan} columns`}，点击保存写入 photos.json`);
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onEnd);
+          window.addEventListener('pointercancel', onEnd);
+        });
+      }
+
       grid.addEventListener('click', (event) => {
         const categoryRowButton = event.target.closest('[data-category-row-action]');
         const categoryRow = event.target.closest('[data-category-row-index]');
@@ -1882,6 +2007,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
       bindCollageDrag(grid);
       bindCollageDrag(seriesPhotoGrid);
+      bindCollageResize(grid);
 
       viewFilter.addEventListener('change', () => {
         if (layoutDirty && viewFilter.value !== 'series' && !window.confirm('当前 Series 行布局尚未保存，确定放弃吗？')) {
@@ -2206,7 +2332,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-auto-flow: row dense;
-    grid-auto-rows: 1px;
+    grid-auto-rows: 4px;
     column-gap: var(--gallery-gap);
     row-gap: 0;
     align-items: start;
@@ -2236,8 +2362,17 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     object-fit: contain;
     object-position: center;
   }
+  .editor-card--collage.is-ratio-adjusted .editor-card__image {
+    aspect-ratio: var(--editor-display-aspect);
+    overflow: hidden;
+  }
+  .editor-card--collage.is-ratio-adjusted .editor-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
   .editor-card--collage.editor-card--cropped .editor-card__image {
-    aspect-ratio: var(--editor-aspect);
+    aspect-ratio: var(--editor-display-aspect, var(--editor-aspect));
     overflow: hidden;
     background: #e4e2dc;
   }
@@ -2284,7 +2419,76 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .series-photo-grid .editor-card__meta span { display: flex; }
   .photo-grid--collage .editor-card__meta strong,
   .series-photo-grid .editor-card__meta strong { display: block; }
+  .editor-card--collage [data-layout-summary-text] {
+    display: block;
+    color: inherit;
+    font: inherit;
+  }
   .editor-card--collage.is-selected { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .editor-card--collage.is-layout-resizing {
+    z-index: 8;
+    transition: none;
+  }
+  .collage-resize-handle {
+    position: absolute;
+    z-index: 12;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    color: rgba(255, 255, 255, .92);
+    background: rgba(20, 20, 19, .36);
+    opacity: 0;
+    pointer-events: none;
+    touch-action: none;
+    transition: opacity 140ms ease, background 140ms ease;
+  }
+  .collage-resize-handle::after {
+    content: '';
+    display: block;
+    border-radius: 999px;
+    background: currentColor;
+  }
+  .collage-resize-handle--left,
+  .collage-resize-handle--right {
+    width: 14px;
+    height: 34px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: ew-resize;
+  }
+  .collage-resize-handle--left { left: 0; }
+  .collage-resize-handle--right { right: 0; }
+  .collage-resize-handle--left::after,
+  .collage-resize-handle--right::after {
+    width: 1px;
+    height: 14px;
+  }
+  .collage-resize-handle--height {
+    width: 34px;
+    height: 14px;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    cursor: ns-resize;
+  }
+  .collage-resize-handle--height::after {
+    width: 14px;
+    height: 1px;
+  }
+  .editor-card--collage:hover .collage-resize-handle,
+  .editor-card--collage:focus-within .collage-resize-handle,
+  .editor-card--collage.is-selected .collage-resize-handle,
+  .editor-card--collage.is-layout-resizing .collage-resize-handle {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .collage-resize-handle:hover,
+  .collage-resize-handle:focus-visible {
+    background: rgba(20, 20, 19, .72);
+    outline: 1px solid rgba(255, 255, 255, .82);
+    outline-offset: -2px;
+  }
   .editor-card--collage.is-dragging { opacity: .32; }
   .editor-card--collage.is-drop-before { box-shadow: inset 4px 0 0 var(--accent); }
   .editor-card--collage.is-drop-after { box-shadow: inset -4px 0 0 var(--accent); }
