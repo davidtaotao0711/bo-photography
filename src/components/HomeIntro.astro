@@ -94,8 +94,8 @@ const { images, name, tagline } = Astro.props;
     if (!reduceMotion && slides.length > 1) {
       firstRotationId = window.setTimeout(() => {
         showNextSlide();
-        rotationId = window.setInterval(showNextSlide, 4800);
-      }, 5000);
+        rotationId = window.setInterval(showNextSlide, 6000);
+      }, 4000);
     }
 
     const enterSite = () => {
@@ -194,7 +194,7 @@ const { images, name, tagline } = Astro.props;
 
   .home-intro__slide {
     opacity: 0;
-    transition: opacity 3000ms cubic-bezier(.22, .61, .36, 1);
+    transition: opacity 4500ms cubic-bezier(.22, .61, .36, 1);
   }
 
   .home-intro__slide.is-active {
