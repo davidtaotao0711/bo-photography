@@ -599,11 +599,9 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
                 <button class="favorite ${photo.featured ? 'is-active' : ''}" type="button" data-action="featured" aria-label="${photo.featured ? '取消首页精选' : '加入首页精选'}" title="首页精选">★</button>
                 <button class="delete-control" type="button" data-action="delete" aria-label="删除照片" title="从网站中删除">×</button>
               `}
-              ${isSeriesPhoto ? '' : `
-                <button class="collage-resize-handle collage-resize-handle--left" type="button" data-collage-resize="width-left" aria-label="Drag to resize image width from the left" title="Drag to change width preset"></button>
-                <button class="collage-resize-handle collage-resize-handle--right" type="button" data-collage-resize="width-right" aria-label="Drag to resize image width from the right" title="Drag to change width preset"></button>
-                <button class="collage-resize-handle collage-resize-handle--height" type="button" data-collage-resize="height" aria-label="Drag to resize image container height" title="Drag to change image ratio"></button>
-              `}
+              <button class="collage-resize-handle collage-resize-handle--left" type="button" data-collage-resize="width-left" aria-label="Drag to resize image width from the left" title="Drag to change width preset"></button>
+              <button class="collage-resize-handle collage-resize-handle--right" type="button" data-collage-resize="width-right" aria-label="Drag to resize image width from the right" title="Drag to change width preset"></button>
+              <button class="collage-resize-handle collage-resize-handle--height" type="button" data-collage-resize="height" aria-label="Drag to resize image container height" title="Drag to change image ratio"></button>
             </div>
             <div class="editor-card__footer">
               <button class="editor-card__meta" type="button" data-action="edit">
@@ -1756,7 +1754,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         container.addEventListener('pointerdown', (event) => {
           const handle = event.target.closest('[data-collage-resize]');
           const card = event.target.closest('.editor-card--collage');
-          if (!handle || !card || viewFilter.value === 'series') return;
+          if (!handle || !card) return;
 
           const photo = photoData.find((item) => item.id === card.dataset.id);
           if (!photo) return;
@@ -2008,6 +2006,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       bindCollageDrag(grid);
       bindCollageDrag(seriesPhotoGrid);
       bindCollageResize(grid);
+      bindCollageResize(seriesPhotoGrid);
 
       viewFilter.addEventListener('change', () => {
         if (layoutDirty && viewFilter.value !== 'series' && !window.confirm('当前 Series 行布局尚未保存，确定放弃吗？')) {
