@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CategoryCard from '../components/CategoryCard.astro';
-import ScrollReveal from '../components/ScrollReveal.astro';
 import categories from '../data/portfolio-categories.json';
 import site from '../data/site.json';
 
@@ -24,7 +23,6 @@ const entries = categories
   <section class="portfolio-cards page-shell" aria-label="Portfolio categories">
     {entries.map((entry, index) => <CategoryCard entry={entry} number={index + 1} />)}
   </section>
-  <ScrollReveal />
 </BaseLayout>
 
 <style>
