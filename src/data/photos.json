@@ -19,7 +19,8 @@
     "categoryLayoutOffsetX": -1,
     "categoryLayoutOffsetY": 0,
     "categoryRowSize": 3,
-    "detailScale": 100
+    "detailScale": 100,
+    "order": 1
   },
   {
     "id": "home-002",
@@ -38,7 +39,8 @@
     "layoutOffsetX": 4,
     "layoutOffsetY": -2,
     "categoryRowSize": 2,
-    "detailScale": 100
+    "detailScale": 100,
+    "order": 2
   },
   {
     "id": "street-049",
@@ -56,7 +58,8 @@
     "layoutOffsetX": 1,
     "layoutOffsetY": -2,
     "layoutWidth": 135,
-    "detailScale": 100
+    "detailScale": 100,
+    "order": 3
   },
   {
     "id": "street-050",
@@ -73,7 +76,8 @@
     "layoutOffsetX": 1,
     "layoutOffsetY": -11,
     "layoutWidth": 71,
-    "detailScale": 100
+    "detailScale": 100,
+    "order": 4
   },
   {
     "id": "street-005",
@@ -85,7 +89,8 @@
     "image": "/images/street/street-005.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 005"
+    "alt": "Street photograph: street 005",
+    "order": 5
   },
   {
     "id": "street-009",
@@ -98,7 +103,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 009",
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 6
   },
   {
     "id": "street-011",
@@ -113,7 +119,8 @@
     "alt": "Street photograph: street 011",
     "layoutWidth": 100,
     "layoutOffsetX": 0,
-    "layoutOffsetY": 0
+    "layoutOffsetY": 0,
+    "order": 7
   },
   {
     "id": "street-052",
@@ -125,7 +132,8 @@
     "image": "/images/street/street-052.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph by Bo David"
+    "alt": "Street photograph by Bo David",
+    "order": 8
   },
   {
     "id": "street-010",
@@ -137,7 +145,8 @@
     "image": "/images/street/street-010.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 010"
+    "alt": "Street photograph: street 010",
+    "order": 9
   },
   {
     "id": "street-006",
@@ -150,7 +159,8 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 006",
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 10
   },
   {
     "id": "street-007",
@@ -162,7 +172,8 @@
     "image": "/images/street/street-007.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 007"
+    "alt": "Street photograph: street 007",
+    "order": 11
   },
   {
     "id": "street-041",
@@ -180,7 +191,8 @@
     "layoutOffsetX": -11,
     "layoutOffsetY": -18,
     "categoryLayoutWidth": 70,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "order": 12
   },
   {
     "id": "street-017",
@@ -193,7 +205,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 017",
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 13
   },
   {
     "id": "street-013",
@@ -205,7 +218,8 @@
     "image": "/images/street/street-013.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 013"
+    "alt": "Street photograph: street 013",
+    "order": 14
   },
   {
     "id": "street-019",
@@ -217,7 +231,8 @@
     "image": "/images/street/street-019.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 019"
+    "alt": "Street photograph: street 019",
+    "order": 15
   },
   {
     "id": "home-009",
@@ -250,7 +265,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 015",
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 16
   },
   {
     "id": "street-016",
@@ -263,7 +279,8 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 016",
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 17
   },
   {
     "id": "street-037",
@@ -275,7 +292,8 @@
     "image": "/images/street/street-037.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 037"
+    "alt": "Street photograph: street 037",
+    "order": 18
   },
   {
     "id": "street-020",
@@ -287,7 +305,8 @@
     "image": "/images/street/street-020.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 020"
+    "alt": "Street photograph: street 020",
+    "order": 19
   },
   {
     "id": "street-003",
@@ -302,7 +321,8 @@
     "alt": "Street photograph: street 003",
     "categoryLayoutOffsetX": -1,
     "categoryLayoutOffsetY": 0,
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 20
   },
   {
     "id": "street-028",
@@ -314,7 +334,8 @@
     "image": "/images/street/street-028.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 028"
+    "alt": "Street photograph: street 028",
+    "order": 21
   },
   {
     "id": "street-022",
@@ -326,7 +347,8 @@
     "image": "/images/street/street-022.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 022"
+    "alt": "Street photograph: street 022",
+    "order": 22
   },
   {
     "id": "street-018",
@@ -339,7 +361,8 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 018",
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 23
   },
   {
     "id": "street-024",
@@ -351,7 +374,8 @@
     "image": "/images/street/street-024.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 024"
+    "alt": "Street photograph: street 024",
+    "order": 24
   },
   {
     "id": "street-023",
@@ -363,7 +387,8 @@
     "image": "/images/street/street-023.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph: street 023"
+    "alt": "Street photograph: street 023",
+    "order": 25
   },
   {
     "id": "street-002",
@@ -376,7 +401,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 002",
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 26
   },
   {
     "id": "street-012",
@@ -401,7 +427,8 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "order": 27
   },
   {
     "id": "street-033",
@@ -413,7 +440,8 @@
     "image": "/images/street/street-033.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 033"
+    "alt": "Street photograph: street 033",
+    "order": 28
   },
   {
     "id": "street-035",
@@ -425,7 +453,8 @@
     "image": "/images/street/street-035.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Street photograph: street 035"
+    "alt": "Street photograph: street 035",
+    "order": 29
   },
   {
     "id": "home-007",
@@ -690,7 +719,17 @@
     "layoutOffsetX": 13,
     "layoutOffsetY": -44,
     "detailScale": 100,
-    "homeTitle": "Embrace Nature"
+    "homeTitle": "Embrace Nature",
+    "order": 1,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.61
+    }
   },
   {
     "id": "portrait-018",
@@ -1421,7 +1460,17 @@
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "categoryLayoutWidth": 75,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "order": 2,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.61
+    }
   },
   {
     "id": "nature-004",
@@ -1435,7 +1484,17 @@
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "categoryLayoutWidth": 75,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "order": 3,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.61
+    }
   },
   {
     "id": "nature-010",
@@ -1447,7 +1506,8 @@
     "image": "/images/nature/nature-010.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Nature photograph by Bo David"
+    "alt": "Nature photograph by Bo David",
+    "order": 4
   },
   {
     "id": "nature-011",
@@ -1459,7 +1519,17 @@
     "image": "/images/nature/nature-011.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Nature photograph by Bo David"
+    "alt": "Nature photograph by Bo David",
+    "order": 5,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
   },
   {
     "id": "portrait-022",
@@ -1492,7 +1562,8 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 6
   },
   {
     "id": "nature-006",
@@ -1504,7 +1575,8 @@
     "image": "/images/nature/nature-006.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Nature photograph by Bo David"
+    "alt": "Nature photograph by Bo David",
+    "order": 7
   },
   {
     "id": "nature-007",
@@ -1518,7 +1590,17 @@
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "categoryRowSize": 1,
-    "categoryLayoutWidth": 75
+    "categoryLayoutWidth": 75,
+    "order": 9,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.63
+    }
   },
   {
     "id": "portrait-021",
@@ -1580,7 +1662,17 @@
     "layoutOffsetY": -77,
     "layoutWidth": 150,
     "detailScale": 100,
-    "homeTitle": "Waves of green"
+    "homeTitle": "Waves of green",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.64
+    },
+    "order": 10
   },
   {
     "id": "portrait-024",
@@ -1609,7 +1701,8 @@
     "orientation": "portrait",
     "alt": "Street photograph by Bo David",
     "categoryRowSize": 2,
-    "categoryLayoutWidth": 80
+    "categoryLayoutWidth": 80,
+    "order": 30
   },
   {
     "id": "street-055",
@@ -1623,7 +1716,17 @@
     "orientation": "landscape",
     "alt": "Street photograph by Bo David",
     "categoryLayoutWidth": 75,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.72
+    },
+    "order": 31
   },
   {
     "id": "street-057",
@@ -1638,7 +1741,8 @@
     "alt": "Street photograph by Bo David",
     "categoryLayoutWidth": 58,
     "categoryLayoutOffsetX": -9,
-    "categoryLayoutOffsetY": 13
+    "categoryLayoutOffsetY": 13,
+    "order": 32
   },
   {
     "id": "street-053",
@@ -1654,7 +1758,17 @@
     "categoryLayoutWidth": 75,
     "categoryLayoutOffsetX": 3,
     "categoryLayoutOffsetY": 15,
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.76
+    },
+    "order": 33
   },
   {
     "id": "street-056",
@@ -1666,7 +1780,17 @@
     "image": "/images/street/street-056.jpg",
     "featured": false,
     "orientation": "landscape",
-    "alt": "Street photograph by Bo David"
+    "alt": "Street photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.66
+    },
+    "order": 34
   },
   {
     "id": "street-058",
@@ -1682,13 +1806,15 @@
     "categoryLayoutWidth": 90,
     "categoryRowSize": 2,
     "layout": {
-      "colSpan": 6,
+      "colSpan": 4,
       "rowSpan": 4,
       "crop": false,
       "fit": "contain",
       "focalX": 50,
-      "focalY": 50
-    }
+      "focalY": 50,
+      "ratio": 0.74
+    },
+    "order": 35
   },
   {
     "id": "street-059",
@@ -1703,7 +1829,16 @@
     "alt": "Street photograph by Bo David",
     "categoryLayoutWidth": 72,
     "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": 10
+    "categoryLayoutOffsetY": 10,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    },
+    "order": 36
   },
   {
     "id": "scenes-061",
@@ -2126,5 +2261,374 @@
       "ratio": 0.55
     },
     "detailScale": 100
+  },
+  {
+    "id": "street-060",
+    "title": "No. 37",
+    "category": "street",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/street/street-060.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Street photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    },
+    "order": 39
+  },
+  {
+    "id": "street-061",
+    "title": "No. 38",
+    "category": "street",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/street/street-061.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Street photograph by Bo David",
+    "order": 38
+  },
+  {
+    "id": "street-062",
+    "title": "No. 39",
+    "category": "street",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/street/street-062.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Street photograph by Bo David",
+    "order": 37
+  },
+  {
+    "id": "street-063",
+    "title": "No. 40",
+    "category": "street",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/street/street-063.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Street photograph by Bo David",
+    "order": 40
+  },
+  {
+    "id": "portrait-027",
+    "title": "No. 24",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-027.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-028",
+    "title": "No. 25",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-028.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-029",
+    "title": "No. 26",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-029.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-030",
+    "title": "No. 27",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-030.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "scenes-070",
+    "title": "No. 42",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-070.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scenes photograph by Bo David",
+    "order": 42
+  },
+  {
+    "id": "scenes-071",
+    "title": "No. 43",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-071.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scenes photograph by Bo David",
+    "order": 47
+  },
+  {
+    "id": "scenes-072",
+    "title": "No. 44",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-072.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scenes photograph by Bo David",
+    "order": 43
+  },
+  {
+    "id": "scenes-073",
+    "title": "No. 45",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-073.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scenes photograph by Bo David",
+    "order": 44
+  },
+  {
+    "id": "scenes-074",
+    "title": "No. 46",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-074.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scenes photograph by Bo David",
+    "order": 45
+  },
+  {
+    "id": "scenes-075",
+    "title": "No. 47",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-075.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scenes photograph by Bo David",
+    "order": 46
+  },
+  {
+    "id": "scenes-076",
+    "title": "No. 48",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-076.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Scenes photograph by Bo David",
+    "order": 48
+  },
+  {
+    "id": "scenes-077",
+    "title": "No. 49",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-077.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scenes photograph by Bo David",
+    "order": 49
+  },
+  {
+    "id": "scenes-078",
+    "title": "No. 50",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-078.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scenes photograph by Bo David",
+    "order": 50
+  },
+  {
+    "id": "scenes-079",
+    "title": "No. 51",
+    "category": "scenes",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/scenes/scenes-079.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Scenes photograph by Bo David",
+    "order": 51
+  },
+  {
+    "id": "nature-013",
+    "title": "No. 11",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-013.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.35
+    },
+    "order": 8
+  },
+  {
+    "id": "nature-014",
+    "title": "No. 12",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-014.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "order": 11,
+    "layout": {
+      "colSpan": 8,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "nature-016",
+    "title": "No. 14",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-016.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "order": 13,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.63
+    }
+  },
+  {
+    "id": "nature-017",
+    "title": "No. 15",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-017.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.61
+    },
+    "order": 14
+  },
+  {
+    "id": "nature-018",
+    "title": "No. 16",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-018.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.61
+    },
+    "order": 15
+  },
+  {
+    "id": "nature-019",
+    "title": "No. 17",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-019.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Nature photograph by Bo David",
+    "order": 12,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.61
+    }
   }
 ]
