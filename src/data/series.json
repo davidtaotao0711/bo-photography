@@ -14,5 +14,13 @@
     "description": "Passing gestures, hard light, and the quiet order hidden inside the city.",
     "coverImage": "/images/home/002.jpg",
     "order": 2
+  },
+  {
+    "slug": "diptychs-and-triptychs",
+    "title": "Diptychs & Triptychs",
+    "year": "",
+    "description": "",
+    "coverImage": "/images/series/diptychs-and-triptychs/001.jpg",
+    "order": 3
   }
 ]
