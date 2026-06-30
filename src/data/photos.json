@@ -236,7 +236,8 @@
     "categoryLayoutOffsetX": -1,
     "categoryLayoutOffsetY": 9,
     "categoryRowSize": 2,
-    "detailScale": 100
+    "detailScale": 100,
+    "order": 1
   },
   {
     "id": "street-015",
@@ -468,7 +469,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 003",
     "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": 9
+    "categoryLayoutOffsetY": 9,
+    "order": 2
   },
   {
     "id": "portrait-001",
@@ -483,7 +485,8 @@
     "alt": "Portrait photograph: portrait 001",
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 4
   },
   {
     "id": "portrait-002",
@@ -497,7 +500,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 002",
     "categoryLayoutOffsetX": 1,
-    "categoryLayoutOffsetY": 0
+    "categoryLayoutOffsetY": 0,
+    "order": 5
   },
   {
     "id": "portrait-005",
@@ -511,7 +515,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 005",
     "categoryLayoutOffsetX": 3,
-    "categoryLayoutOffsetY": 2
+    "categoryLayoutOffsetY": 2,
+    "order": 6
   },
   {
     "id": "portrait-006",
@@ -524,7 +529,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 006",
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 14
   },
   {
     "id": "portrait-008",
@@ -538,7 +544,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 008",
     "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": 0
+    "categoryLayoutOffsetY": 0,
+    "order": 7
   },
   {
     "id": "portrait-007",
@@ -553,7 +560,8 @@
     "alt": "Portrait photograph: portrait 007",
     "categoryLayoutOffsetX": -2,
     "categoryLayoutOffsetY": 4,
-    "categoryLayoutWidth": 69
+    "categoryLayoutWidth": 69,
+    "order": 8
   },
   {
     "id": "portrait-004",
@@ -568,7 +576,8 @@
     "alt": "Portrait photograph: portrait 004",
     "categoryLayoutOffsetX": 1,
     "categoryLayoutOffsetY": 6,
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 9
   },
   {
     "id": "portrait-009",
@@ -582,7 +591,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 009",
     "categoryLayoutOffsetX": -3,
-    "categoryLayoutOffsetY": 5
+    "categoryLayoutOffsetY": 5,
+    "order": 12
   },
   {
     "id": "portrait-010",
@@ -596,7 +606,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 010",
     "categoryLayoutOffsetX": -1,
-    "categoryLayoutOffsetY": 5
+    "categoryLayoutOffsetY": 5,
+    "order": 11
   },
   {
     "id": "portrait-012",
@@ -611,7 +622,8 @@
     "alt": "Portrait photograph: portrait 012",
     "categoryLayoutOffsetX": -4,
     "categoryLayoutOffsetY": 0,
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 3
   },
   {
     "id": "portrait-015",
@@ -625,7 +637,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 015",
     "categoryLayoutOffsetX": -7,
-    "categoryLayoutOffsetY": 0
+    "categoryLayoutOffsetY": 0,
+    "order": 13
   },
   {
     "id": "portrait-014",
@@ -640,7 +653,8 @@
     "alt": "Portrait photograph: portrait 014",
     "categoryLayoutOffsetX": 1,
     "categoryLayoutOffsetY": 1,
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 10
   },
   {
     "id": "portrait-016",
@@ -654,7 +668,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 016",
     "categoryLayoutOffsetX": 2,
-    "categoryLayoutOffsetY": -3
+    "categoryLayoutOffsetY": -3,
+    "order": 15
   },
   {
     "id": "nature-001",
@@ -691,7 +706,8 @@
     "categoryLayoutOffsetX": 5,
     "categoryLayoutOffsetY": 0,
     "categoryLayoutWidth": 62,
-    "categoryRowSize": 2
+    "categoryRowSize": 2,
+    "order": 17
   },
   {
     "id": "portrait-017",
@@ -706,7 +722,8 @@
     "alt": "Portrait photograph: portrait 017",
     "categoryLayoutOffsetX": -10,
     "categoryLayoutOffsetY": 1,
-    "categoryLayoutWidth": 62
+    "categoryLayoutWidth": 62,
+    "order": 16
   },
   {
     "id": "scenes-005",
@@ -1179,7 +1196,16 @@
     "size": "standard",
     "aspect": 0.6664,
     "orientation": "portrait",
-    "alt": "B&W photograph 1 by Bo David"
+    "alt": "B&W photograph 1 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.48
+    }
   },
   {
     "id": "b-and-w-002",
@@ -1380,7 +1406,8 @@
     "layoutOffsetY": -38,
     "layoutWidth": 66,
     "detailScale": 100,
-    "homeTitle": "\"Pink Princess\""
+    "homeTitle": "\"Pink Princess\"",
+    "order": 18
   },
   {
     "id": "nature-002",
@@ -1451,7 +1478,8 @@
     "layoutOffsetY": -38,
     "layoutWidth": 56,
     "detailScale": 100,
-    "homeTitle": "Cannot slow down"
+    "homeTitle": "Cannot slow down",
+    "order": 22
   },
   {
     "id": "nature-003",
@@ -1505,7 +1533,8 @@
     "alt": "Portrait photograph by Bo David",
     "categoryLayoutWidth": 80,
     "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": -1
+    "categoryLayoutOffsetY": -1,
+    "order": 20
   },
   {
     "id": "portrait-025",
@@ -1518,7 +1547,8 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "categoryRowSize": 3
+    "categoryRowSize": 3,
+    "order": 19
   },
   {
     "id": "portrait-023",
@@ -1530,7 +1560,8 @@
     "image": "/images/portrait/portrait-023.jpg",
     "featured": false,
     "orientation": "portrait",
-    "alt": "Portrait photograph by Bo David"
+    "alt": "Portrait photograph by Bo David",
+    "order": 21
   },
   {
     "id": "nature-005",
@@ -1563,7 +1594,8 @@
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
     "categoryLayoutWidth": 78,
-    "categoryRowSize": 1
+    "categoryRowSize": 1,
+    "order": 23
   },
   {
     "id": "street-054",
@@ -2071,26 +2103,28 @@
     "alt": "Diptychs & Triptychs photograph 17 by Bo David"
   },
   {
-    "id": "diptychs-and-triptychs-024",
+    "id": "diptychs-and-triptychs-025",
     "title": "No. 17",
     "category": "series",
     "series": "diptychs-and-triptychs",
     "location": "",
     "date": "2026",
-    "image": "/images/series/diptychs-and-triptychs/024.jpg",
+    "image": "/images/series/diptychs-and-triptychs/025.jpg",
     "featured": false,
-    "order": 1,
+    "order": 18,
     "size": "standard",
     "aspect": 3.0027,
     "orientation": "landscape",
     "alt": "Diptychs & Triptychs photograph 17 by Bo David",
     "layout": {
-      "colSpan": 12,
+      "colSpan": 4,
       "rowSpan": 4,
       "crop": false,
       "fit": "contain",
       "focalX": 50,
-      "focalY": 50
-    }
+      "focalY": 50,
+      "ratio": 0.55
+    },
+    "detailScale": 100
   }
 ]

@@ -2209,7 +2209,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .help { margin-top: 3.5rem; color: var(--muted); font-size: .72rem; }
   .help ol { margin: 0; padding-left: 1.15rem; line-height: 2; }
   .help .note { margin-top: 1rem; padding-left: .8rem; border-left: 2px solid var(--accent); line-height: 1.55; }
-  .workspace { min-width: 0; padding: 2rem clamp(1.25rem, 3vw, 3.5rem) 8rem; overflow: hidden; background: #faf9f6; }
+  .workspace { min-width: 0; padding: 2rem clamp(1.25rem, 3vw, 3.5rem) 8rem; overflow: clip; background: #faf9f6; }
   .toolbar, .status-row { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
   .toolbar > div { display: flex; gap: .7rem; align-items: center; }
   .button { min-height: 2.65rem; padding: .7rem 1rem; border: 1px solid var(--ink); color: var(--ink); background: transparent; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -2239,8 +2239,8 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     margin: 0 0 1.25rem;
     padding: .9rem 0;
     position: sticky;
-    top: 0;
-    z-index: 20;
+    top: 5rem;
+    z-index: 19;
     display: flex;
     align-items: center;
     justify-content: space-between;
