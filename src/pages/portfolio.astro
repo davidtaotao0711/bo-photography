@@ -1,13 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CategoryCard from '../components/CategoryCard.astro';
 import ScrollReveal from '../components/ScrollReveal.astro';
-import { photoCategories } from '../data/categories.js';
+import categories from '../data/portfolio-categories.json';
 import site from '../data/site.json';
 
-const entries = [
-  ...photoCategories.map((category) => ({ title: category.title, href: `/portfolio/${category.slug}`, note: category.note })),
-  { title: 'Series', href: '/series', note: 'Longer stories, edited as small books.' },
-].map((entry, index) => ({ ...entry, number: String(index + 1).padStart(2, '0') }));
+const entries = categories
+  .map((entry, index) => ({
+    entry,
+    index,
+    order: Number.isFinite(Number(entry.order)) ? Number(entry.order) : index + 1,
+  }))
+  .sort((a, b) => a.order - b.order || a.index - b.index)
+  .map(({ entry }) => entry);
 ---
 
 <BaseLayout title={`Portfolio — ${site.name}`}>
@@ -16,15 +21,14 @@ const entries = [
     <h1>Portfolio</h1>
     <p class="index-hero__sub">Select a category</p>
   </section>
-  <section class="portfolio-index page-shell" aria-label="Portfolio categories">
-    {entries.map((entry) => (
-      <a class="index-row" href={entry.href} data-scroll-reveal>
-        <span class="index-row__number">{entry.number}</span>
-        <h2>{entry.title}</h2>
-        <p>{entry.note}</p>
-        <span class="index-row__arrow" aria-hidden="true">↗</span>
-      </a>
-    ))}
+  <section class="portfolio-cards page-shell" aria-label="Portfolio categories">
+    {entries.map((entry, index) => <CategoryCard entry={entry} number={index + 1} />)}
   </section>
   <ScrollReveal />
 </BaseLayout>
+
+<style>
+  .portfolio-cards {
+    padding-bottom: clamp(8rem, 14vw, 14rem);
+  }
+</style>
