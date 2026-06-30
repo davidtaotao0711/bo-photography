@@ -34,12 +34,11 @@ const label = String(number).padStart(2, '0');
       loading={number < 3 ? 'eager' : 'lazy'}
       sizes="(max-width: 768px) 100vw, 46vw"
     />
-    <span
-      class="category-card__magnifier"
-      data-category-magnifier
-      style={`--magnifier-image: url("${entry.coverImage}")`}
-      aria-hidden="true"
-    ></span>
+      <span
+        class="category-card__magnifier"
+        data-category-magnifier
+        aria-hidden="true"
+      ></span>
   </figure>
 
   <span class="category-card__arrow" aria-hidden="true">↗</span>
@@ -60,13 +59,23 @@ const label = String(number).padStart(2, '0');
       card.dataset.magnifierReady = 'true';
       const zoom = 2.2;
       const lensSize = 100;
+      let frameId = 0;
+      let pointerX = 0;
+      let pointerY = 0;
 
-      const moveMagnifier = (event) => {
-        if (!magnifierQuery.matches) return;
+      const updateMagnifierSource = () => {
+        const source = image.currentSrc || image.src;
+        if (!source || magnifier.dataset.source === source) return;
 
+        magnifier.dataset.source = source;
+        magnifier.style.backgroundImage = `url("${source.replace(/"/g, '%22')}")`;
+      };
+
+      const renderMagnifier = () => {
+        frameId = 0;
         const bounds = media.getBoundingClientRect();
-        const x = Math.min(bounds.width, Math.max(0, event.clientX - bounds.left));
-        const y = Math.min(bounds.height, Math.max(0, event.clientY - bounds.top));
+        const x = Math.min(bounds.width, Math.max(0, pointerX - bounds.left));
+        const y = Math.min(bounds.height, Math.max(0, pointerY - bounds.top));
         const naturalWidth = image.naturalWidth || bounds.width;
         const naturalHeight = image.naturalHeight || bounds.height;
         const coverScale = Math.max(bounds.width / naturalWidth, bounds.height / naturalHeight);
@@ -84,13 +93,28 @@ const label = String(number).padStart(2, '0');
         ].join(' ');
       };
 
+      const scheduleMagnifier = (event) => {
+        if (!magnifierQuery.matches) return;
+
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+        if (!frameId) frameId = window.requestAnimationFrame(renderMagnifier);
+      };
+
       media.addEventListener('pointerenter', (event) => {
         if (!magnifierQuery.matches) return;
+        updateMagnifierSource();
         card.classList.add('is-magnifying');
-        moveMagnifier(event);
+        scheduleMagnifier(event);
       });
-      media.addEventListener('pointermove', moveMagnifier);
-      media.addEventListener('pointerleave', () => card.classList.remove('is-magnifying'));
+      media.addEventListener('pointermove', scheduleMagnifier);
+      media.addEventListener('pointerleave', () => {
+        card.classList.remove('is-magnifying');
+        if (frameId) {
+          window.cancelAnimationFrame(frameId);
+          frameId = 0;
+        }
+      });
     });
   };
 
@@ -187,7 +211,6 @@ const label = String(number).padStart(2, '0');
     left: 0;
     border: 1px solid rgba(255, 255, 255, .72);
     border-radius: 50%;
-    background-image: var(--magnifier-image);
     background-repeat: no-repeat;
     box-shadow: 0 .5rem 1.6rem rgba(20, 20, 18, .18);
     opacity: 0;
