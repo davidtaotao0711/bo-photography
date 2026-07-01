@@ -767,10 +767,10 @@
     "homeTitle": "Embrace Nature",
     "order": 1,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.61
@@ -1508,7 +1508,7 @@
     "categoryRowSize": 1,
     "order": 2,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
       "crop": false,
       "fit": "contain",
@@ -1532,13 +1532,13 @@
     "categoryRowSize": 1,
     "order": 3,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.61
+      "ratio": 0.68
     }
   },
   {
@@ -1574,10 +1574,10 @@
     "alt": "Nature photograph by Bo David",
     "order": 5,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.67
@@ -1617,7 +1617,15 @@
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "categoryRowSize": 2,
-    "order": 6
+    "order": 6,
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "nature-006",
@@ -1630,7 +1638,15 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
-    "order": 7
+    "order": 7,
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "nature-007",
@@ -1645,12 +1661,12 @@
     "alt": "Nature photograph by Bo David",
     "categoryRowSize": 1,
     "categoryLayoutWidth": 75,
-    "order": 9,
+    "order": 8,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.63
@@ -1713,7 +1729,15 @@
     "order": 4,
     "layoutOffsetX": -1,
     "layoutOffsetY": -80,
-    "layoutWidth": 153
+    "layoutWidth": 153,
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "portrait-024",
@@ -1937,15 +1961,15 @@
     "detailScale": 100,
     "homeTitle": "Waves of green",
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.64
+      "ratio": 0.67
     },
-    "order": 10
+    "order": 9
   },
   {
     "id": "scenes-063",
@@ -2638,13 +2662,13 @@
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.35
+      "ratio": 1.28
     },
-    "order": 8
+    "order": 11
   },
   {
     "id": "nature-014",
@@ -2657,9 +2681,9 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
-    "order": 11,
+    "order": 10,
     "layout": {
-      "colSpan": 8,
+      "colSpan": 6,
       "rowSpan": 4,
       "crop": false,
       "fit": "contain",
@@ -2678,12 +2702,12 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
-    "order": 13,
+    "order": 12,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.63
@@ -2703,11 +2727,11 @@
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.61
+      "ratio": 0.57
     },
     "order": 14
   },
@@ -2723,13 +2747,13 @@
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.63
+      "ratio": 0.64
     },
     "order": 15
   },
@@ -2744,15 +2768,15 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Nature photograph by Bo David",
-    "order": 12,
+    "order": 13,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.36
+      "ratio": 1.28
     }
   },
   {
@@ -3055,5 +3079,26 @@
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
     "order": 31
+  },
+  {
+    "id": "nature-020",
+    "title": "No. 16",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-020.jpg",
+    "featured": false,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.64
+    }
   }
 ]
