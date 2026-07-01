@@ -1,0 +1,95 @@
+---
+import CategoryCard from './CategoryCard.astro';
+import FeaturedSeriesCard from './FeaturedSeriesCard.astro';
+
+interface Entry {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  coverImage: string;
+  order: number;
+  variant?: 'standard' | 'feature';
+  label?: string;
+}
+
+interface Props {
+  entries: Entry[];
+}
+
+const { entries } = Astro.props;
+const standardEntries = entries.filter((entry) => entry.variant !== 'feature');
+const featureEntries = entries.filter((entry) => entry.variant === 'feature');
+---
+
+<section class="portfolio-entry" aria-label="Portfolio categories">
+  <header class="portfolio-entry__heading">
+    <p>Archive / Categories</p>
+    <span>Four ways into the work.</span>
+  </header>
+
+  <div class="portfolio-entry__grid">
+    {standardEntries.map((entry, index) => (
+      <CategoryCard entry={entry} number={index + 1} />
+    ))}
+  </div>
+
+  {featureEntries.map((entry, index) => (
+    <div class="portfolio-entry__feature">
+      <FeaturedSeriesCard entry={entry} number={standardEntries.length + index + 1} />
+    </div>
+  ))}
+</section>
+
+<style>
+  .portfolio-entry {
+    padding-bottom: clamp(8rem, 14vw, 14rem);
+  }
+
+  .portfolio-entry__heading {
+    margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    color: var(--muted);
+    font-size: .6rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .portfolio-entry__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 1.8vw, 2rem);
+  }
+
+  .portfolio-entry__feature {
+    margin-top: clamp(5rem, 9vw, 9rem);
+  }
+
+  @media (max-width: 1050px) {
+    .portfolio-entry__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(1rem, 2.6vw, 2rem);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .portfolio-entry__heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: .45rem;
+    }
+
+    .portfolio-entry__grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .portfolio-entry__feature {
+      margin-top: 4.5rem;
+    }
+  }
+</style>

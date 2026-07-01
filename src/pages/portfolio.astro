@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CategoryCard from '../components/CategoryCard.astro';
+import CategoryGrid from '../components/CategoryGrid.astro';
 import categories from '../data/portfolio-categories.json';
 import site from '../data/site.json';
 
@@ -15,18 +15,60 @@ const entries = categories
 ---
 
 <BaseLayout title={`Portfolio — ${site.name}`}>
-  <section class="index-hero page-shell">
+  <section class="archive-hero page-shell">
     <p class="eyebrow">{site.name} / Archive</p>
     <h1>Portfolio</h1>
-    <p class="index-hero__sub">Select a category</p>
+    <p class="archive-hero__copy">Photographs arranged by subject,<br />then gathered into longer stories.</p>
   </section>
-  <section class="portfolio-cards page-shell" aria-label="Portfolio categories">
-    {entries.map((entry, index) => <CategoryCard entry={entry} number={index + 1} />)}
-  </section>
+  <div class="page-shell">
+    <CategoryGrid entries={entries} />
+  </div>
 </BaseLayout>
 
 <style>
-  .portfolio-cards {
-    padding-bottom: clamp(8rem, 14vw, 14rem);
+  .archive-hero {
+    min-height: clamp(28rem, 58svh, 44rem);
+    padding-top: clamp(7rem, 12vw, 11rem);
+    padding-bottom: clamp(4.5rem, 8vw, 7rem);
+    display: grid;
+    grid-template-columns: 1fr 2.2fr;
+    align-content: end;
+    gap: 2rem;
+  }
+
+  .archive-hero h1 {
+    grid-column: 1 / -1;
+    margin: clamp(2.5rem, 5vw, 5rem) 0 0;
+    font: 400 clamp(5.5rem, 14vw, 13rem)/.78 var(--serif);
+    letter-spacing: -.07em;
+  }
+
+  .archive-hero__copy {
+    grid-column: 2;
+    margin: clamp(2rem, 4vw, 3.5rem) 0 0;
+    color: var(--muted);
+    font: 400 clamp(1rem, 1.55vw, 1.35rem)/1.5 var(--serif);
+  }
+
+  @media (max-width: 720px) {
+    .archive-hero {
+      min-height: 42svh;
+      padding-top: 5rem;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .archive-hero h1,
+    .archive-hero__copy {
+      grid-column: 1;
+    }
+
+    .archive-hero h1 {
+      font-size: clamp(4.7rem, 24vw, 8rem);
+    }
+
+    .archive-hero__copy {
+      font-size: 1rem;
+    }
   }
 </style>

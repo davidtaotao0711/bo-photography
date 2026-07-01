@@ -5,7 +5,8 @@
     "description": "Unplanned gestures and everyday light.",
     "href": "/portfolio/street",
     "coverImage": "/images/street/street-041.jpg",
-    "order": 1
+    "order": 1,
+    "variant": "standard"
   },
   {
     "id": "portrait",
@@ -13,7 +14,8 @@
     "description": "Faces, presence, and quiet exchange.",
     "href": "/portfolio/portrait",
     "coverImage": "/images/portrait/portrait-007.jpg",
-    "order": 2
+    "order": 2,
+    "variant": "standard"
   },
   {
     "id": "scenes",
@@ -21,7 +23,8 @@
     "description": "Rooms, objects, architecture, and traces of place.",
     "href": "/portfolio/scenes",
     "coverImage": "/images/scenes/scenes-070.jpg",
-    "order": 3
+    "order": 3,
+    "variant": "standard"
   },
   {
     "id": "nature",
@@ -29,14 +32,17 @@
     "description": "Sea, mountains, water, weather, and the natural world.",
     "href": "/portfolio/nature",
     "coverImage": "/images/nature/nature-005.jpg",
-    "order": 4
+    "order": 4,
+    "variant": "standard"
   },
   {
     "id": "series",
     "title": "Series",
-    "description": "Longer stories, edited as small photographic books.",
+    "description": "Longer stories, edited as small books.",
     "href": "/series",
     "coverImage": "/images/series/diptychs-and-triptychs/006.jpg",
-    "order": 5
+    "order": 5,
+    "variant": "feature",
+    "label": "Series / Small books / Edited stories"
   }
 ]

@@ -1,0 +1,224 @@
+---
+import ResponsiveImage from './ResponsiveImage.astro';
+
+interface Entry {
+  title: string;
+  description: string;
+  href: string;
+  coverImage: string;
+  label?: string;
+}
+
+interface Props {
+  entry: Entry;
+  number: number;
+}
+
+const { entry, number } = Astro.props;
+const label = String(number).padStart(2, '0');
+---
+
+<a class="series-entry" href={entry.href}>
+  <div class="series-entry__copy">
+    <div class="series-entry__meta">
+      <span>{label}</span>
+      <span>{entry.label || 'Series / Edited stories'}</span>
+    </div>
+    <div>
+      <h2>{entry.title}</h2>
+      <p>{entry.description}</p>
+    </div>
+    <div class="series-entry__footer">
+      <span>Open the books</span>
+      <span aria-hidden="true">↗</span>
+    </div>
+  </div>
+
+  <figure class="series-entry__media">
+    <ResponsiveImage
+      src={entry.coverImage}
+      alt={`${entry.title} photography books`}
+      loading="lazy"
+      sizes="(max-width: 760px) 100vw, 62vw"
+    />
+    <span class="series-entry__spine" aria-hidden="true"></span>
+    <span class="series-entry__wash" aria-hidden="true"></span>
+  </figure>
+</a>
+
+<style>
+  .series-entry {
+    min-height: clamp(28rem, 42vw, 39rem);
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(17rem, .72fr) minmax(28rem, 1.38fr);
+    overflow: hidden;
+    border: 1px solid rgba(40, 39, 35, .1);
+    color: var(--ink);
+    background:
+      linear-gradient(132deg, rgba(255, 255, 255, .58), rgba(238, 233, 222, .24)),
+      rgba(237, 232, 220, .55);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .78),
+      0 1.1rem 3.8rem rgba(40, 36, 27, .05);
+    backdrop-filter: blur(16px);
+    transition: transform 500ms cubic-bezier(.16, 1, .3, 1), box-shadow 450ms ease, border-color 300ms ease;
+  }
+
+  .series-entry__copy {
+    min-width: 0;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(1.6rem, 3.2vw, 3.4rem);
+  }
+
+  .series-entry__meta,
+  .series-entry__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--muted);
+    font-size: .58rem;
+    line-height: 1.4;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .series-entry h2 {
+    margin: 0;
+    font: 400 clamp(4.3rem, 8vw, 8.5rem)/.82 var(--serif);
+    letter-spacing: -.065em;
+  }
+
+  .series-entry__copy p {
+    max-width: 25rem;
+    margin: clamp(1.4rem, 2.5vw, 2.4rem) 0 0;
+    color: var(--muted);
+    font: 400 clamp(1.05rem, 1.55vw, 1.45rem)/1.45 var(--serif);
+  }
+
+  .series-entry__footer {
+    padding-top: 1.1rem;
+    border-top: 1px solid rgba(23, 23, 22, .14);
+    color: var(--ink);
+  }
+
+  .series-entry__footer span:last-child {
+    font-size: 1rem;
+    transition: transform 300ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .series-entry__media {
+    min-width: 0;
+    margin: .55rem .55rem .55rem 0;
+    position: relative;
+    overflow: hidden;
+    background: #d8d2c6;
+    box-shadow: -1rem 0 2.4rem rgba(30, 27, 21, .055);
+    transform-origin: left center;
+    transition: transform 700ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .series-entry__media :global(.responsive-image),
+  .series-entry__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .series-entry__media :global(img) {
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(.88) contrast(.97);
+    transition: transform 900ms cubic-bezier(.16, 1, .3, 1), filter 500ms ease;
+  }
+
+  .series-entry__spine {
+    width: clamp(.6rem, 1.1vw, 1rem);
+    position: absolute;
+    z-index: 2;
+    inset: 0 auto 0 0;
+    background: linear-gradient(90deg, rgba(20, 18, 15, .22), rgba(255, 255, 255, .2) 48%, transparent);
+    box-shadow: .5rem 0 1.2rem rgba(20, 18, 15, .09);
+    pointer-events: none;
+  }
+
+  .series-entry__wash {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, rgba(246, 242, 233, .14), transparent 42%, rgba(255, 255, 255, .05));
+    pointer-events: none;
+    transition: opacity 450ms ease;
+  }
+
+  .series-entry:hover,
+  .series-entry:focus-visible {
+    border-color: rgba(40, 39, 35, .16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .84),
+      0 1.8rem 5rem rgba(40, 36, 27, .085);
+    transform: translateY(-4px);
+  }
+
+  .series-entry:hover .series-entry__media,
+  .series-entry:focus-visible .series-entry__media {
+    transform: perspective(1200px) rotateY(-.7deg);
+  }
+
+  .series-entry:hover .series-entry__media :global(img),
+  .series-entry:focus-visible .series-entry__media :global(img) {
+    filter: saturate(.96) contrast(1);
+    transform: scale(1.025);
+  }
+
+  .series-entry:hover .series-entry__wash,
+  .series-entry:focus-visible .series-entry__wash {
+    opacity: .62;
+  }
+
+  .series-entry:hover .series-entry__footer span:last-child,
+  .series-entry:focus-visible .series-entry__footer span:last-child {
+    transform: translate(.25rem, -.25rem);
+  }
+
+  .series-entry:focus-visible {
+    outline: 1px solid var(--ink);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 760px) {
+    .series-entry {
+      min-height: 0;
+      grid-template-columns: 1fr;
+    }
+
+    .series-entry__copy {
+      min-height: 19rem;
+      padding: 1.5rem;
+    }
+
+    .series-entry__media {
+      margin: 0 .45rem .45rem;
+      aspect-ratio: 4 / 3;
+      box-shadow: none;
+    }
+
+    .series-entry__media :global(img) {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .series-entry,
+    .series-entry__media,
+    .series-entry__media :global(img),
+    .series-entry__footer span:last-child {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
