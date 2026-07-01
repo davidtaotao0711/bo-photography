@@ -499,7 +499,16 @@
     "alt": "Portrait photograph: portrait 003",
     "categoryLayoutOffsetX": 1,
     "categoryLayoutOffsetY": 9,
-    "order": 2
+    "order": 2,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.59
+    }
   },
   {
     "id": "portrait-001",
@@ -515,7 +524,16 @@
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
     "categoryRowSize": 3,
-    "order": 4
+    "order": 4,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.47
+    }
   },
   {
     "id": "portrait-002",
@@ -530,7 +548,16 @@
     "alt": "Portrait photograph: portrait 002",
     "categoryLayoutOffsetX": 1,
     "categoryLayoutOffsetY": 0,
-    "order": 5
+    "order": 5,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.46
+    }
   },
   {
     "id": "portrait-005",
@@ -545,7 +572,16 @@
     "alt": "Portrait photograph: portrait 005",
     "categoryLayoutOffsetX": 3,
     "categoryLayoutOffsetY": 2,
-    "order": 6
+    "order": 6,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.47
+    }
   },
   {
     "id": "portrait-006",
@@ -652,7 +688,16 @@
     "categoryLayoutOffsetX": -4,
     "categoryLayoutOffsetY": 0,
     "categoryRowSize": 2,
-    "order": 3
+    "order": 3,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.6
+    }
   },
   {
     "id": "portrait-015",
@@ -1514,7 +1559,7 @@
     "layoutWidth": 62,
     "detailScale": 100,
     "homeTitle": "Cannot slow down",
-    "order": 24
+    "order": 25
   },
   {
     "id": "nature-011",
@@ -1652,7 +1697,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 23
+    "order": 24
   },
   {
     "id": "nature-010",
@@ -1683,7 +1728,7 @@
     "alt": "Portrait photograph by Bo David",
     "categoryLayoutWidth": 78,
     "categoryRowSize": 1,
-    "order": 25
+    "order": 26
   },
   {
     "id": "street-054",
@@ -2365,7 +2410,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 26,
+    "order": 27,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -2386,7 +2431,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 27
+    "order": 28
   },
   {
     "id": "portrait-029",
@@ -2399,7 +2444,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 28
+    "order": 29
   },
   {
     "id": "portrait-030",
@@ -2412,7 +2457,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 29,
+    "order": 30,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -2747,7 +2792,7 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 30
+    "order": 32
   },
   {
     "id": "street-065",
@@ -2984,5 +3029,31 @@
       "ratio": 0.62
     },
     "order": 59
+  },
+  {
+    "id": "portrait-034",
+    "title": "No. 31",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-034.png",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "order": 23
+  },
+  {
+    "id": "portrait-035",
+    "title": "No. 32",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-035.png",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "order": 31
   }
 ]
