@@ -1,6 +1,7 @@
----
+﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CategoryGrid from '../components/CategoryGrid.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import FeaturedSeriesCard from '../components/FeaturedSeriesCard.astro';
 import categories from '../data/portfolio-categories.json';
 import site from '../data/site.json';
 
@@ -12,63 +13,195 @@ const entries = categories
   }))
   .sort((a, b) => a.order - b.order || a.index - b.index)
   .map(({ entry }) => entry);
+
+const standardEntries = entries.filter((entry) => entry.variant !== 'feature');
+const featureEntries = entries.filter((entry) => entry.variant === 'feature');
 ---
 
 <BaseLayout title={`Portfolio — ${site.name}`}>
-  <section class="archive-hero page-shell">
-    <p class="eyebrow">{site.name} / Archive</p>
-    <h1>Portfolio</h1>
-    <p class="archive-hero__copy">Photographs arranged by subject,<br />then gathered into longer stories.</p>
+  <section class="archive-opening page-shell" aria-labelledby="archive-title">
+    <header class="archive-intro">
+      <p class="eyebrow">{site.name} / Archive</p>
+      <h1 id="archive-title">Portfolio</h1>
+      <p class="archive-intro__copy">Photographs arranged by subject,<br /> then gathered into longer stories.</p>
+    </header>
+
+    <div class="archive-cards" aria-label="Portfolio categories">
+      {standardEntries.map((entry, index) => (
+        <CategoryCard entry={entry} number={index + 1} />
+      ))}
+    </div>
   </section>
-  <div class="page-shell">
-    <CategoryGrid entries={entries} />
-  </div>
+
+  <section class="archive-series page-shell" aria-label="Photography series">
+    {featureEntries.map((entry, index) => (
+      <div class="portfolio-entry__feature">
+        <FeaturedSeriesCard entry={entry} number={standardEntries.length + index + 1} />
+      </div>
+    ))}
+  </section>
 </BaseLayout>
 
 <style>
-  .archive-hero {
-    min-height: clamp(28rem, 58svh, 44rem);
-    padding-top: clamp(7rem, 12vw, 11rem);
-    padding-bottom: clamp(4.5rem, 8vw, 7rem);
-    display: grid;
-    grid-template-columns: 1fr 2.2fr;
-    align-content: end;
-    gap: 2rem;
+  .archive-opening {
+    padding-top: clamp(1.5rem, 3vh, 2.25rem);
+    padding-bottom: clamp(2.5rem, 5vh, 4rem);
+    display: flex;
+    flex-direction: column;
   }
 
-  .archive-hero h1 {
-    grid-column: 1 / -1;
-    margin: clamp(2.5rem, 5vw, 5rem) 0 0;
-    font: 400 clamp(5.5rem, 14vw, 13rem)/.78 var(--serif);
-    letter-spacing: -.07em;
+  .archive-opening,
+  .archive-series {
+    padding-inline: clamp(1.25rem, 2.5vw, 2.75rem);
   }
 
-  .archive-hero__copy {
-    grid-column: 2;
-    margin: clamp(2rem, 4vw, 3.5rem) 0 0;
+  .archive-intro {
+    flex: 0 0 auto;
+  }
+
+  .archive-intro h1 {
+    margin-top: clamp(.75rem, 1.5vh, 1.1rem);
+    font: 400 clamp(4.5rem, 7.4vw, 7.25rem)/.84 var(--serif);
+    letter-spacing: 0;
+  }
+
+  .archive-intro__copy {
+    margin-top: clamp(.9rem, 1.8vh, 1.25rem);
     color: var(--muted);
-    font: 400 clamp(1rem, 1.55vw, 1.35rem)/1.5 var(--serif);
+    font: 400 clamp(1rem, 1.25vw, 1.2rem)/1.5 var(--serif);
   }
 
-  @media (max-width: 720px) {
-    .archive-hero {
-      min-height: 42svh;
-      padding-top: 5rem;
-      grid-template-columns: 1fr;
-      gap: 0;
+  .archive-cards {
+    min-height: 0;
+    margin-top: clamp(1.75rem, 3.5vh, 2.75rem);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(.8rem, 1.15vw, 1.25rem);
+    width: 100%;
+  }
+
+  .archive-cards :global(.category-card) {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+    grid-template-rows: clamp(7.5rem, 9.25vw, 8.5rem) minmax(0, 1fr);
+  }
+
+  .archive-cards :global(.category-card h2) {
+    margin-top: 1.4rem;
+    font-size: clamp(1.5rem, 2vw, 2.1rem);
+    letter-spacing: 0;
+  }
+
+  .archive-cards :global(.category-card__header p) {
+    max-width: 32ch;
+    margin-top: .5rem;
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: clamp(.6rem, .64vw, .68rem);
+    line-height: 1.55;
+    letter-spacing: .055em;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .archive-cards :global(.category-card__header) {
+    padding: clamp(1rem, 1.35vw, 1.3rem);
+  }
+
+  .archive-cards :global(.category-card__number),
+  .archive-cards :global(.category-card__arrow) {
+    top: clamp(1rem, 1.35vw, 1.3rem);
+  }
+
+  .archive-cards :global(.category-card__number) {
+    left: clamp(1rem, 1.35vw, 1.3rem);
+  }
+
+  .archive-cards :global(.category-card__arrow) {
+    right: clamp(1rem, 1.35vw, 1.3rem);
+  }
+
+  .archive-series {
+    padding-bottom: clamp(8rem, 14vw, 14rem);
+  }
+
+  .portfolio-entry__feature {
+    margin-top: clamp(4.5rem, 7vw, 7rem);
+  }
+
+  @media (max-width: 1100px) {
+    .archive-opening,
+    .archive-series {
+      padding-inline: clamp(1.25rem, 3.5vw, 2.5rem);
     }
 
-    .archive-hero h1,
-    .archive-hero__copy {
-      grid-column: 1;
+    .archive-intro h1 {
+      font-size: clamp(4.5rem, 11vw, 6.5rem);
     }
 
-    .archive-hero h1 {
-      font-size: clamp(4.7rem, 24vw, 8rem);
-    }
-
-    .archive-hero__copy {
+    .archive-intro__copy {
       font-size: 1rem;
     }
+
+    .archive-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(1rem, 2.2vw, 1.5rem);
+    }
+
+    .archive-cards :global(.category-card) {
+      aspect-ratio: 5 / 4;
+      grid-template-rows: clamp(7.5rem, 13vw, 8.5rem) minmax(0, 1fr);
+    }
+
+    .archive-cards :global(.category-card h2) {
+      font-size: clamp(1.6rem, 3vw, 2.15rem);
+    }
+
+    .archive-cards :global(.category-card__header p) {
+      max-width: 38ch;
+      font-size: clamp(.62rem, 1.1vw, .7rem);
+    }
+
+    .portfolio-entry__feature {
+      margin-top: 4rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .archive-opening {
+      padding-top: 1.5rem;
+      padding-bottom: 2rem;
+    }
+
+    .archive-intro h1 {
+      font-size: clamp(4rem, 20vw, 6rem);
+    }
+
+    .archive-cards {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .archive-cards :global(.category-card) {
+      min-height: 0;
+      aspect-ratio: 5 / 4;
+      grid-template-rows: clamp(7.5rem, 32vw, 8rem) minmax(0, 1fr);
+    }
+
+    .archive-cards :global(.category-card h2) {
+      font-size: clamp(1.65rem, 7vw, 2rem);
+    }
+
+    .archive-cards :global(.category-card__header p) {
+      font-size: clamp(.62rem, 2.5vw, .68rem);
+    }
+  }
+
+  @media (max-width: 430px) {
+    .archive-intro__copy br {
+      display: none;
+    }
+
   }
 </style>

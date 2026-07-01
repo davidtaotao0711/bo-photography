@@ -1,4 +1,4 @@
----
+﻿---
 import photos from '../data/photos.json';
 import series from '../data/series.json';
 import site from '../data/site.json';
@@ -608,6 +608,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
                 <span data-layout-summary><strong>${escapeHtml(photo.title || photo.id)}</strong><small data-layout-summary-text>${escapeHtml(preset)} · ${layout.ratio ? `ratio ${layout.ratio.toFixed(2)}` : layout.crop ? `crop ${escapeHtml(layout.fit)}` : 'natural'}</small></span>
                 <span>编辑</span>
               </button>
+                            <button class="fit-toggle" type="button" data-action="fit-toggle" data-fit="${layout.fit}" title="Switch between Cover and Contain">${layout.crop ? (layout.fit === "cover" ? "Cover" : "Contain") : ""}</button>
               <div class="collage-order-controls" aria-label="调整照片顺序">
                 <button type="button" data-action="up" aria-label="与前一张交换" title="与前一张交换" ${scopeIndex <= 0 ? 'disabled' : ''}>←</button>
                 <button type="button" data-action="down" aria-label="与后一张交换" title="与后一张交换" ${scopeIndex < 0 || scopeIndex === scopeItems.length - 1 ? 'disabled' : ''}>→</button>
@@ -1880,6 +1881,19 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           render();
           showToast('照片位置已归零');
         }
+        
+      if (action === 'fit-toggle') {
+        const photo = photoData.find((item) => item.id === id);
+        if (!photo) return;
+        snapshot();
+        const layout = normalizeCollageLayout(photo);
+        const newFit = layout.fit === 'cover' ? 'contain' : 'cover';
+        setPhotoLayout(photo, { fit: newFit, crop: true });
+        setDirty(true);
+        render();
+        showToast(`Fit switched to ${newFit} — click Save to write to photos.json`);
+        return;
+      }
         if (action === 'featured') {
           const photo = photoData.find((item) => item.id === id);
           if (!photo) return;
@@ -2070,6 +2084,18 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         }
         if (card && actionButton?.dataset.action === 'down') {
           movePhoto(card.dataset.id, 1);
+          return;
+        }
+        if (card && actionButton?.dataset.action === 'fit-toggle') {
+          const photo = photoData.find((item) => item.id === card.dataset.id);
+          if (!photo) return;
+          snapshot();
+          const layout = normalizeCollageLayout(photo);
+          const newFit = layout.fit === 'cover' ? 'contain' : 'cover';
+          setPhotoLayout(photo, { fit: newFit, crop: true });
+          setDirty(true);
+          render();
+          showToast('Fit switched to ' + newFit + ' - click Save to write to photos.json');
           return;
         }
         const coverButton = event.target.closest('[data-cover-image]');
@@ -2388,6 +2414,30 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     justify-content: space-between;
     gap: .6rem;
   }
+  .fit-toggle {
+    flex: 0 0 auto;
+    margin-top: .55rem;
+    margin-right: .35rem;
+    padding: .2rem .5rem;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    color: var(--muted);
+    background: transparent;
+    font-size: .52rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+  }
+  .fit-toggle:hover {
+    color: #fff;
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .fit-toggle:empty {
+    display: none;
+  }
+  
   .collage-order-controls {
     flex: 0 0 auto;
     margin-top: .55rem;

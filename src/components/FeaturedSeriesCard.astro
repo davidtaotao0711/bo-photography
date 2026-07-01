@@ -44,6 +44,7 @@ const label = String(number).padStart(2, '0');
     <span class="series-entry__spine" aria-hidden="true"></span>
     <span class="series-entry__wash" aria-hidden="true"></span>
   </figure>
+    <div class="series-entry__grain" aria-hidden="true"></div>
 </a>
 
 <style>
@@ -221,4 +222,46 @@ const label = String(number).padStart(2, '0');
       transition: none;
     }
   }
+
+  .series-entry__grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: .05;
+  }
+
+  .series-entry__grain::after {
+    content: '';
+    position: absolute;
+    inset: -200%;
+    width: 400%;
+    height: 400%;
+    background-image: url("/images/grain.png");
+    background-size: 256px 256px;
+    background-repeat: repeat;
+    animation: seriesGrainMove 8s steps(10, start) infinite;
+  }
+
+  @keyframes seriesGrainMove {
+    0% { transform: translate(0%, 0%); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+    100% { transform: translate(0%, 0%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .series-entry__grain::after {
+      animation: none;
+    }
+  }
+
 </style>
