@@ -40,8 +40,25 @@ const label = String(number).padStart(2, '0');
 
 <script>
   const focusQuery = window.matchMedia('(min-width: 821px) and (hover: hover) and (pointer: fine)');
+  const clearCategoryFocus = () => {
+    document.querySelectorAll('[data-category-card].is-focusing').forEach((card) => {
+      card.classList.remove('is-focusing');
+    });
+  };
 
   const initializeCategoryFocus = () => {
+    if (document.documentElement.dataset.categoryFocusExitReady !== 'true') {
+      document.documentElement.dataset.categoryFocusExitReady = 'true';
+      document.addEventListener('pointermove', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element) || !target.closest('[data-category-media]')) {
+          clearCategoryFocus();
+        }
+      }, { passive: true });
+      document.addEventListener('scroll', clearCategoryFocus, { passive: true });
+      window.addEventListener('blur', clearCategoryFocus);
+    }
+
     document.querySelectorAll('[data-category-card]').forEach((card) => {
       if (!(card instanceof HTMLAnchorElement) || card.dataset.focusReady === 'true') return;
 
@@ -51,7 +68,7 @@ const label = String(number).padStart(2, '0');
       if (!(media instanceof HTMLElement) || !(image instanceof HTMLImageElement) || !(focus instanceof HTMLElement)) return;
 
       card.dataset.focusReady = 'true';
-      const zoom = 1.72;
+      const zoom = 1.25;
       let frameId = 0;
       let pointerX = 0;
       let pointerY = 0;
@@ -94,18 +111,18 @@ const label = String(number).padStart(2, '0');
         if (!frameId) frameId = window.requestAnimationFrame(renderFocus);
       };
 
-      media.addEventListener('pointerenter', (event) => {
+      const activateFocus = (event) => {
         if (!focusQuery.matches) return;
+        document.querySelectorAll('[data-category-card].is-focusing').forEach((activeCard) => {
+          if (activeCard !== card) activeCard.classList.remove('is-focusing');
+        });
         updateSource();
         card.classList.add('is-focusing');
         scheduleFocus(event);
-      });
-      media.addEventListener('pointermove', (event) => {
-        if (!focusQuery.matches) return;
-        updateSource();
-        card.classList.add('is-focusing');
-        scheduleFocus(event);
-      });
+      };
+
+      media.addEventListener('pointerenter', activateFocus);
+      media.addEventListener('pointermove', activateFocus);
       media.addEventListener('pointerleave', () => {
         card.classList.remove('is-focusing');
         if (frameId) window.cancelAnimationFrame(frameId);
@@ -139,7 +156,6 @@ const label = String(number).padStart(2, '0');
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, .75),
       0 .8rem 2.5rem rgba(40, 36, 27, .035);
-    backdrop-filter: blur(14px);
     transition: transform 420ms cubic-bezier(.16, 1, .3, 1), box-shadow 420ms ease, border-color 300ms ease;
   }
 
@@ -203,8 +219,8 @@ const label = String(number).padStart(2, '0');
   .category-card__media :global(img) {
     object-fit: cover;
     object-position: center;
-    filter: saturate(.78) contrast(.93) brightness(1.025) blur(.35px);
-    transform: scale(1.012);
+    filter: saturate(.97) contrast(.99) brightness(1.01);
+    transform: scale(1.002);
     transition: filter 420ms ease, transform 700ms cubic-bezier(.16, 1, .3, 1);
   }
 
@@ -212,27 +228,29 @@ const label = String(number).padStart(2, '0');
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(145deg, rgba(247, 244, 237, .14), rgba(247, 244, 237, .03) 48%, rgba(255, 255, 255, .12)),
-      rgba(237, 233, 224, .09);
+      linear-gradient(145deg, rgba(250, 247, 240, .055), rgba(245, 241, 232, .015) 52%, rgba(250, 247, 240, .04)),
+      rgba(245, 241, 232, .018);
     pointer-events: none;
     transition: opacity 320ms ease;
   }
 
   .category-card__focus {
-    width: clamp(6rem, 8.5vw, 8rem);
-    height: clamp(4.8rem, 6.8vw, 6.4rem);
+    width: 80px;
+    height: 80px;
     position: absolute;
     z-index: 2;
     top: 0;
     left: 0;
-    border-radius: 48%;
+    border-radius: 50%;
     background-repeat: no-repeat;
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, .34),
-      0 .8rem 2.4rem rgba(19, 18, 15, .11);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18);
+    filter: drop-shadow(0 .7rem 1.5rem rgba(19, 18, 15, .09));
+    -webkit-mask-image: radial-gradient(circle, #000 0 68%, rgba(0, 0, 0, .96) 76%, rgba(0, 0, 0, .4) 88%, transparent 100%);
+    mask-image: radial-gradient(circle, #000 0 68%, rgba(0, 0, 0, .96) 76%, rgba(0, 0, 0, .4) 88%, transparent 100%);
     opacity: 0;
     pointer-events: none;
     transform: translate(-50%, -50%) scale(.88);
+    will-change: left, top, background-position, transform;
     transition: opacity 190ms ease, transform 350ms cubic-bezier(.16, 1, .3, 1);
   }
 
@@ -252,11 +270,11 @@ const label = String(number).padStart(2, '0');
   }
 
   .category-card:hover .category-card__media :global(img) {
-    transform: scale(1.027);
+    transform: scale(1.008);
   }
 
   .category-card.is-focusing .category-card__veil {
-    opacity: .82;
+    opacity: 1;
   }
 
   .category-card.is-focusing .category-card__focus {
@@ -282,15 +300,6 @@ const label = String(number).padStart(2, '0');
       grid-template-rows: 7rem 1fr;
     }
 
-    .category-card__media :global(img) {
-      filter: none;
-      opacity: 1;
-      transform: none;
-    }
-
-    .category-card__veil {
-      display: none;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
