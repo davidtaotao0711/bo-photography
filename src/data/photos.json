@@ -1441,9 +1441,9 @@
     "categoryLayoutOffsetY": 2,
     "categoryLayoutWidth": 45,
     "categoryRowSize": 1,
-    "layoutOffsetX": 4,
-    "layoutOffsetY": -38,
-    "layoutWidth": 66,
+    "layoutOffsetX": 8,
+    "layoutOffsetY": -26,
+    "layoutWidth": 75,
     "detailScale": 100,
     "homeTitle": "\"Pink Princess\"",
     "order": 18
@@ -1497,17 +1497,24 @@
     }
   },
   {
-    "id": "nature-010",
-    "title": "No. 09",
-    "category": "nature",
+    "id": "portrait-022",
+    "title": "No. 22",
+    "category": "portrait",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/nature/nature-010.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Nature photograph by Bo David",
-    "order": 4
+    "image": "/images/portrait/portrait-022.jpg",
+    "featured": true,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "categoryLayoutOffsetX": 0,
+    "categoryLayoutOffsetY": 0,
+    "layoutOffsetX": -7,
+    "layoutOffsetY": -42,
+    "layoutWidth": 62,
+    "detailScale": 100,
+    "homeTitle": "Cannot slow down",
+    "order": 24
   },
   {
     "id": "nature-011",
@@ -1532,24 +1539,26 @@
     }
   },
   {
-    "id": "portrait-022",
-    "title": "No. 22",
-    "category": "portrait",
+    "id": "scenes-059",
+    "title": "No. 35",
+    "category": "scenes",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/portrait/portrait-022.jpg",
+    "image": "/images/scenes/scenes-059.jpg",
     "featured": true,
-    "orientation": "portrait",
-    "alt": "Portrait photograph by Bo David",
-    "categoryLayoutOffsetX": 0,
-    "categoryLayoutOffsetY": 0,
-    "layoutOffsetX": -14,
-    "layoutOffsetY": -38,
-    "layoutWidth": 56,
+    "orientation": "landscape",
+    "alt": "Scenes photograph by Bo David",
+    "categoryLayoutWidth": 70,
+    "categoryLayoutOffsetX": -4,
+    "categoryLayoutOffsetY": 2,
+    "categoryRowSize": 1,
+    "layoutOffsetX": -18,
+    "layoutOffsetY": -79,
+    "layoutWidth": 153,
     "detailScale": 100,
-    "homeTitle": "Cannot slow down",
-    "order": 24
+    "homeTitle": "\"We are in a line\"",
+    "order": 36
   },
   {
     "id": "nature-003",
@@ -1646,33 +1655,20 @@
     "order": 23
   },
   {
-    "id": "nature-005",
-    "title": "No. 05",
+    "id": "nature-010",
+    "title": "No. 09",
     "category": "nature",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/nature/nature-005.jpg",
+    "image": "/images/nature/nature-010.jpg",
     "featured": true,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
-    "categoryRowSize": 1,
-    "categoryLayoutWidth": 70,
-    "layoutOffsetX": -30,
-    "layoutOffsetY": -77,
-    "layoutWidth": 150,
-    "detailScale": 100,
-    "homeTitle": "Waves of green",
-    "layout": {
-      "colSpan": 4,
-      "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
-      "focalX": 50,
-      "focalY": 50,
-      "ratio": 0.64
-    },
-    "order": 10
+    "order": 4,
+    "layoutOffsetX": -1,
+    "layoutOffsetY": -80,
+    "layoutWidth": 153
   },
   {
     "id": "portrait-024",
@@ -1878,26 +1874,33 @@
     "order": 35
   },
   {
-    "id": "scenes-059",
-    "title": "No. 35",
-    "category": "scenes",
+    "id": "nature-005",
+    "title": "No. 05",
+    "category": "nature",
     "series": "",
     "location": "",
     "date": "2026",
-    "image": "/images/scenes/scenes-059.jpg",
+    "image": "/images/nature/nature-005.jpg",
     "featured": true,
     "orientation": "landscape",
-    "alt": "Scenes photograph by Bo David",
-    "categoryLayoutWidth": 70,
-    "categoryLayoutOffsetX": -4,
-    "categoryLayoutOffsetY": 2,
+    "alt": "Nature photograph by Bo David",
     "categoryRowSize": 1,
-    "layoutOffsetX": 37,
-    "layoutOffsetY": -64,
-    "layoutWidth": 200,
+    "categoryLayoutWidth": 70,
+    "layoutOffsetX": 0,
+    "layoutOffsetY": -68,
+    "layoutWidth": 100,
     "detailScale": 100,
-    "homeTitle": "\"We are in a line\"",
-    "order": 36
+    "homeTitle": "Waves of green",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.64
+    },
+    "order": 10
   },
   {
     "id": "scenes-063",
@@ -2677,11 +2680,11 @@
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.61
+      "ratio": 0.63
     },
     "order": 15
   },
@@ -2704,7 +2707,7 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.61
+      "ratio": 1.36
     }
   },
   {
