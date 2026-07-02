@@ -3476,5 +3476,49 @@
         "src": "/images/generated/nature__nature-007-3840.webp"
       }
     ]
+  },
+  "/images/scenes/scenes-070.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/scenes__scenes-070-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/scenes__scenes-070-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/scenes__scenes-070-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/scenes__scenes-070-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-005.jpg": {
+    "width": 5772,
+    "height": 3724,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-005-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-005-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-005-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-005-1600.webp"
+      }
+    ]
   }
 }

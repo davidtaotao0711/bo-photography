@@ -74,8 +74,21 @@ const { images, name, tagline } = Astro.props;
   const FIRST_SLIDE_DELAY = 3500;
   const SLIDE_INTERVAL = 5500;
   const ENTER_SCROLL_DURATION = 1200;
+  const isHomePath = () => (window.location.pathname.replace(/\/+$/, '') || '/') === '/';
+
+  const releaseStaleHomeLock = () => {
+    document.documentElement.classList.remove('home-intro-locked');
+    if ('scrollRestoration' in history && history.scrollRestoration === 'manual') {
+      history.scrollRestoration = 'auto';
+    }
+  };
 
   const initializeHomeIntro = () => {
+    if (!isHomePath()) {
+      releaseStaleHomeLock();
+      return;
+    }
+
     const intro = document.querySelector('[data-home-intro]');
     if (!(intro instanceof HTMLElement) || intro.dataset.ready === 'true') return;
 
@@ -91,13 +104,23 @@ const { images, name, tagline } = Astro.props;
     let activeIndex = 0;
     let rotationId;
     let manualTransitionId;
+    let enterScrollFrameId;
+    let disposed = false;
+    const previousScrollRestoration = 'scrollRestoration' in history
+      ? history.scrollRestoration
+      : null;
 
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     root.classList.add('home-intro-locked');
 
     const holdIntroAtTop = () => {
-      if (intro.dataset.state === 'locked' && window.scrollY !== 0) {
+      if (
+        isHomePath()
+        && root.classList.contains('home-intro-locked')
+        && intro.dataset.state === 'locked'
+        && window.scrollY !== 0
+      ) {
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
       }
     };
@@ -133,6 +156,30 @@ const { images, name, tagline } = Astro.props;
       rotationId = undefined;
     };
 
+    const releaseScrollLock = () => {
+      root.classList.remove('home-intro-locked');
+      window.removeEventListener('scroll', holdIntroAtTop);
+      if (previousScrollRestoration !== null && 'scrollRestoration' in history) {
+        history.scrollRestoration = previousScrollRestoration;
+      }
+    };
+
+    const cleanupHomeIntro = () => {
+      if (disposed) return;
+      disposed = true;
+      clearRotation();
+      if (manualTransitionId) window.clearTimeout(manualTransitionId);
+      if (enterScrollFrameId) window.cancelAnimationFrame(enterScrollFrameId);
+      intro.classList.remove('is-manual-switch');
+      intro.dataset.ready = 'false';
+      releaseScrollLock();
+      window.removeEventListener('pagehide', cleanupHomeIntro);
+      document.removeEventListener('astro:before-swap', cleanupHomeIntro);
+    };
+
+    window.addEventListener('pagehide', cleanupHomeIntro);
+    document.addEventListener('astro:before-swap', cleanupHomeIntro);
+
     const scheduleNextSlide = (delay) => {
       clearRotation();
       if (reduceMotion || slides.length < 2 || intro.dataset.state !== 'locked') return;
@@ -159,12 +206,14 @@ const { images, name, tagline } = Astro.props;
       if (manualTransitionId) window.clearTimeout(manualTransitionId);
       intro.classList.remove('is-manual-switch');
       intro.dataset.state = 'entered';
-      root.classList.remove('home-intro-locked');
-      window.removeEventListener('scroll', holdIntroAtTop);
+      releaseScrollLock();
 
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          if (!selectedWork) return;
+      enterScrollFrameId = window.requestAnimationFrame(() => {
+        enterScrollFrameId = window.requestAnimationFrame(() => {
+          if (disposed || !isHomePath() || !selectedWork) {
+            enterScrollFrameId = undefined;
+            return;
+          }
 
           const targetTop = selectedWork.getBoundingClientRect().top + window.scrollY;
           if (reduceMotion) {
@@ -185,13 +234,14 @@ const { images, name, tagline } = Astro.props;
             window.scrollTo(0, startTop + distance * eased);
 
             if (progress < 1) {
-              window.requestAnimationFrame(scrollFrame);
+              enterScrollFrameId = window.requestAnimationFrame(scrollFrame);
             } else {
+              enterScrollFrameId = undefined;
               root.style.scrollBehavior = previousScrollBehavior;
             }
           };
 
-          window.requestAnimationFrame(scrollFrame);
+          enterScrollFrameId = window.requestAnimationFrame(scrollFrame);
         });
       });
     };
@@ -206,8 +256,18 @@ const { images, name, tagline } = Astro.props;
   }
 
   window.addEventListener('pageshow', () => {
+    if (!isHomePath()) {
+      releaseStaleHomeLock();
+      return;
+    }
+
+    initializeHomeIntro();
     const intro = document.querySelector('[data-home-intro]');
-    if (intro instanceof HTMLElement && intro.dataset.state === 'locked') {
+    if (
+      intro instanceof HTMLElement
+      && intro.dataset.state === 'locked'
+      && document.documentElement.classList.contains('home-intro-locked')
+    ) {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }
   });

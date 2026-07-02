@@ -12,9 +12,10 @@ interface Entry {
 interface Props {
   entry: Entry;
   number: number;
+  priority?: boolean;
 }
 
-const { entry, number } = Astro.props;
+const { entry, number, priority = false } = Astro.props;
 const label = String(number).padStart(2, '0');
 ---
 
@@ -30,7 +31,9 @@ const label = String(number).padStart(2, '0');
     <ResponsiveImage
       src={entry.coverImage}
       alt={`${entry.title} photography`}
-      loading={number < 3 ? 'eager' : 'lazy'}
+      loading={priority || number < 3 ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchpriority={priority ? 'high' : undefined}
       sizes="(max-width: 520px) 100vw, (max-width: 1050px) 50vw, 25vw"
     />
     <span class="category-card__veil" aria-hidden="true"></span>

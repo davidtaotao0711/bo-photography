@@ -28,7 +28,7 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
 
     <div class="archive-cards" aria-label="Portfolio categories">
       {standardEntries.map((entry, index) => (
-        <CategoryCard entry={entry} number={index + 1} />
+        <CategoryCard entry={entry} number={index + 1} priority />
       ))}
     </div>
   </section>
