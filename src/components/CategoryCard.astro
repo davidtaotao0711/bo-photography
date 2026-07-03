@@ -18,6 +18,7 @@ interface Props {
 
 const { entry, number, priority = false } = Astro.props;
 const label = String(number).padStart(2, '0');
+const imageStyle = entry.coverPosition ? `object-position: ${entry.coverPosition};` : undefined;
 ---
 
 <a class="category-card" href={entry.href}>
@@ -28,7 +29,7 @@ const label = String(number).padStart(2, '0');
     <p>{entry.description}</p>
   </header>
 
-  <figure class="category-card__media" style={`--card-cover-position: ${entry.coverPosition ?? 'center center'};`}>
+  <figure class="category-card__media">
     <ResponsiveImage
       src={entry.coverImage}
       alt={`${entry.title} photography`}
@@ -36,6 +37,7 @@ const label = String(number).padStart(2, '0');
       decoding="async"
       fetchpriority={priority ? 'high' : undefined}
       sizes="(max-width: 520px) 100vw, (max-width: 1050px) 50vw, 25vw"
+      style={imageStyle}
     />
     <span class="category-card__veil" aria-hidden="true"></span>
     <span class="category-card__grain" aria-hidden="true"></span>
@@ -120,7 +122,7 @@ const label = String(number).padStart(2, '0');
 
   .category-card__media :global(img) {
     object-fit: cover;
-    object-position: var(--card-cover-position, center center);
+    object-position: center;
     filter: saturate(.97) contrast(.99) brightness(1.01);
     transform: scale(1.002);
     transition: filter 420ms ease, transform 700ms cubic-bezier(.16, 1, .3, 1);
