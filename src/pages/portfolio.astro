@@ -171,6 +171,7 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
   @media (max-width: 620px) {
     .archive-opening {
       padding-top: 1.5rem;
+      padding-inline: clamp(1rem, 4.5vw, 1.15rem);
       padding-bottom: 2rem;
     }
 
@@ -180,13 +181,17 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
 
     .archive-cards {
       grid-template-columns: 1fr;
-      gap: 1rem;
+      gap: 1.15rem;
     }
 
     .archive-cards :global(.category-card) {
       min-height: 0;
-      aspect-ratio: 5 / 4;
-      grid-template-rows: clamp(7.5rem, 32vw, 8rem) minmax(0, 1fr);
+      aspect-ratio: auto;
+      grid-template-rows: clamp(7.25rem, 31vw, 7.75rem) auto;
+    }
+
+    .archive-cards :global(.category-card__media) {
+      aspect-ratio: 4 / 3;
     }
 
     .archive-cards :global(.category-card h2) {
