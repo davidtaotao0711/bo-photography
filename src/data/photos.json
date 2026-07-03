@@ -3100,5 +3100,17 @@
       "focalY": 50,
       "ratio": 0.64
     }
+  },
+  {
+    "id": "portrait-036",
+    "title": "No. 33",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-036.jpg",
+    "featured": false,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
   }
 ]
