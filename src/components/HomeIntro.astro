@@ -75,6 +75,8 @@ const { images, name, tagline } = Astro.props;
   const SLIDE_INTERVAL = 5500;
   const ENTER_SCROLL_DURATION = 1200;
   const isHomePath = () => (window.location.pathname.replace(/\/+$/, '') || '/') === '/';
+  const HOME_INTRO_CLEANUP_KEY = '__boHomeIntroCleanup';
+  const HOME_INTRO_PAGESHOW_KEY = '__boHomeIntroPageshow';
 
   const releaseStaleHomeLock = () => {
     document.documentElement.classList.remove('home-intro-locked');
@@ -83,7 +85,15 @@ const { images, name, tagline } = Astro.props;
     }
   };
 
+  const runExistingHomeCleanup = () => {
+    const existingCleanup = window[HOME_INTRO_CLEANUP_KEY];
+    if (typeof existingCleanup === 'function') existingCleanup();
+    delete window[HOME_INTRO_CLEANUP_KEY];
+  };
+
   const initializeHomeIntro = () => {
+    runExistingHomeCleanup();
+
     if (!isHomePath()) {
       releaseStaleHomeLock();
       return;
@@ -173,12 +183,19 @@ const { images, name, tagline } = Astro.props;
       intro.classList.remove('is-manual-switch');
       intro.dataset.ready = 'false';
       releaseScrollLock();
+      enter?.removeEventListener('click', enterSite);
       window.removeEventListener('pagehide', cleanupHomeIntro);
       document.removeEventListener('astro:before-swap', cleanupHomeIntro);
+      document.removeEventListener('astro:page-load', initializeHomeIntro);
+      if (window[HOME_INTRO_CLEANUP_KEY] === cleanupHomeIntro) {
+        delete window[HOME_INTRO_CLEANUP_KEY];
+      }
     };
 
+    window[HOME_INTRO_CLEANUP_KEY] = cleanupHomeIntro;
     window.addEventListener('pagehide', cleanupHomeIntro);
     document.addEventListener('astro:before-swap', cleanupHomeIntro);
+    document.addEventListener('astro:page-load', initializeHomeIntro);
 
     const scheduleNextSlide = (delay) => {
       clearRotation();
@@ -255,22 +272,27 @@ const { images, name, tagline } = Astro.props;
     initializeHomeIntro();
   }
 
-  window.addEventListener('pageshow', () => {
-    if (!isHomePath()) {
-      releaseStaleHomeLock();
-      return;
-    }
+  if (!window[HOME_INTRO_PAGESHOW_KEY]) {
+    window[HOME_INTRO_PAGESHOW_KEY] = () => {
+      if (!isHomePath()) {
+        runExistingHomeCleanup();
+        releaseStaleHomeLock();
+        return;
+      }
 
-    initializeHomeIntro();
-    const intro = document.querySelector('[data-home-intro]');
-    if (
-      intro instanceof HTMLElement
-      && intro.dataset.state === 'locked'
-      && document.documentElement.classList.contains('home-intro-locked')
-    ) {
-      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    }
-  });
+      initializeHomeIntro();
+      const intro = document.querySelector('[data-home-intro]');
+      if (
+        intro instanceof HTMLElement
+        && intro.dataset.state === 'locked'
+        && document.documentElement.classList.contains('home-intro-locked')
+      ) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      }
+    };
+
+    window.addEventListener('pageshow', window[HOME_INTRO_PAGESHOW_KEY]);
+  }
 </script>
 
 <style>
