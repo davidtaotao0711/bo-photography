@@ -8,7 +8,7 @@ interface Props {
   reveal?: boolean;
 }
 
-const { photos, class: className, reveal = true } = Astro.props;
+const { photos, class: className, reveal = false } = Astro.props;
 ---
 
 <div class:list={['collage-gallery', className]} data-masonry-gallery>
@@ -27,46 +27,66 @@ const { photos, class: className, reveal = true } = Astro.props;
 
 <script>
   const mobileLayout = window.matchMedia('(max-width: 720px)');
+  const debugGallery = import.meta.env.DEV || window.location.search.includes('debugGallery=1');
 
-  function packGallery(gallery) {
+  function logRelayout(gallery, source, beforeHeight) {
+    if (!debugGallery) return;
+    console.count('masonry relayout');
+    console.debug('[gallery] relayout', {
+      source,
+      scrollY: Math.round(window.scrollY),
+      beforeHeight,
+      afterHeight: Math.round(gallery.offsetHeight),
+    });
+  }
+
+  function packGallery(gallery, source = 'init') {
     const cards = Array.from(gallery.querySelectorAll(':scope > .photo-card'));
-    cards.forEach((card) => card.style.removeProperty('grid-row-end'));
+    const beforeHeight = Math.round(gallery.offsetHeight);
 
     if (mobileLayout.matches) {
+      cards.forEach((card) => card.style.removeProperty('grid-row-end'));
       gallery.classList.add('is-packed');
+      logRelayout(gallery, source, beforeHeight);
       return;
     }
 
-    void gallery.offsetWidth;
-    const rowSpans = cards.map((card) => Math.max(1, card.offsetHeight));
+    const rowSpans = cards.map((card) => Math.max(1, Math.ceil(card.offsetHeight)));
     cards.forEach((card, index) => {
-      card.style.gridRowEnd = `span ${rowSpans[index]}`;
+      const nextSpan = `span ${rowSpans[index]}`;
+      if (card.style.gridRowEnd !== nextSpan) card.style.gridRowEnd = nextSpan;
     });
     gallery.classList.add('is-packed');
+    logRelayout(gallery, source, beforeHeight);
   }
 
   function setupGallery(gallery) {
     let frame = 0;
-    let lastWidth = 0;
-    const schedule = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => packGallery(gallery));
-    };
+    let lastWidth = Math.round(gallery.getBoundingClientRect().width);
+    let lastBreakpoint = mobileLayout.matches ? 'mobile' : 'desktop';
 
-    gallery.querySelectorAll('img').forEach((image) => {
-      if (!image.complete) image.addEventListener('load', schedule, { once: true });
-    });
+    const schedule = (source) => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => packGallery(gallery, source));
+    };
 
     const resizeObserver = new ResizeObserver(([entry]) => {
       const width = Math.round(entry.contentRect.width);
       if (width === lastWidth) return;
       lastWidth = width;
-      schedule();
+      schedule('ResizeObserver');
     });
+
     resizeObserver.observe(gallery);
-    mobileLayout.addEventListener('change', schedule);
-    document.fonts?.ready.then(schedule);
-    schedule();
+
+    mobileLayout.addEventListener('change', () => {
+      const nextBreakpoint = mobileLayout.matches ? 'mobile' : 'desktop';
+      if (nextBreakpoint === lastBreakpoint) return;
+      lastBreakpoint = nextBreakpoint;
+      schedule('breakpoint');
+    });
+
+    schedule('init');
   }
 
   document.querySelectorAll('[data-masonry-gallery]').forEach(setupGallery);
