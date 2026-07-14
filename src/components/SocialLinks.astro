@@ -1,0 +1,98 @@
+---
+interface Props {
+  social: {
+    instagram: { id: string; url: string };
+    xiaohongshu: { id: string; qrImage: string };
+  };
+}
+
+const { social } = Astro.props;
+---
+
+<div class="social-links">
+  <span>Social</span>
+  <a href={social.instagram.url} target="_blank" rel="noopener noreferrer">
+    <b>Instagram</b>
+    <em>{social.instagram.id}</em>
+  </a>
+  <button type="button" class="social-links__xiaohongshu" data-xiaohongshu-open>
+    <b>Xiaohongshu / 小红书</b>
+    <em>小红书号：{social.xiaohongshu.id}</em>
+  </button>
+</div>
+
+<dialog class="xiaohongshu-modal" data-xiaohongshu-modal aria-labelledby="xiaohongshu-title">
+  <div class="xiaohongshu-modal__panel">
+    <button type="button" class="xiaohongshu-modal__close" data-xiaohongshu-close aria-label="Close Xiaohongshu QR code">×</button>
+    <p class="eyebrow">Xiaohongshu / 小红书</p>
+    <h2 id="xiaohongshu-title">Find me on Xiaohongshu</h2>
+    <img src={social.xiaohongshu.qrImage} alt={`Xiaohongshu QR code for ${social.xiaohongshu.id}`} width="512" height="682" />
+    <div class="xiaohongshu-modal__id">
+      <span>小红书号</span>
+      <strong>{social.xiaohongshu.id}</strong>
+      <button type="button" data-copy-id data-copy-value={social.xiaohongshu.id}>Copy ID</button>
+      <small data-copy-status aria-live="polite"></small>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const modal = document.querySelector('[data-xiaohongshu-modal]') as HTMLDialogElement | null;
+  const opener = document.querySelector('[data-xiaohongshu-open]') as HTMLButtonElement | null;
+  const closeButton = modal?.querySelector('[data-xiaohongshu-close]') as HTMLButtonElement | null;
+  const copyButton = modal?.querySelector('[data-copy-id]') as HTMLButtonElement | null;
+  const copyStatus = modal?.querySelector('[data-copy-status]') as HTMLElement | null;
+
+  const closeModal = () => modal?.close();
+
+  opener?.addEventListener('click', () => modal?.showModal());
+  closeButton?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (event) => {
+    if (event.target === modal) closeModal();
+  });
+  modal?.addEventListener('close', () => opener?.focus());
+
+  copyButton?.addEventListener('click', async () => {
+    const id = copyButton.dataset.copyValue || '';
+    try {
+      await navigator.clipboard.writeText(id);
+    } catch {
+      const field = document.createElement('textarea');
+      field.value = id;
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.append(field);
+      field.select();
+      document.execCommand('copy');
+      field.remove();
+    }
+    if (copyStatus) copyStatus.textContent = 'Copied';
+    window.setTimeout(() => {
+      if (copyStatus) copyStatus.textContent = '';
+    }, 1800);
+  });
+</script>
+
+<style>
+  .social-links { display: flex; flex-direction: column; gap: .75rem; font-size: .75rem; }
+  .social-links > span { margin-bottom: .25rem; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .13em; }
+  .social-links a, .social-links__xiaohongshu { width: fit-content; padding: 0; border: 0; color: inherit; background: none; font: inherit; text-align: left; cursor: pointer; }
+  .social-links b, .social-links em { display: block; font-style: normal; font-weight: 400; }
+  .social-links b { color: var(--muted); font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; }
+  .social-links em { margin-top: .15rem; }
+  .social-links a:hover b, .social-links a:focus-visible b, .social-links__xiaohongshu:hover b, .social-links__xiaohongshu:focus-visible b { color: var(--ink); }
+  .social-links a:focus-visible, .social-links__xiaohongshu:focus-visible, .xiaohongshu-modal button:focus-visible { outline: 1px solid var(--ink); outline-offset: .3rem; }
+
+  .xiaohongshu-modal { width: min(25rem, calc(100vw - 2rem)); margin: auto; padding: 0; border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+  .xiaohongshu-modal::backdrop { background: rgb(32 28 23 / .3); }
+  .xiaohongshu-modal__panel { position: relative; padding: clamp(1.5rem, 4vw, 2.5rem); text-align: center; animation: modal-in 180ms ease-out; }
+  .xiaohongshu-modal h2 { margin: .5rem 0 1.5rem; font-family: var(--serif); font-size: clamp(1.6rem, 5vw, 2.25rem); font-weight: 400; }
+  .xiaohongshu-modal img { display: block; width: min(100%, 16rem); height: auto; margin: 0 auto 1.5rem; }
+  .xiaohongshu-modal__close { position: absolute; top: 1rem; right: 1rem; width: 2rem; height: 2rem; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .xiaohongshu-modal__id { display: grid; justify-items: center; gap: .35rem; }
+  .xiaohongshu-modal__id span, .xiaohongshu-modal__id small { min-height: 1em; color: var(--muted); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
+  .xiaohongshu-modal__id strong { font-size: .85rem; font-weight: 400; }
+  .xiaohongshu-modal__id button { margin-top: .5rem; padding: .45rem 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; color: var(--ink); font: inherit; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(.5rem); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .xiaohongshu-modal__panel { animation: none; } }
+</style>

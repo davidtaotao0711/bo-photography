@@ -11,7 +11,15 @@
     "/images/scenes/scenes-050.jpg",
     "/images/nature/nature-007.jpg"
   ],
-  "instagram": "https://www.instagram.com/",
-  "xiaohongshu": "https://www.xiaohongshu.com/",
+  "social": {
+    "instagram": {
+      "id": "@davidboboodod",
+      "url": "https://www.instagram.com/davidboboodod/"
+    },
+    "xiaohongshu": {
+      "id": "omniverse0",
+      "qrImage": "/images/social/xiaohongshu-qr.jpg"
+    }
+  },
   "about": "Bo David is an independent photographer based in Shanghai, working across street, portrait, and natural landscape photography. His work follows ordinary light, unguarded gestures, and the quiet distance between people and places. This site is a personal archive of ongoing observations."
 }
