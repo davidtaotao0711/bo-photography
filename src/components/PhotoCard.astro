@@ -49,17 +49,9 @@ const {
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
 const homeTitle = photo.homeTitle ?? photo.title ?? '';
 const homeCaption = photo.homeCaption ?? '';
-const imageSizes = collage && layout
-  ? [
-    '(max-width: 720px) calc(100vw - 2rem)',
-    `(max-width: 1200px) calc(${Math.round((layout.colSpan / 12) * 100)}vw - 2.5rem)`,
-    `${Math.round((layout.colSpan / 12) * 100)}vw`,
-  ].join(', ')
-  : photo.orientation === 'portrait'
+const imageSizes = photo.orientation === 'portrait'
   ? '(max-width: 720px) 78vw, (max-width: 1100px) 42vw, 32vw'
   : '(max-width: 720px) 100vw, (max-width: 1100px) 62vw, 56vw';
-const imageLoading = eager ? 'eager' : 'lazy';
-const imageFetchPriority = eager && number === 1 ? 'high' : undefined;
 const widthValue = layoutScope === 'category' ? photo.categoryLayoutWidth : photo.layoutWidth;
 const offsetXValue = layoutScope === 'category' ? photo.categoryLayoutOffsetX : photo.layoutOffsetX;
 const offsetYValue = layoutScope === 'category' ? photo.categoryLayoutOffsetY : photo.layoutOffsetY;
@@ -104,13 +96,7 @@ const collageStyle = collage && layout ? [
     <>
       <button class="photo-card__trigger" type="button" aria-expanded="false" aria-label={`Show caption for ${label}`}>
         <div class="photo-card__image">
-          <ResponsiveImage
-            src={photo.image}
-            alt={photo.alt}
-            loading={imageLoading}
-            fetchpriority={imageFetchPriority}
-            sizes={imageSizes}
-          />
+          <ResponsiveImage src={photo.image} alt={photo.alt} loading="lazy" sizes={imageSizes} />
         </div>
         <div class="photo-card__meta">
           <span>{label}</span>
@@ -125,13 +111,7 @@ const collageStyle = collage && layout ? [
   ) : (
     <a href={`/photo/${photo.id}`} aria-label={`View ${label}, ${photo.location}`}>
       <div class="photo-card__image">
-        <ResponsiveImage
-          src={photo.image}
-          alt={photo.alt}
-          loading={imageLoading}
-          fetchpriority={imageFetchPriority}
-          sizes={imageSizes}
-        />
+        <ResponsiveImage src={photo.image} alt={photo.alt} loading="lazy" sizes={imageSizes} />
       </div>
       <div class="photo-card__meta">
         <span>{label}</span>

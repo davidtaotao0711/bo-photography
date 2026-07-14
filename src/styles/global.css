@@ -105,7 +105,6 @@ p, h1, h2, figure { margin: 0; }
   column-gap: var(--gallery-gap);
   row-gap: 0;
   align-items: start;
-  overflow-anchor: none;
   visibility: hidden;
 }
 .collage-gallery.is-packed { visibility: visible; }
