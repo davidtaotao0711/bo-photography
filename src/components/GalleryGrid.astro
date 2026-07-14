@@ -47,27 +47,49 @@ const { photos, class: className, reveal = true } = Astro.props;
 
   function setupGallery(gallery) {
     let frame = 0;
-    let lastWidth = 0;
-    const schedule = () => {
+    let debounceTimer = 0;
+    let lastWidth = Math.round(gallery.getBoundingClientRect().width);
+    let lastBreakpoint = mobileLayout.matches ? 'mobile' : 'desktop';
+    const schedule = (debounced = false) => {
       window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => packGallery(gallery));
+      window.clearTimeout(debounceTimer);
+      const run = () => {
+        frame = window.requestAnimationFrame(() => packGallery(gallery));
+      };
+      if (debounced) debounceTimer = window.setTimeout(run, 120);
+      else run();
     };
-
-    gallery.querySelectorAll('img').forEach((image) => {
-      if (!image.complete) image.addEventListener('load', schedule, { once: true });
-    });
 
     const resizeObserver = new ResizeObserver(([entry]) => {
       const width = Math.round(entry.contentRect.width);
       if (width === lastWidth) return;
       lastWidth = width;
-      schedule();
+      schedule(true);
     });
     resizeObserver.observe(gallery);
-    mobileLayout.addEventListener('change', schedule);
-    document.fonts?.ready.then(schedule);
+    const onBreakpointChange = () => {
+      const nextBreakpoint = mobileLayout.matches ? 'mobile' : 'desktop';
+      if (nextBreakpoint === lastBreakpoint) return;
+      lastBreakpoint = nextBreakpoint;
+      schedule(true);
+    };
+    mobileLayout.addEventListener('change', onBreakpointChange);
+    document.addEventListener('astro:before-swap', () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(debounceTimer);
+      resizeObserver.disconnect();
+      mobileLayout.removeEventListener('change', onBreakpointChange);
+    }, { once: true });
     schedule();
   }
 
-  document.querySelectorAll('[data-masonry-gallery]').forEach(setupGallery);
+  function initializeGalleries() {
+    document.querySelectorAll('[data-masonry-gallery]:not([data-masonry-ready])').forEach((gallery) => {
+      gallery.setAttribute('data-masonry-ready', 'true');
+      setupGallery(gallery);
+    });
+  }
+
+  initializeGalleries();
+  document.addEventListener('astro:page-load', initializeGalleries);
 </script>

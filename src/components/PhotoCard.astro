@@ -1,5 +1,6 @@
 ---
 import ResponsiveImage from './ResponsiveImage.astro';
+import { getResponsiveImage } from '../utils/responsive-image.js';
 
 interface Photo {
   id: string;
@@ -49,6 +50,10 @@ const {
 const label = number ? `No. ${String(number).padStart(2, '0')}` : photo.title;
 const homeTitle = photo.homeTitle ?? photo.title ?? '';
 const homeCaption = photo.homeCaption ?? '';
+const responsiveMeta = getResponsiveImage(photo.image);
+const naturalAspect = responsiveMeta?.width && responsiveMeta?.height
+  ? `${responsiveMeta.width} / ${responsiveMeta.height}`
+  : '4 / 3';
 const imageSizes = photo.orientation === 'portrait'
   ? '(max-width: 720px) 78vw, (max-width: 1100px) 42vw, 32vw'
   : '(max-width: 720px) 100vw, (max-width: 1100px) 62vw, 56vw';
@@ -68,11 +73,13 @@ const layoutStyle = layoutScope !== 'none' ? [
 const collageStyle = collage && layout ? [
   `--collage-col-span: ${layout.colSpan}`,
   `--collage-aspect: ${layout.colSpan} / ${layout.rowSpan}`,
+  `--collage-natural-aspect: ${naturalAspect}`,
   layout.ratio ? `--collage-display-aspect: 1 / ${layout.ratio}` : '',
   `--collage-fit: ${layout.fit}`,
   `--collage-focal-x: ${layout.focalX}%`,
   `--collage-focal-y: ${layout.focalY}%`,
 ].join('; ') : '';
+const useCover = collage && layout?.crop && layout.fit === 'cover';
 ---
 
 <article
@@ -81,8 +88,8 @@ const collageStyle = collage && layout ? [
     `photo-card--${photo.orientation}`,
     {
       "photo-card--collage": collage,
-      "photo-card--cropped": collage && layout?.crop,
-      "photo-card--ratio-adjusted": collage && Boolean(layout?.ratio),
+      "photo-card--cropped": useCover,
+      "photo-card--ratio-adjusted": useCover && Boolean(layout?.ratio),
     },
   ]}
   data-photo-id={photo.id}

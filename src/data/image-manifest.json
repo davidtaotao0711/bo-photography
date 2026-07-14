@@ -3520,5 +3520,500 @@
         "src": "/images/generated/nature__nature-005-1600.webp"
       }
     ]
+  },
+  "/images/street/street-052.jpg": {
+    "width": 3280,
+    "height": 5033,
+    "variants": []
+  },
+  "/images/portrait/portrait-022.jpg": {
+    "width": 3606,
+    "height": 5645,
+    "variants": []
+  },
+  "/images/nature/nature-011.jpg": {
+    "width": 7626,
+    "height": 5471,
+    "variants": []
+  },
+  "/images/scenes/scenes-059.jpg": {
+    "width": 5924,
+    "height": 2446,
+    "variants": []
+  },
+  "/images/portrait/portrait-021.jpg": {
+    "width": 4032,
+    "height": 5776,
+    "variants": []
+  },
+  "/images/portrait/portrait-025.jpg": {
+    "width": 4005,
+    "height": 5663,
+    "variants": []
+  },
+  "/images/portrait/portrait-023.jpg": {
+    "width": 4032,
+    "height": 5622,
+    "variants": []
+  },
+  "/images/nature/nature-010.jpg": {
+    "width": 6488,
+    "height": 4408,
+    "variants": []
+  },
+  "/images/portrait/portrait-024.jpg": {
+    "width": 3761,
+    "height": 5716,
+    "variants": []
+  },
+  "/images/street/street-054.jpg": {
+    "width": 4807,
+    "height": 7492,
+    "variants": []
+  },
+  "/images/street/street-055.jpg": {
+    "width": 5361,
+    "height": 3542,
+    "variants": []
+  },
+  "/images/street/street-057.jpg": {
+    "width": 3386,
+    "height": 4885,
+    "variants": []
+  },
+  "/images/street/street-053.jpg": {
+    "width": 5415,
+    "height": 3950,
+    "variants": []
+  },
+  "/images/street/street-056.jpg": {
+    "width": 4333,
+    "height": 3476,
+    "variants": []
+  },
+  "/images/street/street-058.jpg": {
+    "width": 5022,
+    "height": 3601,
+    "variants": []
+  },
+  "/images/street/street-059.jpg": {
+    "width": 3582,
+    "height": 3060,
+    "variants": []
+  },
+  "/images/scenes/scenes-061.jpg": {
+    "width": 5680,
+    "height": 3687,
+    "variants": []
+  },
+  "/images/scenes/scenes-062.jpg": {
+    "width": 4991,
+    "height": 3954,
+    "variants": []
+  },
+  "/images/scenes/scenes-063.jpg": {
+    "width": 3363,
+    "height": 5520,
+    "variants": []
+  },
+  "/images/scenes/scenes-064.jpg": {
+    "width": 4032,
+    "height": 5320,
+    "variants": []
+  },
+  "/images/scenes/scenes-066.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/scenes/scenes-067.jpg": {
+    "width": 3250,
+    "height": 4305,
+    "variants": []
+  },
+  "/images/scenes/scenes-068.jpg": {
+    "width": 3950,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/scenes/scenes-069.jpg": {
+    "width": 3582,
+    "height": 4697,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/001.jpg": {
+    "width": 6033,
+    "height": 4524,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/003.jpg": {
+    "width": 3060,
+    "height": 4590,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/004.jpg": {
+    "width": 3060,
+    "height": 4590,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/005.jpg": {
+    "width": 4936,
+    "height": 6582,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/006.jpg": {
+    "width": 6338,
+    "height": 3565,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/007.jpg": {
+    "width": 4936,
+    "height": 6581,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/010.jpg": {
+    "width": 4791,
+    "height": 4791,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/014.jpg": {
+    "width": 6582,
+    "height": 4936,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/015.jpg": {
+    "width": 5700,
+    "height": 5700,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/016.jpg": {
+    "width": 4936,
+    "height": 6581,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/017.jpg": {
+    "width": 4936,
+    "height": 6581,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/018.jpg": {
+    "width": 3442,
+    "height": 4590,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/019.jpg": {
+    "width": 4936,
+    "height": 6581,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/020.jpg": {
+    "width": 3442,
+    "height": 4590,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/021.jpg": {
+    "width": 2652,
+    "height": 4715,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/023.jpg": {
+    "width": 3442,
+    "height": 4590,
+    "variants": []
+  },
+  "/images/series/diptychs-and-triptychs/025.jpg": {
+    "width": 9876,
+    "height": 3289,
+    "variants": []
+  },
+  "/images/street/street-060.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/street/street-061.jpg": {
+    "width": 3245,
+    "height": 4756,
+    "variants": []
+  },
+  "/images/street/street-062.jpg": {
+    "width": 4639,
+    "height": 3667,
+    "variants": []
+  },
+  "/images/street/street-063.jpg": {
+    "width": 3260,
+    "height": 4589,
+    "variants": []
+  },
+  "/images/portrait/portrait-027.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/portrait/portrait-028.jpg": {
+    "width": 3891,
+    "height": 5555,
+    "variants": []
+  },
+  "/images/portrait/portrait-029.jpg": {
+    "width": 3750,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/portrait/portrait-030.jpg": {
+    "width": 3699,
+    "height": 5990,
+    "variants": []
+  },
+  "/images/scenes/scenes-071.jpg": {
+    "width": 1554,
+    "height": 1080,
+    "variants": []
+  },
+  "/images/scenes/scenes-072.jpg": {
+    "width": 3855,
+    "height": 5539,
+    "variants": []
+  },
+  "/images/scenes/scenes-073.jpg": {
+    "width": 3668,
+    "height": 5308,
+    "variants": []
+  },
+  "/images/scenes/scenes-074.jpg": {
+    "width": 5535,
+    "height": 3906,
+    "variants": []
+  },
+  "/images/scenes/scenes-075.jpg": {
+    "width": 3936,
+    "height": 5285,
+    "variants": []
+  },
+  "/images/scenes/scenes-076.jpg": {
+    "width": 5544,
+    "height": 3570,
+    "variants": []
+  },
+  "/images/scenes/scenes-077.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/scenes/scenes-078.jpg": {
+    "width": 3274,
+    "height": 4970,
+    "variants": []
+  },
+  "/images/scenes/scenes-079.jpg": {
+    "width": 3856,
+    "height": 5660,
+    "variants": []
+  },
+  "/images/nature/nature-013.jpg": {
+    "width": 2509,
+    "height": 3764,
+    "variants": []
+  },
+  "/images/nature/nature-014.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": []
+  },
+  "/images/nature/nature-016.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": []
+  },
+  "/images/nature/nature-017.jpg": {
+    "width": 5977,
+    "height": 3795,
+    "variants": []
+  },
+  "/images/nature/nature-018.jpg": {
+    "width": 6048,
+    "height": 3716,
+    "variants": []
+  },
+  "/images/nature/nature-019.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/portrait/portrait-031.jpg": {
+    "width": 4292,
+    "height": 6483,
+    "variants": []
+  },
+  "/images/portrait/portrait-032.jpg": {
+    "width": 960,
+    "height": 1440,
+    "variants": []
+  },
+  "/images/portrait/portrait-033.png": {
+    "width": 1044,
+    "height": 1507,
+    "variants": []
+  },
+  "/images/street/street-065.jpg": {
+    "width": 4771,
+    "height": 2991,
+    "variants": []
+  },
+  "/images/street/street-066.jpg": {
+    "width": 4960,
+    "height": 3664,
+    "variants": []
+  },
+  "/images/street/street-067.jpg": {
+    "width": 5200,
+    "height": 3926,
+    "variants": []
+  },
+  "/images/street/street-069.jpg": {
+    "width": 5379,
+    "height": 3140,
+    "variants": []
+  },
+  "/images/scenes/scenes-080.jpg": {
+    "width": 8256,
+    "height": 5504,
+    "variants": []
+  },
+  "/images/scenes/scenes-081.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/scenes/scenes-082.jpg": {
+    "width": 5811,
+    "height": 3534,
+    "variants": []
+  },
+  "/images/scenes/scenes-083.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": []
+  },
+  "/images/scenes/scenes-084.jpg": {
+    "width": 7438,
+    "height": 5062,
+    "variants": []
+  },
+  "/images/scenes/scenes-085.jpg": {
+    "width": 4685,
+    "height": 6619,
+    "variants": []
+  },
+  "/images/scenes/scenes-086.jpg": {
+    "width": 3844,
+    "height": 5308,
+    "variants": []
+  },
+  "/images/scenes/scenes-087.jpg": {
+    "width": 5163,
+    "height": 2983,
+    "variants": []
+  },
+  "/images/portrait/portrait-034.png": {
+    "width": 1024,
+    "height": 1536,
+    "variants": []
+  },
+  "/images/portrait/portrait-035.png": {
+    "width": 1024,
+    "height": 1536,
+    "variants": []
+  },
+  "/images/nature/nature-020.jpg": {
+    "width": 5156,
+    "height": 3661,
+    "variants": []
+  },
+  "/images/portrait/portrait-036.jpg": {
+    "width": 1279,
+    "height": 1919,
+    "variants": []
+  },
+  "/images/street/street-071.jpg": {
+    "width": 2679,
+    "height": 2921,
+    "variants": []
+  },
+  "/images/street/street-072.jpg": {
+    "width": 3401,
+    "height": 5447,
+    "variants": []
+  },
+  "/images/street/street-074.jpg": {
+    "width": 3508,
+    "height": 5095,
+    "variants": []
+  },
+  "/images/street/street-075.jpg": {
+    "width": 3984,
+    "height": 5285,
+    "variants": []
+  },
+  "/images/street/street-076.jpg": {
+    "width": 3246,
+    "height": 5869,
+    "variants": []
+  },
+  "/images/street/street-077.jpg": {
+    "width": 3496,
+    "height": 5357,
+    "variants": []
+  },
+  "/images/scenes/scenes-088.jpg": {
+    "width": 5655,
+    "height": 3704,
+    "variants": []
+  },
+  "/images/scenes/scenes-089.jpg": {
+    "width": 3452,
+    "height": 5100,
+    "variants": []
+  },
+  "/images/scenes/scenes-090.jpg": {
+    "width": 5061,
+    "height": 3416,
+    "variants": []
+  },
+  "/images/scenes/scenes-091.jpg": {
+    "width": 3937,
+    "height": 5905,
+    "variants": []
+  },
+  "/images/scenes/scenes-092.jpg": {
+    "width": 4528,
+    "height": 3573,
+    "variants": []
+  },
+  "/images/scenes/scenes-093.jpg": {
+    "width": 3154,
+    "height": 5003,
+    "variants": []
+  },
+  "/images/scenes/scenes-094.jpg": {
+    "width": 6048,
+    "height": 3781,
+    "variants": []
+  },
+  "/images/nature/nature-021.jpg": {
+    "width": 6047,
+    "height": 3257,
+    "variants": []
+  },
+  "/images/scenes/scenes-095.jpg": {
+    "width": 5655,
+    "height": 3704,
+    "variants": []
+  },
+  "/images/scenes/scenes-096.jpg": {
+    "width": 4528,
+    "height": 3573,
+    "variants": []
   }
 }
