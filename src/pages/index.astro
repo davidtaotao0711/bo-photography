@@ -40,7 +40,7 @@ const introImages = site.homeIntroImages
       <h2>Photographs from<br />near and elsewhere.</h2>
     </header>
     <div class="selected-grid">
-      {featured.map((photo, index) => <PhotoCard photo={photo} number={index + 1} eager={index < 2} homeCaptionMode reveal />)}
+      {featured.map((photo, index) => <PhotoCard photo={photo} eager={index < 2} homeCaptionMode reveal />)}
     </div>
     <div class="section-end"><a class="text-link" href="/portfolio">View all work <span>↗</span></a></div>
   </section>
@@ -63,10 +63,12 @@ const introImages = site.homeIntroImages
   }
 
   :global(.homepage-root .section-intro),
-  :global(.homepage-root .photo-card__meta),
-  :global(.homepage-root .photo-card__home-caption),
   :global(.homepage-root .section-end) {
     position: relative;
+    z-index: 21;
+  }
+
+  :global(.homepage-root .photo-card__home-caption) {
     z-index: 21;
   }
 </style>
@@ -79,17 +81,16 @@ const introImages = site.homeIntroImages
 
     const cards = Array.from(grid.querySelectorAll('[data-home-caption]'));
     let activeCard = null;
-    let animationToken = 0;
 
-    const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
-
-    const typeText = async (element, text, delay, token) => {
-      element.textContent = '';
-      for (const character of Array.from(text || '')) {
-        if (token !== animationToken) return;
-        element.textContent += character;
-        await wait(delay);
+    const closeCard = (card) => {
+      const caption = card.querySelector('.photo-card__home-caption');
+      const trigger = card.querySelector('.photo-card__trigger');
+      card.classList.remove('is-caption-active');
+      if (caption) {
+        caption.classList.remove('is-visible');
+        caption.setAttribute('aria-hidden', 'true');
       }
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
     };
 
     cards.forEach((card) => {
@@ -99,39 +100,28 @@ const introImages = site.homeIntroImages
       const copyElement = card.querySelector('.photo-card__home-copy');
       if (!trigger || !caption || !titleElement || !copyElement) return;
 
-      trigger.addEventListener('click', async () => {
-        if (activeCard === card) return;
+      const title = (card.getAttribute('data-home-title') || '').trim();
+      const copy = (card.getAttribute('data-home-caption-text') || '').trim();
+      titleElement.textContent = title;
+      copyElement.textContent = copy;
+      caption.setAttribute('aria-hidden', 'true');
 
-        animationToken += 1;
-        const token = animationToken;
+      trigger.addEventListener('click', () => {
+        if (!title && !copy) return;
 
-        cards.forEach((item) => {
-          const itemCaption = item.querySelector('.photo-card__home-caption');
-          const itemTrigger = item.querySelector('.photo-card__trigger');
-          const itemTitle = item.querySelector('.photo-card__home-title');
-          const itemCopy = item.querySelector('.photo-card__home-copy');
+        if (activeCard === card) {
+          closeCard(card);
+          activeCard = null;
+          return;
+        }
 
-          if (item !== card) {
-            item.classList.remove('is-caption-active');
-            if (itemCaption) itemCaption.hidden = true;
-            if (itemTrigger) itemTrigger.setAttribute('aria-expanded', 'false');
-            if (itemTitle) itemTitle.textContent = '';
-            if (itemCopy) itemCopy.textContent = '';
-          }
-        });
+        if (activeCard) closeCard(activeCard);
 
         activeCard = card;
         card.classList.add('is-caption-active');
         trigger.setAttribute('aria-expanded', 'true');
-        caption.hidden = false;
-
-        const title = card.getAttribute('data-home-title') || '';
-        const copy = card.getAttribute('data-home-caption-text') || '';
-
-        await typeText(titleElement, title, 70, token);
-        if (token !== animationToken) return;
-        await wait(640);
-        await typeText(copyElement, copy, 62, token);
+        caption.setAttribute('aria-hidden', 'false');
+        caption.classList.add('is-visible');
       });
     });
   };

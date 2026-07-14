@@ -61,11 +61,11 @@ p, h1, h2, figure { margin: 0; }
 .photo-card__image img { height: 100%; object-fit: cover; transition: transform 450ms cubic-bezier(.2,.7,.2,1); }
 .photo-card a:hover img,
 .photo-card__trigger:hover img { transform: scale(1.015); }
-.photo-card__meta { height: 23px; padding-top: .75rem; overflow: hidden; display: flex; justify-content: space-between; color: var(--muted); font-size: .62rem; line-height: 11px; text-transform: uppercase; letter-spacing: .13em; white-space: nowrap; }
-.photo-card__home-caption[hidden] { display: none; }
-.photo-card__home-caption { position: absolute; top: calc(100% + clamp(.85rem, 1.35vw, 1.35rem)); left: 0; right: 0; z-index: 2; max-width: min(34rem, 100%); pointer-events: none; }
+.photo-card__home-caption { position: absolute; top: calc(100% + clamp(.85rem, 1.35vw, 1.35rem)); left: 0; right: 0; z-index: 2; max-width: min(34rem, 100%); pointer-events: none; opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity 280ms ease, transform 280ms ease, visibility 0s linear 280ms; }
+.photo-card__home-caption.is-visible { opacity: 1; visibility: visible; transform: translateY(0); transition-delay: 0s; }
 .photo-card__home-title { font-family: var(--serif); font-size: clamp(1.08rem, 1.45vw, 1.45rem); line-height: 1.12; letter-spacing: -.015em; color: var(--ink); }
-.photo-card__home-copy { margin-top: .45rem; color: var(--muted); font-size: .72rem; line-height: 1.7; letter-spacing: .035em; }
+.photo-card__home-copy { margin-top: 0; color: var(--muted); font-size: .72rem; line-height: 1.7; letter-spacing: .035em; }
+.photo-card__home-title:not(:empty) + .photo-card__home-copy:not(:empty) { margin-top: .45rem; }
 .section-end { margin-top: clamp(2.5rem, 5vw, 4.25rem); display: flex; justify-content: flex-end; }
 .text-link { display: inline-flex; gap: 2rem; padding-bottom: .5rem; border-bottom: 1px solid var(--ink); font-size: .68rem; text-transform: uppercase; letter-spacing: .14em; }
 
@@ -214,7 +214,6 @@ p, h1, h2, figure { margin: 0; }
 .series-flow img { max-height: 88vh; object-fit: cover; }
 .series-flow__item.is-portrait .responsive-image { aspect-ratio: 3 / 4; }
 .series-flow__item.is-portrait img { height: 100%; }
-.series-flow figcaption { margin-top: .75rem; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; }
 .series-detail__empty { grid-column: 1 / -1; padding: clamp(7rem, 14vw, 13rem) 1rem; border-block: 1px solid var(--line); color: var(--muted); font-family: var(--serif); font-size: clamp(1.4rem, 2.5vw, 2.1rem); text-align: center; }
 .series-detail__end { padding-top: 12rem; padding-bottom: 10rem; display: flex; justify-content: space-between; align-items: flex-end; color: var(--muted); }
 
