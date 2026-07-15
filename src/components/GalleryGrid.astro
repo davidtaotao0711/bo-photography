@@ -15,7 +15,6 @@ const { photos, class: className, reveal = true } = Astro.props;
   {photos.map((photo, index) => (
     <PhotoCard
       photo={photo}
-      number={index + 1}
       eager={index < 3}
       layoutScope="none"
       layout={normalizeCollageLayout(photo)}

@@ -3,12 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ResponsiveImage from '../../components/ResponsiveImage.astro';
 import photos from '../../data/photos.json';
 import site from '../../data/site.json';
+import { getPhotoMeta } from '../../utils/photo-metadata.js';
 
 export function getStaticPaths() {
   return photos.map((photo) => ({ params: { id: photo.id }, props: { photo } }));
 }
 
 const { photo } = Astro.props;
+const metadata = getPhotoMeta(photo);
 const categoryUrl = photo.series ? `/series/${photo.series}` : `/portfolio/${photo.category}`;
 const backLabel = photo.series || photo.category;
 const detailScale = Number.isFinite(Number(photo.detailScale))
@@ -19,21 +21,24 @@ const detailStyle = [
   `--detail-portrait-width:${(74 * detailScale) / 100}vw`,
   `--detail-portrait-max:${(980 * detailScale) / 100}px`,
 ].join('; ');
+const detailMeta = [metadata.location, metadata.date].filter(Boolean).join(' / ');
+const hasDetailCaption = Boolean(metadata.title || metadata.captionText || detailMeta);
 ---
 
-<BaseLayout title={`${photo.title} — ${site.name}`} description={photo.alt}>
+<BaseLayout title={metadata.title ? `${metadata.title} - ${site.name}` : `${site.name} - Photograph`} description={photo.alt}>
   <article class="photo-detail page-shell" data-photo-detail data-fallback-url={categoryUrl}>
-    <a class="back-link" href={categoryUrl} data-photo-back>← {backLabel}</a>
+    <a class="back-link" href={categoryUrl} data-photo-back>&larr; {backLabel}</a>
     <figure class:list={["photo-detail__figure", `photo-detail__figure--${photo.orientation}`]} style={detailStyle}>
       <ResponsiveImage
         src={photo.image}
         alt={photo.alt}
         sizes={photo.orientation === 'portrait' ? '(max-width: 720px) 94vw, 74vw' : '96vw'}
       />
-      <figcaption>
-        <h1>{photo.title}</h1>
-        <p>{photo.location} · {photo.date.slice(0, 4)}</p>
-      </figcaption>
+      {hasDetailCaption && <figcaption>
+        {metadata.title && <h1>{metadata.title}</h1>}
+        {metadata.captionText && <p class="photo-detail__caption-copy">{metadata.captionText}</p>}
+        {detailMeta && <p class="photo-detail__meta">{detailMeta}</p>}
+      </figcaption>}
     </figure>
   </article>
 </BaseLayout>

@@ -1,8 +1,11 @@
 ---
 import site from '../data/site.json';
+
+const showReplayIntro = Astro.url.pathname.replace(/\/+$/, '') === '/about';
 ---
 
 <footer class="site-footer">
+  {showReplayIntro && <a class="site-footer__replay" href="/?replay=1">Replay Intro</a>}
   <p>{site.name} — Photography</p>
   <p>{site.location} · <span>{new Date().getFullYear()}</span></p>
 </footer>
