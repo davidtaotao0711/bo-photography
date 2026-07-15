@@ -129,7 +129,12 @@ p, h1, h2, figure { margin: 0; }
   overflow: visible;
   background: transparent;
 }
-.photo-card--collage .photo-card__image .responsive-image,
+.photo-card--collage .photo-card__image .responsive-image {
+  width: 100%;
+  aspect-ratio: var(--collage-natural-aspect, 4 / 3);
+  position: static;
+  overflow: visible;
+}
 .photo-card--collage .photo-card__image img {
   width: 100%;
   height: auto;
