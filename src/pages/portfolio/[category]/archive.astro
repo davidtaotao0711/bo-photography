@@ -1,0 +1,53 @@
+---
+import ArchiveGrid from '../../../components/ArchiveGrid.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PhotoLightbox from '../../../components/PhotoLightbox.astro';
+import { getPhotoCategory, photoCategories } from '../../../data/categories.js';
+import photos from '../../../data/photos.json';
+import { getSelectedPhotoIdSet } from '../../../data/portfolio-selection.js';
+import site from '../../../data/site.json';
+import { sortPhotosByOrder } from '../../../utils/collage-layout.js';
+import { getPhotoMeta } from '../../../utils/photo-metadata.js';
+
+export function getStaticPaths() {
+  return photoCategories.map((category) => ({ params: { category: category.slug } }));
+}
+
+const { category } = Astro.params;
+const categoryConfig = getPhotoCategory(category);
+const title = categoryConfig?.title || '';
+const selectedIds = getSelectedPhotoIdSet(category);
+const archiveItems = sortPhotosByOrder(
+  photos.filter((photo) => photo.category === category && !selectedIds.has(photo.id)),
+);
+const lightboxData = archiveItems.map((photo) => ({
+  id: photo.id,
+  image: photo.image,
+  alt: photo.alt,
+  orientation: photo.orientation,
+  ...getPhotoMeta(photo),
+}));
+---
+
+<BaseLayout title={`${title} Archive - ${site.name}`}>
+  <section class="archive-head page-shell">
+    <a class="back-link" href={`/portfolio/${category}`}>&larr; Selected {title}</a>
+    <div>
+      <p class="eyebrow">Archive / {title}</p>
+      <h1>{title} Archive</h1>
+      <p class="archive-head__count">{archiveItems.length} additional photographs</p>
+    </div>
+  </section>
+
+  {archiveItems.length ? (
+    <section class="gallery gallery--archive page-shell">
+      <ArchiveGrid photos={archiveItems} />
+    </section>
+  ) : (
+    <section class="archive-empty page-shell">
+      <p>No additional photographs in this archive.</p>
+    </section>
+  )}
+
+  <PhotoLightbox photos={lightboxData} gallerySelector=".gallery--archive" />
+</BaseLayout>

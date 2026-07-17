@@ -1,0 +1,156 @@
+---
+interface LightboxPhoto {
+  id: string;
+  image: string;
+  alt?: string;
+  orientation?: string;
+  title?: string;
+  captionText?: string;
+  location?: string;
+  date?: string | number;
+}
+
+interface Props {
+  photos: LightboxPhoto[];
+  gallerySelector: string;
+}
+
+const { photos, gallerySelector } = Astro.props;
+---
+
+<div class="photo-lightbox" data-photo-lightbox data-gallery-selector={gallerySelector} hidden aria-hidden="true">
+  <button class="photo-lightbox__close" type="button" data-lightbox-close aria-label="Close image">&times;</button>
+  <button class="photo-lightbox__zone photo-lightbox__zone--prev" type="button" data-lightbox-prev aria-label="Previous image">
+    <span>&larr;</span>
+  </button>
+  <figure class="photo-lightbox__figure" data-lightbox-figure>
+    <img class="photo-lightbox__image" data-lightbox-image alt="" />
+    <figcaption class="photo-lightbox__caption" data-lightbox-caption hidden></figcaption>
+  </figure>
+  <button class="photo-lightbox__zone photo-lightbox__zone--next" type="button" data-lightbox-next aria-label="Next image">
+    <span>&rarr;</span>
+  </button>
+</div>
+<script type="application/json" data-lightbox-data set:html={JSON.stringify(photos)}></script>
+
+<script>
+  const dataNode = document.querySelector('[data-lightbox-data]');
+  const lightbox = document.querySelector('[data-photo-lightbox]');
+  const figure = document.querySelector('[data-lightbox-figure]');
+  const image = document.querySelector('[data-lightbox-image]');
+  const caption = document.querySelector('[data-lightbox-caption]');
+  const closeButton = document.querySelector('[data-lightbox-close]');
+  const prevButton = document.querySelector('[data-lightbox-prev]');
+  const nextButton = document.querySelector('[data-lightbox-next]');
+  const gallerySelector = lightbox?.dataset.gallerySelector || '.gallery';
+  const cards = Array.from(document.querySelectorAll(`${gallerySelector} .photo-card`));
+  const photos = dataNode ? JSON.parse(dataNode.textContent || '[]') : [];
+  let currentIndex = 0;
+  let previousFocus = null;
+
+  if (lightbox && figure && image && caption && closeButton && prevButton && nextButton) {
+    const currentPhoto = () => photos[currentIndex];
+    const photoCard = (index) => {
+      const id = photos[index]?.id;
+      return id
+        ? document.querySelector(`${gallerySelector} .photo-card[data-photo-id="${CSS.escape(id)}"]`)
+        : cards[index];
+    };
+
+    const clearCaption = () => {
+      caption.replaceChildren();
+      caption.hidden = true;
+      caption.setAttribute('aria-hidden', 'true');
+    };
+
+    const setCaption = (photo) => {
+      clearCaption();
+      const metadata = [photo.location, photo.date].filter(Boolean).join(' / ');
+      const parts = [
+        ['title', photo.title],
+        ['caption', photo.captionText],
+        ['meta', metadata],
+      ];
+
+      parts.forEach(([kind, value]) => {
+        if (!value) return;
+        const element = document.createElement('span');
+        element.dataset.lightboxPart = kind;
+        element.textContent = value;
+        caption.append(element);
+      });
+
+      const hasCaption = caption.childElementCount > 0;
+      caption.hidden = !hasCaption;
+      caption.setAttribute('aria-hidden', String(!hasCaption));
+    };
+
+    const setImage = (index, animate = true) => {
+      if (!photos.length) return;
+      currentIndex = (index + photos.length) % photos.length;
+      const photo = currentPhoto();
+      if (!photo) return;
+
+      clearCaption();
+      figure.classList.toggle('photo-lightbox__figure--portrait', photo.orientation === 'portrait');
+      figure.classList.toggle('is-changing', animate);
+
+      window.setTimeout(() => {
+        image.src = photo.image;
+        image.alt = photo.alt || 'Photograph';
+        setCaption(photo);
+      }, animate ? 90 : 0);
+    };
+
+    image.addEventListener('load', () => {
+      figure.classList.remove('is-changing');
+    });
+
+    const openLightbox = (index, trigger) => {
+      previousFocus = trigger || document.activeElement;
+      lightbox.hidden = false;
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('lightbox-open');
+      setImage(index, false);
+      requestAnimationFrame(() => {
+        lightbox.classList.add('is-open');
+        closeButton.focus({ preventScroll: true });
+      });
+    };
+
+    const closeLightbox = () => {
+      const targetCard = photoCard(currentIndex);
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('lightbox-open');
+      window.setTimeout(() => {
+        lightbox.hidden = true;
+        targetCard?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        previousFocus?.focus?.({ preventScroll: true });
+      }, 260);
+    };
+
+    cards.forEach((card, index) => {
+      const link = card.querySelector('a');
+      if (!link) return;
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        openLightbox(index, link);
+      });
+    });
+
+    closeButton.addEventListener('click', closeLightbox);
+    prevButton.addEventListener('click', () => setImage(currentIndex - 1));
+    nextButton.addEventListener('click', () => setImage(currentIndex + 1));
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (lightbox.hidden) return;
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowLeft') setImage(currentIndex - 1);
+      if (event.key === 'ArrowRight') setImage(currentIndex + 1);
+    });
+  }
+</script>

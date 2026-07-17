@@ -1,0 +1,20 @@
+---
+import PhotoCard from './PhotoCard.astro';
+
+interface Props {
+  photos: any[];
+}
+
+const { photos } = Astro.props;
+---
+
+<div class="archive-grid">
+  {photos.map((photo) => (
+    <PhotoCard
+      photo={photo}
+      layoutScope="none"
+      collage={false}
+      reveal={false}
+    />
+  ))}
+</div>

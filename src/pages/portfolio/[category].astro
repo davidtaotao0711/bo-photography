@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GalleryGrid from '../../components/GalleryGrid.astro';
+import PhotoLightbox from '../../components/PhotoLightbox.astro';
 import ScrollReveal from '../../components/ScrollReveal.astro';
 import { getPhotoCategory, photoCategories } from '../../data/categories.js';
 import photos from '../../data/photos.json';
+import { getSelectedPhotoIdSet } from '../../data/portfolio-selection.js';
 import site from '../../data/site.json';
 import { sortPhotosByOrder } from '../../utils/collage-layout.js';
 import { getPhotoMeta } from '../../utils/photo-metadata.js';
@@ -15,7 +17,10 @@ export function getStaticPaths() {
 const { category } = Astro.params;
 const categoryConfig = getPhotoCategory(category);
 const title = categoryConfig?.title || '';
-const items = sortPhotosByOrder(photos.filter((photo) => photo.category === category));
+const allItems = sortPhotosByOrder(photos.filter((photo) => photo.category === category));
+const selectedIds = getSelectedPhotoIdSet(category);
+const items = allItems.filter((photo) => selectedIds.has(photo.id));
+const archiveItems = allItems.filter((photo) => !selectedIds.has(photo.id));
 const lightboxData = items.map((photo) => ({
   id: photo.id,
   image: photo.image,
@@ -32,141 +37,19 @@ const lightboxData = items.map((photo) => ({
       <p class="eyebrow">Category</p>
       <h1>{title}</h1>
     </div>
-    <p class="category-head__count">{items.length} photographs</p>
+    <p class="category-head__count">{items.length} selected photographs</p>
   </section>
   <section class="gallery gallery--collage page-shell">
     <GalleryGrid photos={items} />
   </section>
-  <div class="photo-lightbox" data-photo-lightbox hidden aria-hidden="true">
-    <button class="photo-lightbox__close" type="button" data-lightbox-close aria-label="Close image">&times;</button>
-    <button class="photo-lightbox__zone photo-lightbox__zone--prev" type="button" data-lightbox-prev aria-label="Previous image">
-      <span>&larr;</span>
-    </button>
-    <figure class="photo-lightbox__figure" data-lightbox-figure>
-      <img class="photo-lightbox__image" data-lightbox-image alt="" />
-      <figcaption class="photo-lightbox__caption" data-lightbox-caption hidden></figcaption>
-    </figure>
-    <button class="photo-lightbox__zone photo-lightbox__zone--next" type="button" data-lightbox-next aria-label="Next image">
-      <span>&rarr;</span>
-    </button>
-  </div>
-  <script type="application/json" id="category-lightbox-data" set:html={JSON.stringify(lightboxData)}></script>
+  <section class="category-archive-entry page-shell" aria-labelledby="archive-entry-title">
+    <div>
+      <p class="eyebrow">Additional edit</p>
+      <h2 id="archive-entry-title">{title} Archive</h2>
+      <p class="category-archive-entry__count">{archiveItems.length} additional photographs</p>
+    </div>
+    <a class="text-link" href={`/portfolio/${category}/archive`}>View archive <span aria-hidden="true">↗</span></a>
+  </section>
+  <PhotoLightbox photos={lightboxData} gallerySelector=".gallery--collage" />
   <ScrollReveal />
 </BaseLayout>
-
-<script>
-  const dataNode = document.querySelector('#category-lightbox-data');
-  const lightbox = document.querySelector('[data-photo-lightbox]');
-  const figure = document.querySelector('[data-lightbox-figure]');
-  const image = document.querySelector('[data-lightbox-image]');
-  const caption = document.querySelector('[data-lightbox-caption]');
-  const closeButton = document.querySelector('[data-lightbox-close]');
-  const prevButton = document.querySelector('[data-lightbox-prev]');
-  const nextButton = document.querySelector('[data-lightbox-next]');
-  const cards = Array.from(document.querySelectorAll('.gallery .photo-card'));
-  const links = cards.map((card) => card.querySelector('a'));
-  const lightboxPhotos = dataNode ? JSON.parse(dataNode.textContent || '[]') : [];
-  let currentIndex = 0;
-  let previousFocus = null;
-
-  const currentPhoto = () => lightboxPhotos[currentIndex];
-  const photoCard = (index) => {
-    const id = lightboxPhotos[index]?.id;
-    return id ? document.querySelector(`.gallery .photo-card[data-photo-id="${CSS.escape(id)}"]`) : cards[index];
-  };
-
-  const clearCaption = () => {
-    caption.replaceChildren();
-    caption.hidden = true;
-    caption.setAttribute('aria-hidden', 'true');
-  };
-
-  const setCaption = (photo) => {
-    clearCaption();
-    const metadata = [photo.location, photo.date].filter(Boolean).join(' / ');
-    const parts = [
-      ['title', photo.title],
-      ['caption', photo.captionText],
-      ['meta', metadata],
-    ];
-
-    parts.forEach(([kind, value]) => {
-      if (!value) return;
-      const element = document.createElement('span');
-      element.dataset.lightboxPart = kind;
-      element.textContent = value;
-      caption.append(element);
-    });
-
-    const hasCaption = caption.childElementCount > 0;
-    caption.hidden = !hasCaption;
-    caption.setAttribute('aria-hidden', String(!hasCaption));
-  };
-
-  const setImage = (index, animate = true) => {
-    if (!lightboxPhotos.length) return;
-    currentIndex = (index + lightboxPhotos.length) % lightboxPhotos.length;
-    const photo = currentPhoto();
-    if (!photo) return;
-
-    clearCaption();
-    figure.classList.toggle('photo-lightbox__figure--portrait', photo.orientation === 'portrait');
-    figure.classList.toggle('is-changing', animate);
-
-    window.setTimeout(() => {
-      image.src = photo.image;
-      image.alt = photo.alt || 'Photograph';
-      setCaption(photo);
-    }, animate ? 90 : 0);
-  };
-
-  image.addEventListener('load', () => {
-    figure.classList.remove('is-changing');
-  });
-
-  const openLightbox = (index, trigger) => {
-    previousFocus = trigger || document.activeElement;
-    lightbox.hidden = false;
-    lightbox.setAttribute('aria-hidden', 'false');
-    document.documentElement.classList.add('lightbox-open');
-    setImage(index, false);
-    requestAnimationFrame(() => {
-      lightbox.classList.add('is-open');
-      closeButton.focus({ preventScroll: true });
-    });
-  };
-
-  const closeLightbox = () => {
-    const targetCard = photoCard(currentIndex);
-    lightbox.classList.remove('is-open');
-    lightbox.setAttribute('aria-hidden', 'true');
-    document.documentElement.classList.remove('lightbox-open');
-    window.setTimeout(() => {
-      lightbox.hidden = true;
-      targetCard?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      previousFocus?.focus?.({ preventScroll: true });
-    }, 260);
-  };
-
-  links.forEach((link, index) => {
-    if (!link) return;
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      openLightbox(index, link);
-    });
-  });
-
-  closeButton.addEventListener('click', closeLightbox);
-  prevButton.addEventListener('click', () => setImage(currentIndex - 1));
-  nextButton.addEventListener('click', () => setImage(currentIndex + 1));
-  lightbox.addEventListener('click', (event) => {
-    if (event.target === lightbox) closeLightbox();
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (lightbox.hidden) return;
-    if (event.key === 'Escape') closeLightbox();
-    if (event.key === 'ArrowLeft') setImage(currentIndex - 1);
-    if (event.key === 'ArrowRight') setImage(currentIndex + 1);
-  });
-</script>
