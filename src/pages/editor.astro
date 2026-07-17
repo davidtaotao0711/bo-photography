@@ -137,6 +137,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         <div id="canvas-viewport" class="canvas-viewport">
           <div id="canvas-stage" class="canvas-stage">
             <div id="photo-grid" class="photo-grid" aria-label="可自由定位的照片版面"></div>
+            <div id="category-sections" class="category-sections" aria-label="Portfolio selected and archive" hidden></div>
           </div>
         </div>
         <div id="series-workspace" class="series-workspace" hidden>
@@ -385,6 +386,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     <script>
       import { buildOrientationRows } from '../utils/photo-layout.js';
       import { collageLayoutPresets, normalizeCollageLayout, sortPhotosByOrder } from '../utils/collage-layout.js';
+      import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../utils/portfolio-status.js';
 
       const initialNode = document.querySelector('#initial-photos');
       const initialSeriesNode = document.querySelector('#initial-series');
@@ -394,7 +396,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       const initialSeries = JSON.parse(initialSeriesNode?.textContent || '[]');
       const initialSite = JSON.parse(initialSiteNode?.textContent || '{}');
       const photoCategoryConfig = JSON.parse(initialCategoriesNode?.textContent || '[]');
-      let photoData = structuredClone(initialPhotos);
+      let photoData = migratePortfolioPhotos(initialPhotos);
       let seriesData = structuredClone(initialSeries);
       let siteData = structuredClone(initialSite);
       let siteDirty = false;
@@ -422,6 +424,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       const formError = document.querySelector('#form-error');
       const canvasViewport = document.querySelector('#canvas-viewport');
       const canvasStage = document.querySelector('#canvas-stage');
+      const categorySections = document.querySelector('#category-sections');
       const addPhotosButton = document.querySelector('#add-photos');
       const addPhotosLabel = document.querySelector('#add-photos-label');
       const largeFileWarning = document.querySelector('#large-file-warning');
@@ -508,6 +511,88 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         return photoCategories.includes(filter) ? sortPhotosByOrder(visible) : visible;
       }
 
+      function isPortfolioView() {
+        return photoCategories.includes(viewFilter.value);
+      }
+
+      function portfolioItems(status, category = viewFilter.value, respectSearch = false) {
+        const query = respectSearch ? searchInput.value.trim().toLowerCase() : '';
+        return sortPortfolioPhotos(
+          photoData.filter((photo) => {
+            if (photo.category !== category || getPortfolioStatus(photo, category) !== status) return false;
+            if (!query) return true;
+            return [photo.id, photo.title, photo.location, photo.series, photo.alt].join(' ').toLowerCase().includes(query);
+          }),
+          status,
+        );
+      }
+
+      function normalizePortfolioOrders(category = viewFilter.value) {
+        if (!photoCategories.includes(category)) return;
+        const selected = portfolioItems('selected', category);
+        const archive = portfolioItems('archive', category);
+        selected.forEach((photo, index) => {
+          photo.portfolioStatus = 'selected';
+          photo.selectedOrder = index + 1;
+          photo.archiveOrder = null;
+        });
+        archive.forEach((photo, index) => {
+          photo.portfolioStatus = 'archive';
+          photo.selectedOrder = null;
+          photo.archiveOrder = index + 1;
+        });
+      }
+
+      function movePortfolioPhotos(ids, nextStatus) {
+        if (!isPortfolioView() || !ids.length || !['selected', 'archive'].includes(nextStatus)) return;
+        const category = viewFilter.value;
+        const current = new Set(ids);
+        const sourceStatus = nextStatus === 'selected' ? 'archive' : 'selected';
+        const movable = portfolioItems(sourceStatus, category).filter((photo) => current.has(photo.id));
+        if (!movable.length) return;
+
+        snapshot();
+        const destination = portfolioItems(nextStatus, category);
+        let nextOrder = destination.length + 1;
+        movable.forEach((photo) => {
+          photo.portfolioStatus = nextStatus;
+          photo.selectedOrder = nextStatus === 'selected' ? nextOrder : null;
+          photo.archiveOrder = nextStatus === 'archive' ? nextOrder : null;
+          nextOrder += 1;
+        });
+        normalizePortfolioOrders(category);
+        setDirty(true, nextStatus === 'selected'
+          ? `${movable.length} 张照片已加入 Selected Portfolio，尚未保存`
+          : `${movable.length} 张照片已移入 Archive，尚未保存`);
+        render();
+        showToast(nextStatus === 'selected' ? `${movable.length} 张照片已加入 Selected Portfolio` : `${movable.length} 张照片已移入 Archive`);
+      }
+
+      function reorderPortfolioPhotos(status, draggedId, targetId, placeAfter) {
+        if (!isPortfolioView() || draggedId === targetId) return;
+        const items = portfolioItems(status);
+        const currentIds = items.map((photo) => photo.id);
+        if (!currentIds.includes(draggedId) || !currentIds.includes(targetId)) return;
+        const orderedIds = currentIds.filter((id) => id !== draggedId);
+        const targetIndex = orderedIds.indexOf(targetId);
+        orderedIds.splice(targetIndex + (placeAfter ? 1 : 0), 0, draggedId);
+        if (orderedIds.join('|') === currentIds.join('|')) return;
+
+        snapshot();
+        const orderField = status === 'selected' ? 'selectedOrder' : 'archiveOrder';
+        const orderById = new Map(orderedIds.map((id, index) => [id, index + 1]));
+        photoData.forEach((photo) => {
+          if (orderById.has(photo.id)) {
+            photo.portfolioStatus = status;
+            photo[orderField] = orderById.get(photo.id);
+            photo[status === 'selected' ? 'archiveOrder' : 'selectedOrder'] = null;
+          }
+        });
+        setDirty(true, 'Portfolio 顺序已更新，尚未保存');
+        render();
+        showToast(`${status === 'selected' ? 'Selected' : 'Archive'} 顺序已更新`);
+      }
+
       function isCollageContext() {
         return photoCategories.includes(viewFilter.value) || (viewFilter.value === 'series' && Boolean(activeSeriesSlug));
       }
@@ -578,22 +663,25 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         updateLayoutToolbar();
       }
 
-      function collageEditorCard(photo, index, cover = '') {
+      function collageEditorCard(photo, index, cover = '', portfolioStatus = '') {
         const layout = normalizeCollageLayout(photo);
         const isSeriesPhoto = viewFilter.value === 'series';
+        const isPortfolioPhoto = Boolean(portfolioStatus);
         const isCover = Boolean(cover && photo.image === cover);
         const preset = presetName(layout) || `${layout.colSpan}×${layout.rowSpan}`;
-        const scopeItems = currentCollagePhotos();
+        const scopeItems = isPortfolioPhoto ? portfolioItems(portfolioStatus) : currentCollagePhotos();
         const scopeIndex = scopeItems.findIndex((item) => item.id === photo.id);
         return `
           <article
-            class="editor-card editor-card--collage ${layout.crop ? 'editor-card--cropped' : ''} ${layout.ratio ? 'is-ratio-adjusted' : ''} ${selectedLayoutPhotoId === photo.id ? 'is-selected' : ''}"
+            class="editor-card editor-card--collage ${isPortfolioPhoto ? `editor-card--portfolio editor-card--portfolio-${portfolioStatus}` : ''} ${layout.crop ? 'editor-card--cropped' : ''} ${layout.ratio ? 'is-ratio-adjusted' : ''} ${selectedLayoutPhotoId === photo.id ? 'is-selected' : ''}"
             data-id="${escapeHtml(photo.id)}"
+            ${isPortfolioPhoto ? `data-portfolio-status="${portfolioStatus}"` : ''}
             style="--editor-col-span:${layout.colSpan}; --editor-aspect:${layout.colSpan}/${layout.rowSpan}; ${layout.ratio ? `--editor-display-aspect:1/${layout.ratio};` : ''} --editor-fit:${layout.fit}; --editor-focal-x:${layout.focalX}%; --editor-focal-y:${layout.focalY}%"
           >
             <div class="editor-card__image" data-layout-select>
               <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" loading="lazy" />
               <span class="card-badge">${String(index + 1).padStart(2, '0')}</span>
+              ${isPortfolioPhoto ? `<label class="portfolio-select" title="Select photo"><input type="checkbox" data-portfolio-select value="${escapeHtml(photo.id)}" /><span aria-hidden="true"></span><span class="sr-only">Select ${escapeHtml(photo.title || photo.id)}</span></label>` : ''}
               ${isCover ? '<span class="cover-badge">Cover</span>' : ''}
               ${isSeriesPhoto ? '' : `
                 <button class="favorite ${photo.featured ? 'is-active' : ''}" type="button" data-action="featured" aria-label="${photo.featured ? '取消首页精选' : '加入首页精选'}" title="首页精选">★</button>
@@ -608,6 +696,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
                 <span data-layout-summary><strong>${escapeHtml(photo.title || photo.id)}</strong><small data-layout-summary-text>${escapeHtml(preset)} · ${layout.ratio ? `ratio ${layout.ratio.toFixed(2)}` : layout.crop ? `crop ${escapeHtml(layout.fit)}` : 'natural'}</small></span>
                 <span>编辑</span>
               </button>
+              ${isPortfolioPhoto ? `<button class="portfolio-move-button" type="button" data-portfolio-action="${portfolioStatus === 'selected' ? 'archive' : 'selected'}">${portfolioStatus === 'selected' ? 'Move to archive' : 'Add to selected'}</button>` : ''}
                             <button class="fit-toggle" type="button" data-action="fit-toggle" data-fit="${layout.fit}" title="Switch between Cover and Contain">${layout.crop ? (layout.fit === "cover" ? "Cover" : "Contain") : ""}</button>
               <div class="collage-order-controls" aria-label="调整照片顺序">
                 <button type="button" data-action="up" aria-label="与前一张交换" title="与前一张交换" ${scopeIndex <= 0 ? 'disabled' : ''}>←</button>
@@ -810,11 +899,48 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         if (items.length) renderSeriesRows(items, cover);
       }
 
+      function renderPortfolioSections() {
+        const category = viewFilter.value;
+        const title = viewFilter.options[viewFilter.selectedIndex]?.textContent || category;
+        const sections = ['selected', 'archive'].map((status) => {
+          const items = portfolioItems(status, category, true);
+          const isSelected = status === 'selected';
+          const label = isSelected ? 'Selected Portfolio' : 'Archive';
+          const action = isSelected ? 'archive' : 'selected';
+          const actionLabel = isSelected ? 'Move selected photos to archive' : 'Add selected photos to portfolio';
+          const recommendation = items.length < 18
+            ? `Recommended: 18–24 photographs · ${18 - items.length} below suggestion`
+            : items.length > 24
+              ? `Recommended: 18–24 photographs · ${items.length - 24} above suggestion`
+              : 'Recommended: 18–24 photographs';
+          return `
+            <section class="portfolio-section" data-portfolio-section="${status}">
+              <header class="portfolio-section__head">
+                <div>
+                  <p class="eyebrow">${escapeHtml(title)}</p>
+                  <h2>${label} <span>— ${items.length} photographs</span></h2>
+                  ${isSelected ? `<p class="portfolio-section__recommendation">${recommendation}</p>` : ''}
+                </div>
+                <div class="portfolio-section__actions">
+                  <label class="portfolio-select-all"><input type="checkbox" data-portfolio-select-all="${status}" /> Select all</label>
+                  <button class="button" type="button" data-portfolio-batch="${action}" data-portfolio-status="${status}" ${items.length ? '' : 'disabled'}>${actionLabel}</button>
+                </div>
+              </header>
+              <div class="photo-grid photo-grid--collage portfolio-photo-grid" data-portfolio-grid="${status}" aria-label="${label}">
+                ${items.map((photo, index) => collageEditorCard(photo, index, '', status)).join('')}
+              </div>
+            </section>`;
+        }).join('');
+        categorySections.innerHTML = sections;
+        categorySections.querySelectorAll('.portfolio-photo-grid').forEach((container) => scheduleEditorMasonry(container));
+      }
+
       function render() {
         const isSeriesView = viewFilter.value === 'series';
         sessionStorage.setItem('editorView', viewFilter.value);
         seriesWorkspace.hidden = !isSeriesView;
         canvasViewport.hidden = isSeriesView;
+        categorySections.hidden = !isPortfolioView();
         $('#empty-state').hidden = true;
         $('#photo-search-field').hidden = isSeriesView;
         addPhotosButton.hidden = true;
@@ -824,6 +950,21 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         if (isSeriesView) {
           grid.hidden = true;
           renderSeries();
+          return;
+        }
+
+        if (isPortfolioView()) {
+          grid.hidden = true;
+          renderPortfolioSections();
+          layoutToolbar.hidden = false;
+          updateLayoutToolbar();
+          $('#visible-count').textContent = String(photoData.filter((photo) => photo.category === viewFilter.value).length);
+          $('#featured-count').textContent = String(photoData.filter((photo) => photo.featured).length);
+          $('#total-count').textContent = String(photoData.length);
+          $('#view-title').textContent = `${viewFilter.options[viewFilter.selectedIndex]?.textContent || viewFilter.value} · Portfolio status`;
+          addPhotosButton.hidden = false;
+          addPhotosLabel.textContent = `添加到 ${viewFilter.options[viewFilter.selectedIndex]?.textContent || viewFilter.value}`;
+          window.requestAnimationFrame(syncCanvasScale);
           return;
         }
 
@@ -908,6 +1049,16 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       }
 
       function movePhoto(id, direction) {
+        if (isPortfolioView()) {
+          const photo = photoData.find((item) => item.id === id);
+          const status = getPortfolioStatus(photo, viewFilter.value);
+          const items = portfolioItems(status);
+          const index = items.findIndex((item) => item.id === id);
+          const nextIndex = index + direction;
+          if (!photo || !status || index < 0 || nextIndex < 0 || nextIndex >= items.length) return;
+          reorderPortfolioPhotos(status, id, items[nextIndex].id, direction > 0);
+          return;
+        }
         if (!isCollageContext()) {
           const visible = getVisiblePhotos();
           const index = visible.findIndex((photo) => photo.id === id);
@@ -1058,6 +1209,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         }
         const index = photoData.findIndex((photo) => photo.id === oldId);
         if (index < 0) return;
+        const previousCategory = photoData[index].category;
         const layoutScope = inspector.dataset.layoutScope || null;
         snapshot();
         photoData[index] = {
@@ -1093,6 +1245,21 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             focalY: Number($('#form-focal-y').value),
           });
         }
+        if (photoData[index].category !== previousCategory) {
+          if (photoCategories.includes(photoData[index].category)) {
+            const nextCategory = photoData[index].category;
+            photoData[index].portfolioStatus = 'archive';
+            photoData[index].selectedOrder = null;
+            photoData[index].archiveOrder = portfolioItems('archive', nextCategory).length + 1;
+            normalizePortfolioOrders(previousCategory);
+            normalizePortfolioOrders(nextCategory);
+          } else {
+            delete photoData[index].portfolioStatus;
+            delete photoData[index].selectedOrder;
+            delete photoData[index].archiveOrder;
+            normalizePortfolioOrders(previousCategory);
+          }
+        }
         inspector.close();
         setDirty(true);
         render();
@@ -1109,6 +1276,42 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         setDirty(true, '照片已移除，保存后生效');
         render();
         showToast('照片已从网站记录中删除，可撤销');
+      }
+
+      function handlePortfolioCardAction(event) {
+        const card = event.target.closest('.editor-card--portfolio');
+        const button = event.target.closest('button');
+        if (!card || !button) return false;
+        const { id } = card.dataset;
+        const portfolioAction = button.dataset.portfolioAction;
+        if (portfolioAction) {
+          movePortfolioPhotos([id], portfolioAction);
+          return true;
+        }
+        const action = button.dataset.action;
+        if (action === 'edit') openInspector(id);
+        if (action === 'delete') deletePhoto(id);
+        if (action === 'up') movePhoto(id, -1);
+        if (action === 'down') movePhoto(id, 1);
+        if (action === 'featured') {
+          const photo = photoData.find((item) => item.id === id);
+          if (!photo) return true;
+          snapshot();
+          photo.featured = !photo.featured;
+          setDirty(true);
+          render();
+        }
+        if (action === 'fit-toggle') {
+          const photo = photoData.find((item) => item.id === id);
+          if (!photo) return true;
+          snapshot();
+          const layout = normalizeCollageLayout(photo);
+          setPhotoLayout(photo, { fit: layout.fit === 'cover' ? 'contain' : 'cover', crop: true });
+          setDirty(true);
+          render();
+          showToast(`Fit switched to ${normalizeCollageLayout(photo).fit} — click Save to write to photos.json`);
+        }
+        return true;
       }
 
       function adjustCategoryRow(rowIndex, action) {
@@ -1211,6 +1414,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           if (!response.ok) throw new Error(result.error || '本地导入接口没有响应，请通过 npm run editor 打开编辑器。');
 
           const categoryCount = photoData.filter((photo) => photo.category === category).length;
+          const archiveCount = portfolioItems('archive', category).length;
           const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
           const year = String(new Date().getFullYear());
           const additions = result.files.map((savedFile, index) => ({
@@ -1222,6 +1426,9 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             date: year,
             image: savedFile.image,
             featured: false,
+            portfolioStatus: 'archive',
+            selectedOrder: null,
+            archiveOrder: archiveCount + index + 1,
             orientation: orientations[savedFile.index ?? index],
             alt: `${categoryLabel} photograph by Bo David`,
           }));
@@ -1532,6 +1739,14 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           if (ids.has(photo.id)) throw new Error(`发现重复 ID：${photo.id}`);
           if (![...photoCategories, 'series'].includes(photo.category)) throw new Error(`${photo.id} 的分类无效。`);
           if (!['portrait', 'landscape'].includes(photo.orientation)) throw new Error(`${photo.id} 的画面方向无效。`);
+          if (photoCategories.includes(photo.category)) {
+            if (photo.portfolioStatus !== undefined && !['selected', 'archive'].includes(photo.portfolioStatus)) throw new Error(`${photo.id} 的 portfolioStatus 无效。`);
+            ['selectedOrder', 'archiveOrder'].forEach((field) => {
+              if (photo[field] !== undefined && photo[field] !== null && (!Number.isFinite(Number(photo[field])) || Number(photo[field]) < 1)) {
+                throw new Error(`${photo.id} 的 ${field} 必须是正数或空值。`);
+              }
+            });
+          }
           if (photo.layoutWidth !== undefined && (!Number.isFinite(Number(photo.layoutWidth)) || Number(photo.layoutWidth) < 45 || Number(photo.layoutWidth) > 200)) throw new Error(`${photo.id} 的显示尺寸应在 45–200 之间。`);
           if (photo.layoutOffsetX !== undefined && (!Number.isFinite(Number(photo.layoutOffsetX)) || Math.abs(Number(photo.layoutOffsetX)) > 80)) throw new Error(`${photo.id} 的水平位置应在 -80–80 之间。`);
           if (photo.layoutOffsetY !== undefined && (!Number.isFinite(Number(photo.layoutOffsetY)) || Math.abs(Number(photo.layoutOffsetY)) > 80)) throw new Error(`${photo.id} 的垂直位置应在 -80–80 之间。`);
@@ -1562,7 +1777,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         try {
           const parsed = validatePhotos(JSON.parse(await file.text()));
           if (dirty && !window.confirm('打开新文件会放弃当前未保存修改，继续吗？')) return;
-          photoData = parsed;
+          photoData = migratePortfolioPhotos(parsed);
           fileHandle = handle;
           history.length = 0;
           $('#undo').disabled = true;
@@ -1727,6 +1942,60 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         });
       }
 
+      function bindPortfolioDrag(container) {
+        container.addEventListener('pointerdown', (event) => {
+          const handle = event.target.closest('[data-layout-select]');
+          const card = event.target.closest('.editor-card--portfolio');
+          const photoGrid = card?.closest('[data-portfolio-grid]');
+          if (!handle || !card || !photoGrid || event.target.closest('button, input, label')) return;
+
+          const draggedId = card.dataset.id;
+          const status = photoGrid.dataset.portfolioGrid;
+          const pointerId = event.pointerId;
+          const startX = event.clientX;
+          const startY = event.clientY;
+          let moved = false;
+          let targetId = '';
+          let placeAfter = false;
+          handle.setPointerCapture?.(pointerId);
+
+          const onMove = (moveEvent) => {
+            if (!moved && Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) < 8) return;
+            moved = true;
+            card.classList.add('is-dragging');
+            clearDropIndicators(photoGrid);
+            const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)?.closest('.editor-card--portfolio');
+            if (!target || !photoGrid.contains(target) || target.dataset.id === draggedId) {
+              targetId = '';
+              return;
+            }
+            const rect = target.getBoundingClientRect();
+            placeAfter = moveEvent.clientY > rect.top + rect.height / 2
+              || (Math.abs(moveEvent.clientY - (rect.top + rect.height / 2)) < rect.height * .2
+                && moveEvent.clientX > rect.left + rect.width / 2);
+            targetId = target.dataset.id;
+            target.classList.add(placeAfter ? 'is-drop-after' : 'is-drop-before');
+          };
+
+          const onEnd = () => {
+            if (handle.hasPointerCapture?.(pointerId)) handle.releasePointerCapture(pointerId);
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onEnd);
+            window.removeEventListener('pointercancel', onEnd);
+            card.classList.remove('is-dragging');
+            clearDropIndicators(photoGrid);
+            if (moved && targetId) reorderPortfolioPhotos(status, draggedId, targetId, placeAfter);
+          };
+
+          event.preventDefault();
+          event.stopPropagation();
+          selectLayoutPhoto(draggedId);
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onEnd);
+          window.addEventListener('pointercancel', onEnd);
+        });
+      }
+
       function nearestCollageSpan(value) {
         return COLLAGE_WIDTH_SPANS.reduce((nearest, span) => (
           Math.abs(span - value) < Math.abs(nearest - value) ? span : nearest
@@ -1769,6 +2038,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           const startX = event.clientX;
           const startY = event.clientY;
           const startLayout = normalizeCollageLayout(photo);
+          const layoutContainer = handle.closest('.photo-grid') || container;
           const image = card.querySelector('img');
           const imageBounds = card.querySelector('.editor-card__image')?.getBoundingClientRect();
           const naturalRatio = image?.naturalWidth && image?.naturalHeight
@@ -1777,9 +2047,9 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           const startRatio = startLayout.ratio
             ?? Math.min(COLLAGE_RATIO_MAX, Math.max(COLLAGE_RATIO_MIN, naturalRatio));
           const cardWidth = Math.max(1, imageBounds?.width || card.getBoundingClientRect().width);
-          const containerStyle = getComputedStyle(container);
+          const containerStyle = getComputedStyle(layoutContainer);
           const columnGap = Number.parseFloat(containerStyle.columnGap) || 12;
-          const columnWidth = Math.max(1, (container.clientWidth - columnGap * 11) / 12);
+          const columnWidth = Math.max(1, (layoutContainer.clientWidth - columnGap * 11) / 12);
           const widthDirection = mode === 'width-left' ? -1 : 1;
           let changed = false;
           let didSnapshot = false;
@@ -1796,7 +2066,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             changed = true;
             setPhotoLayout(photo, values);
             applyCollageLayoutPreview(card, photo);
-            scheduleEditorMasonry(container);
+            scheduleEditorMasonry(layoutContainer);
           };
 
           const onMove = (moveEvent) => {
@@ -1821,7 +2091,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             window.removeEventListener('pointerup', onEnd);
             window.removeEventListener('pointercancel', onEnd);
             card.classList.remove('is-layout-resizing', 'is-height-resizing');
-            scheduleEditorMasonry(container);
+            scheduleEditorMasonry(layoutContainer);
 
             if (!changed) return;
             setDirty(true);
@@ -1837,6 +2107,30 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           window.addEventListener('pointercancel', onEnd);
         });
       }
+
+      categorySections.addEventListener('click', (event) => {
+        const batchButton = event.target.closest('[data-portfolio-batch]');
+        if (batchButton) {
+          const section = batchButton.closest('[data-portfolio-section]');
+          const ids = [...(section?.querySelectorAll('[data-portfolio-select]:checked') || [])].map((input) => input.value);
+          movePortfolioPhotos(ids, batchButton.dataset.portfolioBatch);
+          return;
+        }
+        if (handlePortfolioCardAction(event)) return;
+        const card = event.target.closest('.editor-card--portfolio');
+        if (card && event.target.closest('[data-layout-select]') && !event.target.closest('button')) {
+          selectLayoutPhoto(card.dataset.id);
+        }
+      });
+
+      categorySections.addEventListener('change', (event) => {
+        const selectAll = event.target.closest('[data-portfolio-select-all]');
+        if (!selectAll) return;
+        const section = selectAll.closest('[data-portfolio-section]');
+        section?.querySelectorAll('[data-portfolio-select]').forEach((input) => {
+          input.checked = selectAll.checked;
+        });
+      });
 
       grid.addEventListener('click', (event) => {
         const categoryRowButton = event.target.closest('[data-category-row-action]');
@@ -2019,8 +2313,10 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
       bindCollageDrag(grid);
       bindCollageDrag(seriesPhotoGrid);
+      bindPortfolioDrag(categorySections);
       bindCollageResize(grid);
       bindCollageResize(seriesPhotoGrid);
+      bindCollageResize(categorySections);
 
       viewFilter.addEventListener('change', () => {
         if (layoutDirty && viewFilter.value !== 'series' && !window.confirm('当前 Series 行布局尚未保存，确定放弃吗？')) {
@@ -2175,7 +2471,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       $('#reset').addEventListener('click', () => {
         if (!window.confirm('确定恢复到页面最初载入的数据吗？当前修改会丢失。')) return;
         snapshot();
-        photoData = structuredClone(initialPhotos);
+        photoData = migratePortfolioPhotos(initialPhotos);
         siteData = structuredClone(initialSite);
         siteDirty = false;
         setDirty(true, '已恢复初始数据，尚未保存');
@@ -2190,10 +2486,12 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         syncCanvasScale();
         scheduleEditorMasonry(grid);
         scheduleEditorMasonry(seriesPhotoGrid);
+        categorySections.querySelectorAll('.portfolio-photo-grid').forEach((container) => scheduleEditorMasonry(container));
       });
       editorMasonryMedia.addEventListener('change', () => {
         scheduleEditorMasonry(grid);
         scheduleEditorMasonry(seriesPhotoGrid);
+        categorySections.querySelectorAll('.portfolio-photo-grid').forEach((container) => scheduleEditorMasonry(container));
       });
 
       render();
@@ -2350,6 +2648,29 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .series-photo-empty p { margin: 0 0 .5rem; color: var(--ink); font: 400 2rem var(--serif); }
   .series-photo-empty span { font-size: .7rem; }
   .photo-grid { width: 100%; display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
+  .category-sections[hidden] { display: none; }
+  .portfolio-section { margin-top: clamp(2.5rem, 5vw, 5rem); padding-top: 1.5rem; border-top: 1px solid var(--line); }
+  .portfolio-section:first-child { margin-top: 0; }
+  .portfolio-section__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; }
+  .portfolio-section__head h2 { margin: 0; font: 400 clamp(2rem, 3.5vw, 3.5rem)/.95 var(--serif); letter-spacing: -.045em; }
+  .portfolio-section__head h2 span { color: var(--muted); font: 400 .38em var(--sans); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+  .portfolio-section__recommendation { margin: .8rem 0 0; color: var(--muted); font-size: .58rem; letter-spacing: .08em; }
+  .portfolio-section__actions { display: flex; align-items: center; gap: .75rem; }
+  .portfolio-section__actions .button { min-height: 2.35rem; padding: .55rem .75rem; font-size: .55rem; }
+  .portfolio-select-all { display: inline-flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .56rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+  .portfolio-select-all input { width: 1rem; height: 1rem; accent-color: var(--ink); }
+  .portfolio-photo-grid { margin-top: 1.5rem; }
+  .portfolio-photo-grid .editor-card--portfolio { position: relative; }
+  .portfolio-select { width: 1.65rem; height: 1.65rem; position: absolute; z-index: 13; top: .55rem; left: .55rem; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.85); border-radius: 50%; background: rgba(20,20,19,.5); cursor: pointer; }
+  .portfolio-select input { position: absolute; opacity: 0; pointer-events: none; }
+  .portfolio-select span[aria-hidden='true'] { width: .45rem; height: .45rem; border-radius: 50%; background: transparent; transition: background 120ms ease; }
+  .portfolio-select input:checked + span[aria-hidden='true'] { background: #fff; }
+  .portfolio-select:has(input:checked) { background: var(--ink); }
+  .portfolio-select:has(input:checked) span[aria-hidden='true'] { background: #fff; }
+  .portfolio-move-button { flex: 0 0 auto; align-self: flex-start; margin-top: .55rem; padding: .25rem .45rem; border: 1px solid var(--line); color: var(--muted); background: transparent; font-size: .5rem; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+  .portfolio-move-button:hover { border-color: var(--ink); color: #fff; background: var(--ink); }
+  .portfolio-section .editor-card--portfolio .editor-card__footer { flex-wrap: wrap; }
+  .sr-only { width: 1px; height: 1px; position: absolute; overflow: hidden; padding: 0; margin: -1px; border: 0; clip: rect(0, 0, 0, 0); white-space: nowrap; }
   .photo-grid--collage,
   .series-photo-grid {
     --gallery-gap: 12px;
@@ -2707,6 +3028,10 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     .series-layout-toolbar { align-items: stretch; flex-direction: column; }
     .series-layout-toolbar > div { justify-content: space-between; }
     .series-layout-row__photos { grid-template-columns: 1fr; }
+    .portfolio-section__head { align-items: flex-start; flex-direction: column; }
+    .portfolio-section__actions { width: 100%; align-items: stretch; justify-content: space-between; }
+    .portfolio-section__actions .button { flex: 1; }
+    .portfolio-photo-grid .editor-card--portrait { width: 100% !important; }
     .canvas-stage { width: 100%; }
     .photo-grid { display: block; }
     .photo-grid--collage,
