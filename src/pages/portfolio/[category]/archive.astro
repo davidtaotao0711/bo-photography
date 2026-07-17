@@ -4,9 +4,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PhotoLightbox from '../../../components/PhotoLightbox.astro';
 import { getPhotoCategory, photoCategories } from '../../../data/categories.js';
 import photos from '../../../data/photos.json';
-import { getSelectedPhotoIdSet } from '../../../data/portfolio-selection.js';
+import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
 import site from '../../../data/site.json';
-import { sortPhotosByOrder } from '../../../utils/collage-layout.js';
 import { getPhotoMeta } from '../../../utils/photo-metadata.js';
 
 export function getStaticPaths() {
@@ -16,9 +15,10 @@ export function getStaticPaths() {
 const { category } = Astro.params;
 const categoryConfig = getPhotoCategory(category);
 const title = categoryConfig?.title || '';
-const selectedIds = getSelectedPhotoIdSet(category);
-const archiveItems = sortPhotosByOrder(
-  photos.filter((photo) => photo.category === category && !selectedIds.has(photo.id)),
+const normalizedPhotos = migratePortfolioPhotos(photos);
+const archiveItems = sortPortfolioPhotos(
+  normalizedPhotos.filter((photo) => photo.category === category && getPortfolioStatus(photo, category) === 'archive'),
+  'archive',
 );
 const lightboxData = archiveItems.map((photo) => ({
   id: photo.id,

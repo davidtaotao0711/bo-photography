@@ -2,6 +2,7 @@ import { access, mkdir, readFile, readdir, rename, unlink, writeFile } from 'nod
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { photoCategorySlugs } from '../src/data/categories.js';
+import { migratePortfolioPhotos } from '../src/utils/portfolio-status.js';
 
 const CATEGORY_ENDPOINT = '/__editor/import-photos';
 const SERIES_CREATE_ENDPOINT = '/__editor/series/create';
@@ -66,8 +67,9 @@ async function savePhotos(request, projectRoot) {
     ids.add(photo.id);
   });
 
-  await writeJson(dataPaths(projectRoot).photos, photos);
-  return { photos, count: photos.length };
+  const normalizedPhotos = migratePortfolioPhotos(photos);
+  await writeJson(dataPaths(projectRoot).photos, normalizedPhotos);
+  return { photos: normalizedPhotos, count: normalizedPhotos.length };
 }
 
 async function saveSiteIntro(request, projectRoot) {

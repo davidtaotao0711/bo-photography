@@ -20,7 +20,10 @@
     "categoryLayoutOffsetY": 0,
     "categoryRowSize": 3,
     "detailScale": 100,
-    "order": 1
+    "order": 1,
+    "portfolioStatus": "selected",
+    "selectedOrder": 1,
+    "archiveOrder": null
   },
   {
     "id": "home-002",
@@ -40,7 +43,10 @@
     "layoutOffsetY": -2,
     "categoryRowSize": 2,
     "detailScale": 100,
-    "order": 2
+    "order": 2,
+    "portfolioStatus": "selected",
+    "selectedOrder": 2,
+    "archiveOrder": null
   },
   {
     "id": "street-049",
@@ -59,7 +65,10 @@
     "layoutOffsetY": -2,
     "layoutWidth": 135,
     "detailScale": 100,
-    "order": 3
+    "order": 3,
+    "portfolioStatus": "selected",
+    "selectedOrder": 3,
+    "archiveOrder": null
   },
   {
     "id": "street-050",
@@ -77,7 +86,10 @@
     "layoutOffsetY": -11,
     "layoutWidth": 71,
     "detailScale": 100,
-    "order": 4
+    "order": 4,
+    "portfolioStatus": "selected",
+    "selectedOrder": 4,
+    "archiveOrder": null
   },
   {
     "id": "street-005",
@@ -90,7 +102,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 005",
-    "order": 5
+    "order": 5,
+    "portfolioStatus": "selected",
+    "selectedOrder": 5,
+    "archiveOrder": null
   },
   {
     "id": "street-009",
@@ -104,7 +119,10 @@
     "orientation": "portrait",
     "alt": "Street photograph: street 009",
     "categoryRowSize": 3,
-    "order": 6
+    "order": 6,
+    "portfolioStatus": "selected",
+    "selectedOrder": 6,
+    "archiveOrder": null
   },
   {
     "id": "street-011",
@@ -120,7 +138,10 @@
     "layoutWidth": 100,
     "layoutOffsetX": 0,
     "layoutOffsetY": 0,
-    "order": 7
+    "order": 7,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 1
   },
   {
     "id": "street-052",
@@ -133,7 +154,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph by Bo David",
-    "order": 8
+    "order": 8,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 2
   },
   {
     "id": "street-010",
@@ -146,7 +170,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 010",
-    "order": 9
+    "order": 9,
+    "portfolioStatus": "selected",
+    "selectedOrder": 7,
+    "archiveOrder": null
   },
   {
     "id": "street-006",
@@ -160,7 +187,10 @@
     "orientation": "landscape",
     "alt": "Street photograph: street 006",
     "categoryRowSize": 2,
-    "order": 10
+    "order": 10,
+    "portfolioStatus": "selected",
+    "selectedOrder": 8,
+    "archiveOrder": null
   },
   {
     "id": "street-007",
@@ -173,7 +203,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 007",
-    "order": 11
+    "order": 11,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 3
   },
   {
     "id": "street-041",
@@ -192,7 +225,10 @@
     "layoutOffsetY": -18,
     "categoryLayoutWidth": 70,
     "categoryRowSize": 1,
-    "order": 12
+    "order": 12,
+    "portfolioStatus": "selected",
+    "selectedOrder": 9,
+    "archiveOrder": null
   },
   {
     "id": "street-017",
@@ -206,7 +242,10 @@
     "orientation": "portrait",
     "alt": "Street photograph: street 017",
     "categoryRowSize": 3,
-    "order": 13
+    "order": 13,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 4
   },
   {
     "id": "street-013",
@@ -219,7 +258,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 013",
-    "order": 14
+    "order": 14,
+    "portfolioStatus": "selected",
+    "selectedOrder": 10,
+    "archiveOrder": null
   },
   {
     "id": "street-019",
@@ -232,7 +274,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 019",
-    "order": 15
+    "order": 15,
+    "portfolioStatus": "selected",
+    "selectedOrder": 11,
+    "archiveOrder": null
   },
   {
     "id": "home-009",
@@ -252,7 +297,10 @@
     "categoryLayoutOffsetY": 9,
     "categoryRowSize": 2,
     "detailScale": 100,
-    "order": 1
+    "order": 1,
+    "portfolioStatus": "selected",
+    "selectedOrder": 1,
+    "archiveOrder": null
   },
   {
     "id": "street-015",
@@ -266,7 +314,10 @@
     "orientation": "portrait",
     "alt": "Street photograph: street 015",
     "categoryRowSize": 3,
-    "order": 16
+    "order": 16,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 5
   },
   {
     "id": "street-016",
@@ -280,7 +331,10 @@
     "orientation": "landscape",
     "alt": "Street photograph: street 016",
     "categoryRowSize": 2,
-    "order": 17
+    "order": 17,
+    "portfolioStatus": "selected",
+    "selectedOrder": 13,
+    "archiveOrder": null
   },
   {
     "id": "street-037",
@@ -293,7 +347,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 037",
-    "order": 18
+    "order": 18,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 6
   },
   {
     "id": "street-020",
@@ -306,7 +363,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 020",
-    "order": 19
+    "order": 19,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 7
   },
   {
     "id": "street-003",
@@ -322,7 +382,10 @@
     "categoryLayoutOffsetX": -1,
     "categoryLayoutOffsetY": 0,
     "categoryRowSize": 3,
-    "order": 20
+    "order": 20,
+    "portfolioStatus": "selected",
+    "selectedOrder": 12,
+    "archiveOrder": null
   },
   {
     "id": "street-028",
@@ -335,7 +398,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 028",
-    "order": 21
+    "order": 21,
+    "portfolioStatus": "selected",
+    "selectedOrder": 15,
+    "archiveOrder": null
   },
   {
     "id": "street-022",
@@ -348,7 +414,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 022",
-    "order": 22
+    "order": 22,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 8
   },
   {
     "id": "street-018",
@@ -362,7 +431,10 @@
     "orientation": "landscape",
     "alt": "Street photograph: street 018",
     "categoryRowSize": 2,
-    "order": 23
+    "order": 23,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 9
   },
   {
     "id": "street-024",
@@ -375,7 +447,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 024",
-    "order": 24
+    "order": 24,
+    "portfolioStatus": "selected",
+    "selectedOrder": 14,
+    "archiveOrder": null
   },
   {
     "id": "street-023",
@@ -388,7 +463,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph: street 023",
-    "order": 25
+    "order": 25,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 10
   },
   {
     "id": "street-002",
@@ -402,7 +480,10 @@
     "orientation": "portrait",
     "alt": "Street photograph: street 002",
     "categoryRowSize": 3,
-    "order": 26
+    "order": 26,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 11
   },
   {
     "id": "street-012",
@@ -428,7 +509,10 @@
       "focalX": 50,
       "focalY": 50
     },
-    "order": 27
+    "order": 27,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 12
   },
   {
     "id": "street-033",
@@ -441,7 +525,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 033",
-    "order": 28
+    "order": 28,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 13
   },
   {
     "id": "street-035",
@@ -454,7 +541,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph: street 035",
-    "order": 29
+    "order": 29,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 14
   },
   {
     "id": "home-007",
@@ -484,7 +574,10 @@
       "focalX": 50,
       "focalY": 50
     },
-    "order": 1
+    "order": 1,
+    "portfolioStatus": "selected",
+    "selectedOrder": 1,
+    "archiveOrder": null
   },
   {
     "id": "portrait-003",
@@ -508,7 +601,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.59
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 2,
+    "archiveOrder": null
   },
   {
     "id": "portrait-001",
@@ -533,7 +629,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.47
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 4,
+    "archiveOrder": null
   },
   {
     "id": "portrait-002",
@@ -557,7 +656,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.46
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 5,
+    "archiveOrder": null
   },
   {
     "id": "portrait-005",
@@ -581,7 +683,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.47
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 6,
+    "archiveOrder": null
   },
   {
     "id": "portrait-006",
@@ -595,7 +700,10 @@
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 006",
     "categoryRowSize": 2,
-    "order": 14
+    "order": 14,
+    "portfolioStatus": "selected",
+    "selectedOrder": 12,
+    "archiveOrder": null
   },
   {
     "id": "portrait-008",
@@ -610,7 +718,10 @@
     "alt": "Portrait photograph: portrait 008",
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
-    "order": 7
+    "order": 7,
+    "portfolioStatus": "selected",
+    "selectedOrder": 7,
+    "archiveOrder": null
   },
   {
     "id": "portrait-007",
@@ -626,7 +737,10 @@
     "categoryLayoutOffsetX": -2,
     "categoryLayoutOffsetY": 4,
     "categoryLayoutWidth": 69,
-    "order": 8
+    "order": 8,
+    "portfolioStatus": "selected",
+    "selectedOrder": 8,
+    "archiveOrder": null
   },
   {
     "id": "portrait-004",
@@ -642,7 +756,10 @@
     "categoryLayoutOffsetX": 1,
     "categoryLayoutOffsetY": 6,
     "categoryRowSize": 3,
-    "order": 9
+    "order": 9,
+    "portfolioStatus": "selected",
+    "selectedOrder": 9,
+    "archiveOrder": null
   },
   {
     "id": "portrait-009",
@@ -657,7 +774,10 @@
     "alt": "Portrait photograph: portrait 009",
     "categoryLayoutOffsetX": -3,
     "categoryLayoutOffsetY": 5,
-    "order": 12
+    "order": 12,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 1
   },
   {
     "id": "portrait-012",
@@ -682,7 +802,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.6
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 3,
+    "archiveOrder": null
   },
   {
     "id": "portrait-015",
@@ -697,7 +820,10 @@
     "alt": "Portrait photograph: portrait 015",
     "categoryLayoutOffsetX": -7,
     "categoryLayoutOffsetY": 0,
-    "order": 13
+    "order": 13,
+    "portfolioStatus": "selected",
+    "selectedOrder": 11,
+    "archiveOrder": null
   },
   {
     "id": "portrait-014",
@@ -713,7 +839,10 @@
     "categoryLayoutOffsetX": 1,
     "categoryLayoutOffsetY": 1,
     "categoryRowSize": 2,
-    "order": 10
+    "order": 10,
+    "portfolioStatus": "selected",
+    "selectedOrder": 10,
+    "archiveOrder": null
   },
   {
     "id": "portrait-016",
@@ -728,7 +857,10 @@
     "alt": "Portrait photograph: portrait 016",
     "categoryLayoutOffsetX": 2,
     "categoryLayoutOffsetY": -3,
-    "order": 15
+    "order": 15,
+    "portfolioStatus": "selected",
+    "selectedOrder": 13,
+    "archiveOrder": null
   },
   {
     "id": "nature-001",
@@ -759,7 +891,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.61
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 1,
+    "archiveOrder": null
   },
   {
     "id": "portrait-018",
@@ -776,7 +911,10 @@
     "categoryLayoutOffsetY": 0,
     "categoryLayoutWidth": 62,
     "categoryRowSize": 2,
-    "order": 20
+    "order": 20,
+    "portfolioStatus": "selected",
+    "selectedOrder": 15,
+    "archiveOrder": null
   },
   {
     "id": "portrait-017",
@@ -792,7 +930,10 @@
     "categoryLayoutOffsetX": -10,
     "categoryLayoutOffsetY": 1,
     "categoryLayoutWidth": 62,
-    "order": 16
+    "order": 16,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 2
   },
   {
     "id": "scenes-005",
@@ -806,7 +947,10 @@
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 005",
     "categoryRowSize": 3,
-    "order": 2
+    "order": 2,
+    "portfolioStatus": "selected",
+    "selectedOrder": 2,
+    "archiveOrder": null
   },
   {
     "id": "scenes-009",
@@ -820,7 +964,10 @@
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 009",
     "categoryRowSize": 2,
-    "order": 3
+    "order": 3,
+    "portfolioStatus": "selected",
+    "selectedOrder": 3,
+    "archiveOrder": null
   },
   {
     "id": "scenes-010",
@@ -833,7 +980,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 010",
-    "order": 4
+    "order": 4,
+    "portfolioStatus": "selected",
+    "selectedOrder": 4,
+    "archiveOrder": null
   },
   {
     "id": "scenes-012",
@@ -848,7 +998,10 @@
     "alt": "Scene photograph: scenes 012",
     "categoryLayoutWidth": 80,
     "categoryRowSize": 1,
-    "order": 5
+    "order": 5,
+    "portfolioStatus": "selected",
+    "selectedOrder": 5,
+    "archiveOrder": null
   },
   {
     "id": "scenes-039",
@@ -861,7 +1014,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 039",
-    "order": 6
+    "order": 6,
+    "portfolioStatus": "selected",
+    "selectedOrder": 6,
+    "archiveOrder": null
   },
   {
     "id": "scenes-017",
@@ -875,7 +1031,10 @@
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 017",
     "categoryRowSize": 2,
-    "order": 7
+    "order": 7,
+    "portfolioStatus": "selected",
+    "selectedOrder": 7,
+    "archiveOrder": null
   },
   {
     "id": "scenes-008",
@@ -888,7 +1047,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 008",
-    "order": 8
+    "order": 8,
+    "portfolioStatus": "selected",
+    "selectedOrder": 8,
+    "archiveOrder": null
   },
   {
     "id": "scenes-013",
@@ -902,7 +1064,10 @@
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 013",
     "categoryRowSize": 3,
-    "order": 9
+    "order": 9,
+    "portfolioStatus": "selected",
+    "selectedOrder": 9,
+    "archiveOrder": null
   },
   {
     "id": "scenes-015",
@@ -915,7 +1080,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 015",
-    "order": 11
+    "order": 11,
+    "portfolioStatus": "selected",
+    "selectedOrder": 10,
+    "archiveOrder": null
   },
   {
     "id": "scenes-016",
@@ -936,7 +1104,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 2
   },
   {
     "id": "scenes-055",
@@ -949,7 +1120,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 055",
-    "order": 13
+    "order": 13,
+    "portfolioStatus": "selected",
+    "selectedOrder": 17,
+    "archiveOrder": null
   },
   {
     "id": "scenes-050",
@@ -975,7 +1149,10 @@
       "focalX": 50,
       "focalY": 50
     },
-    "order": 14
+    "order": 14,
+    "portfolioStatus": "selected",
+    "selectedOrder": 11,
+    "archiveOrder": null
   },
   {
     "id": "scenes-051",
@@ -997,7 +1174,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 12,
+    "archiveOrder": null
   },
   {
     "id": "scenes-019",
@@ -1011,7 +1191,10 @@
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 019",
     "categoryRowSize": 3,
-    "order": 15
+    "order": 15,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 3
   },
   {
     "id": "scenes-011",
@@ -1024,7 +1207,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 011",
-    "order": 16
+    "order": 16,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 4
   },
   {
     "id": "scenes-035",
@@ -1037,7 +1223,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 035",
-    "order": 17
+    "order": 17,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 5
   },
   {
     "id": "scenes-018",
@@ -1050,7 +1239,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 018",
-    "order": 19
+    "order": 19,
+    "portfolioStatus": "selected",
+    "selectedOrder": 13,
+    "archiveOrder": null
   },
   {
     "id": "scenes-045",
@@ -1064,7 +1256,10 @@
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 045",
     "categoryRowSize": 2,
-    "order": 20
+    "order": 20,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 6
   },
   {
     "id": "scenes-004",
@@ -1078,7 +1273,10 @@
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 004",
     "categoryRowSize": 3,
-    "order": 21
+    "order": 21,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 7
   },
   {
     "id": "scenes-024",
@@ -1091,7 +1289,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 024",
-    "order": 23
+    "order": 23,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 8
   },
   {
     "id": "scenes-036",
@@ -1104,7 +1305,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 036",
-    "order": 26
+    "order": 26,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 11
   },
   {
     "id": "scenes-053",
@@ -1118,7 +1322,10 @@
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 053",
     "categoryRowSize": 3,
-    "order": 24
+    "order": 24,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 9
   },
   {
     "id": "scenes-040",
@@ -1131,7 +1338,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 040",
-    "order": 22
+    "order": 22,
+    "portfolioStatus": "selected",
+    "selectedOrder": 14,
+    "archiveOrder": null
   },
   {
     "id": "scenes-043",
@@ -1144,7 +1354,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scene photograph: scenes 043",
-    "order": 25
+    "order": 25,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 10
   },
   {
     "id": "scenes-031",
@@ -1157,7 +1370,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 031",
-    "order": 27
+    "order": 27,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 12
   },
   {
     "id": "scenes-044",
@@ -1171,7 +1387,10 @@
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 044",
     "categoryRowSize": 2,
-    "order": 28
+    "order": 28,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 13
   },
   {
     "id": "scenes-047",
@@ -1184,7 +1403,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scene photograph: scenes 047",
-    "order": 29
+    "order": 29,
+    "portfolioStatus": "selected",
+    "selectedOrder": 15,
+    "archiveOrder": null
   },
   {
     "id": "scenes-048",
@@ -1201,7 +1423,10 @@
     "categoryLayoutOffsetY": -3,
     "categoryLayoutWidth": 100,
     "categoryRowSize": 2,
-    "order": 30
+    "order": 30,
+    "portfolioStatus": "selected",
+    "selectedOrder": 16,
+    "archiveOrder": null
   },
   {
     "id": "scenes-049",
@@ -1217,7 +1442,10 @@
     "categoryLayoutWidth": 100,
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": -3,
-    "order": 31
+    "order": 31,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 14
   },
   {
     "id": "scenes-046",
@@ -1234,7 +1462,10 @@
     "categoryLayoutOffsetY": 3,
     "categoryRowSize": 2,
     "categoryLayoutWidth": 75,
-    "order": 32
+    "order": 32,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 15
   },
   {
     "id": "scenes-054",
@@ -1250,7 +1481,10 @@
     "categoryLayoutOffsetX": -2,
     "categoryLayoutOffsetY": 3,
     "categoryLayoutWidth": 75,
-    "order": 33
+    "order": 33,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 16
   },
   {
     "id": "b-and-w-001",
@@ -1476,7 +1710,10 @@
     "layoutWidth": 75,
     "detailScale": 100,
     "homeTitle": "\"Pink Princess\"",
-    "order": 18
+    "order": 18,
+    "portfolioStatus": "selected",
+    "selectedOrder": 14,
+    "archiveOrder": null
   },
   {
     "id": "nature-002",
@@ -1500,7 +1737,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.61
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 2,
+    "archiveOrder": null
   },
   {
     "id": "nature-004",
@@ -1524,7 +1764,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.68
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 3,
+    "archiveOrder": null
   },
   {
     "id": "portrait-022",
@@ -1544,7 +1787,10 @@
     "layoutWidth": 62,
     "detailScale": 100,
     "homeTitle": "Cannot slow down",
-    "order": 25
+    "order": 25,
+    "portfolioStatus": "selected",
+    "selectedOrder": 18,
+    "archiveOrder": null
   },
   {
     "id": "nature-011",
@@ -1566,7 +1812,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.67
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 5,
+    "archiveOrder": null
   },
   {
     "id": "scenes-059",
@@ -1588,7 +1837,10 @@
     "layoutWidth": 153,
     "detailScale": 100,
     "homeTitle": "\"We are in a line\"",
-    "order": 36
+    "order": 36,
+    "portfolioStatus": "selected",
+    "selectedOrder": 18,
+    "archiveOrder": null
   },
   {
     "id": "nature-003",
@@ -1610,7 +1862,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 6,
+    "archiveOrder": null
   },
   {
     "id": "nature-006",
@@ -1631,7 +1886,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 7,
+    "archiveOrder": null
   },
   {
     "id": "nature-007",
@@ -1655,7 +1913,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.63
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 8,
+    "archiveOrder": null
   },
   {
     "id": "portrait-021",
@@ -1671,7 +1932,10 @@
     "categoryLayoutWidth": 80,
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": -1,
-    "order": 22
+    "order": 22,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 6
   },
   {
     "id": "portrait-025",
@@ -1685,7 +1949,10 @@
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
     "categoryRowSize": 3,
-    "order": 21
+    "order": 21,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 5
   },
   {
     "id": "portrait-023",
@@ -1698,7 +1965,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 23
+    "order": 23,
+    "portfolioStatus": "selected",
+    "selectedOrder": 16,
+    "archiveOrder": null
   },
   {
     "id": "nature-010",
@@ -1722,7 +1992,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 4,
+    "archiveOrder": null
   },
   {
     "id": "portrait-024",
@@ -1737,7 +2010,10 @@
     "alt": "Portrait photograph by Bo David",
     "categoryLayoutWidth": 78,
     "categoryRowSize": 1,
-    "order": 26
+    "order": 26,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 7
   },
   {
     "id": "street-054",
@@ -1752,7 +2028,10 @@
     "alt": "Street photograph by Bo David",
     "categoryRowSize": 2,
     "categoryLayoutWidth": 80,
-    "order": 30
+    "order": 30,
+    "portfolioStatus": "selected",
+    "selectedOrder": 16,
+    "archiveOrder": null
   },
   {
     "id": "street-055",
@@ -1776,7 +2055,10 @@
       "focalY": 50,
       "ratio": 0.72
     },
-    "order": 31
+    "order": 31,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 15
   },
   {
     "id": "street-057",
@@ -1801,7 +2083,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.46
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 16
   },
   {
     "id": "street-053",
@@ -1827,7 +2112,10 @@
       "focalY": 50,
       "ratio": 0.76
     },
-    "order": 33
+    "order": 33,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 17
   },
   {
     "id": "street-056",
@@ -1849,7 +2137,10 @@
       "focalY": 50,
       "ratio": 0.66
     },
-    "order": 34
+    "order": 34,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 18
   },
   {
     "id": "street-058",
@@ -1873,7 +2164,10 @@
       "focalY": 50,
       "ratio": 0.81
     },
-    "order": 35
+    "order": 35,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 19
   },
   {
     "id": "street-059",
@@ -1898,7 +2192,10 @@
       "focalY": 50,
       "ratio": 0.81
     },
-    "order": 36
+    "order": 36,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 20
   },
   {
     "id": "scenes-061",
@@ -1912,7 +2209,10 @@
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
     "categoryRowSize": 2,
-    "order": 34
+    "order": 34,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 17
   },
   {
     "id": "scenes-062",
@@ -1925,7 +2225,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
-    "order": 35
+    "order": 35,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 18
   },
   {
     "id": "nature-005",
@@ -1954,7 +2257,10 @@
       "focalY": 50,
       "ratio": 0.67
     },
-    "order": 9
+    "order": 9,
+    "portfolioStatus": "selected",
+    "selectedOrder": 9,
+    "archiveOrder": null
   },
   {
     "id": "scenes-063",
@@ -1967,7 +2273,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 37
+    "order": 37,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 19
   },
   {
     "id": "scenes-064",
@@ -1980,7 +2289,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 38
+    "order": 38,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 20
   },
   {
     "id": "scenes-066",
@@ -1993,7 +2305,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 39
+    "order": 39,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 21
   },
   {
     "id": "scenes-067",
@@ -2007,7 +2322,10 @@
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
     "categoryLayoutWidth": 90,
-    "order": 40
+    "order": 40,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 22
   },
   {
     "id": "scenes-068",
@@ -2021,7 +2339,10 @@
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
     "categoryLayoutWidth": 90,
-    "order": 41
+    "order": 41,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 23
   },
   {
     "id": "scenes-069",
@@ -2034,7 +2355,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 10
+    "order": 10,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 1
   },
   {
     "id": "diptychs-and-triptychs-001",
@@ -2349,7 +2673,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.32
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 17,
+    "archiveOrder": null
   },
   {
     "id": "street-062",
@@ -2362,7 +2689,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Street photograph by Bo David",
-    "order": 37
+    "order": 37,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 21
   },
   {
     "id": "portrait-027",
@@ -2383,7 +2713,10 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 19,
+    "archiveOrder": null
   },
   {
     "id": "portrait-028",
@@ -2396,7 +2729,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 28
+    "order": 28,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 8
   },
   {
     "id": "portrait-029",
@@ -2409,7 +2745,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 29
+    "order": 29,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 9
   },
   {
     "id": "scenes-070",
@@ -2422,7 +2761,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
-    "order": 42
+    "order": 42,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 24
   },
   {
     "id": "scenes-071",
@@ -2435,7 +2777,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
-    "order": 47
+    "order": 47,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 28
   },
   {
     "id": "scenes-072",
@@ -2456,7 +2801,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 19,
+    "archiveOrder": null
   },
   {
     "id": "scenes-073",
@@ -2469,7 +2817,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 44
+    "order": 44,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 25
   },
   {
     "id": "scenes-074",
@@ -2482,7 +2833,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
-    "order": 45
+    "order": 45,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 26
   },
   {
     "id": "scenes-075",
@@ -2504,7 +2858,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.28
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 27
   },
   {
     "id": "scenes-076",
@@ -2517,7 +2874,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
-    "order": 48
+    "order": 48,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 29
   },
   {
     "id": "scenes-077",
@@ -2530,7 +2890,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 49
+    "order": 49,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 30
   },
   {
     "id": "scenes-078",
@@ -2543,7 +2906,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 50
+    "order": 50,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 31
   },
   {
     "id": "scenes-079",
@@ -2565,7 +2931,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.44
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 20,
+    "archiveOrder": null
   },
   {
     "id": "nature-013",
@@ -2587,7 +2956,10 @@
       "focalY": 50,
       "ratio": 1.28
     },
-    "order": 11
+    "order": 11,
+    "portfolioStatus": "selected",
+    "selectedOrder": 11,
+    "archiveOrder": null
   },
   {
     "id": "nature-014",
@@ -2608,7 +2980,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 10,
+    "archiveOrder": null
   },
   {
     "id": "nature-016",
@@ -2630,7 +3005,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.63
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 12,
+    "archiveOrder": null
   },
   {
     "id": "nature-017",
@@ -2652,7 +3030,10 @@
       "focalY": 50,
       "ratio": 0.57
     },
-    "order": 14
+    "order": 14,
+    "portfolioStatus": "selected",
+    "selectedOrder": 14,
+    "archiveOrder": null
   },
   {
     "id": "nature-018",
@@ -2674,7 +3055,10 @@
       "focalY": 50,
       "ratio": 0.64
     },
-    "order": 15
+    "order": 15,
+    "portfolioStatus": "selected",
+    "selectedOrder": 15,
+    "archiveOrder": null
   },
   {
     "id": "nature-019",
@@ -2696,7 +3080,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.28
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 13,
+    "archiveOrder": null
   },
   {
     "id": "portrait-031",
@@ -2709,7 +3096,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 17
+    "order": 17,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 3
   },
   {
     "id": "portrait-032",
@@ -2722,7 +3112,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 19
+    "order": 19,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 4
   },
   {
     "id": "portrait-033",
@@ -2735,7 +3128,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 31
+    "order": 31,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 10
   },
   {
     "id": "street-065",
@@ -2757,7 +3153,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.67
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 18,
+    "archiveOrder": null
   },
   {
     "id": "street-066",
@@ -2779,7 +3178,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.74
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 22
   },
   {
     "id": "street-067",
@@ -2801,7 +3203,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.74
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 23
   },
   {
     "id": "street-069",
@@ -2823,7 +3228,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.7
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 24
   },
   {
     "id": "scenes-080",
@@ -2844,7 +3252,10 @@
       "focalX": 50,
       "focalY": 50
     },
-    "order": 52
+    "order": 52,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 32
   },
   {
     "id": "scenes-081",
@@ -2866,7 +3277,10 @@
       "focalY": 50,
       "ratio": 1.42
     },
-    "order": 53
+    "order": 53,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 33
   },
   {
     "id": "scenes-082",
@@ -2879,7 +3293,10 @@
     "featured": false,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
-    "order": 54
+    "order": 54,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 34
   },
   {
     "id": "scenes-083",
@@ -2892,7 +3309,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 55
+    "order": 55,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 35
   },
   {
     "id": "scenes-084",
@@ -2914,7 +3334,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.62
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 37
   },
   {
     "id": "scenes-085",
@@ -2927,7 +3350,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Scenes photograph by Bo David",
-    "order": 58
+    "order": 58,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 38
   },
   {
     "id": "scenes-086",
@@ -2949,7 +3375,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.4
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 21,
+    "archiveOrder": null
   },
   {
     "id": "scenes-087",
@@ -2971,7 +3400,10 @@
       "focalY": 50,
       "ratio": 0.62
     },
-    "order": 60
+    "order": 60,
+    "portfolioStatus": "selected",
+    "selectedOrder": 22,
+    "archiveOrder": null
   },
   {
     "id": "portrait-034",
@@ -2984,7 +3416,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 24
+    "order": 24,
+    "portfolioStatus": "selected",
+    "selectedOrder": 17,
+    "archiveOrder": null
   },
   {
     "id": "portrait-035",
@@ -2997,7 +3432,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 30
+    "order": 30,
+    "portfolioStatus": "selected",
+    "selectedOrder": 20,
+    "archiveOrder": null
   },
   {
     "id": "nature-020",
@@ -3018,7 +3456,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.64
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 16,
+    "archiveOrder": null
   },
   {
     "id": "portrait-036",
@@ -3031,7 +3472,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 34
+    "order": 34,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 12
   },
   {
     "id": "street-071",
@@ -3053,7 +3497,10 @@
       "focalY": 50,
       "ratio": 1.42
     },
-    "order": 42
+    "order": 42,
+    "portfolioStatus": "selected",
+    "selectedOrder": 19,
+    "archiveOrder": null
   },
   {
     "id": "street-072",
@@ -3075,7 +3522,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.43
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 20,
+    "archiveOrder": null
   },
   {
     "id": "street-074",
@@ -3097,7 +3547,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.46
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 21,
+    "archiveOrder": null
   },
   {
     "id": "street-075",
@@ -3119,7 +3572,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.46
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 25
   },
   {
     "id": "street-076",
@@ -3141,7 +3597,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.46
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 26
   },
   {
     "id": "street-077",
@@ -3163,7 +3622,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.54
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 27
   },
   {
     "id": "scenes-088",
@@ -3185,7 +3647,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.64
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 39
   },
   {
     "id": "scenes-089",
@@ -3207,7 +3672,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.43
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 23,
+    "archiveOrder": null
   },
   {
     "id": "scenes-090",
@@ -3229,7 +3697,10 @@
       "focalY": 50,
       "ratio": 0.55
     },
-    "order": 63
+    "order": 63,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 40
   },
   {
     "id": "scenes-091",
@@ -3251,7 +3722,10 @@
       "focalY": 50,
       "ratio": 1.49
     },
-    "order": 64
+    "order": 64,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 41
   },
   {
     "id": "scenes-092",
@@ -3273,7 +3747,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.73
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 42
   },
   {
     "id": "scenes-093",
@@ -3295,7 +3772,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 1.5
-    }
+    },
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 43
   },
   {
     "id": "scenes-094",
@@ -3317,7 +3797,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.55
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 24,
+    "archiveOrder": null
   },
   {
     "id": "nature-021",
@@ -3338,7 +3821,10 @@
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.55
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 17,
+    "archiveOrder": null
   },
   {
     "id": "scenes-097",
@@ -3359,7 +3845,10 @@
       "focalX": 50,
       "focalY": 50
     },
-    "order": 56
+    "order": 56,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 36
   },
   {
     "id": "portrait-038",
@@ -3372,7 +3861,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 32
+    "order": 32,
+    "portfolioStatus": "selected",
+    "selectedOrder": 21,
+    "archiveOrder": null
   },
   {
     "id": "portrait-039",
@@ -3393,7 +3885,10 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50
-    }
+    },
+    "portfolioStatus": "selected",
+    "selectedOrder": 22,
+    "archiveOrder": null
   },
   {
     "id": "portrait-040",
@@ -3406,7 +3901,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 33
+    "order": 33,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 11
   },
   {
     "id": "portrait-041",
@@ -3419,7 +3917,10 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
-    "order": 35
+    "order": 35,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 13
   },
   {
     "id": "street-078",
@@ -3432,6 +3933,9 @@
     "featured": false,
     "orientation": "portrait",
     "alt": "Street photograph by Bo David",
-    "order": 49
+    "order": 49,
+    "portfolioStatus": "selected",
+    "selectedOrder": 22,
+    "archiveOrder": null
   }
 ]
