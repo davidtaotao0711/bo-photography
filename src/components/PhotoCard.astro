@@ -82,7 +82,8 @@ const collageStyle = collage && layout ? [
   `--collage-focal-x: ${layout.focalX}%`,
   `--collage-focal-y: ${layout.focalY}%`,
 ].join('; ') : '';
-const useCover = collage && layout?.crop && layout.fit === 'cover';
+const useCrop = collage && layout?.crop === true;
+const isRatioAdjusted = collage && Boolean(layout?.ratio);
 ---
 
 <article
@@ -91,8 +92,8 @@ const useCover = collage && layout?.crop && layout.fit === 'cover';
     `photo-card--${photo.orientation}`,
     {
       "photo-card--collage": collage,
-      "photo-card--cropped": useCover,
-      "photo-card--ratio-adjusted": useCover && Boolean(layout?.ratio),
+      "photo-card--cropped": useCrop,
+      "photo-card--ratio-adjusted": isRatioAdjusted,
     },
   ]}
   data-photo-id={photo.id}
