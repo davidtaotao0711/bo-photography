@@ -1,5 +1,5 @@
 ---
-import ArchiveGrid from '../../../components/ArchiveGrid.astro';
+import GalleryGrid from '../../../components/GalleryGrid.astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PhotoLightbox from '../../../components/PhotoLightbox.astro';
 import { getPhotoCategory, photoCategories } from '../../../data/categories.js';
@@ -41,7 +41,7 @@ const lightboxData = archiveItems.map((photo) => ({
 
   {archiveItems.length ? (
     <section class="gallery gallery--archive page-shell">
-      <ArchiveGrid photos={archiveItems} />
+      <GalleryGrid photos={archiveItems} reveal={false} />
     </section>
   ) : (
     <section class="archive-empty page-shell">
