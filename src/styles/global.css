@@ -254,8 +254,6 @@ p, h1, h2, figure { margin: 0; }
 .back-to-top a:focus-visible { outline: 1px solid currentColor; outline-offset: .45rem; }
 
 .site-footer { margin: 0 var(--pad); padding: 2rem 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; color: var(--muted); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; }
-.site-footer__replay { color: var(--muted); transition: color 160ms ease; }
-.site-footer__replay:hover, .site-footer__replay:focus-visible { color: var(--ink); }
 
 .index-row[data-scroll-reveal],
 .photo-card[data-scroll-reveal] {
