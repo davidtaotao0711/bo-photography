@@ -19,7 +19,6 @@ const { images, name, tagline } = Astro.props;
 <section
   class="home-intro"
   data-home-intro
-  data-state="pending"
   aria-label={`${name} photography introduction`}
 >
   <div class="home-intro__images" aria-hidden="true">
@@ -73,45 +72,16 @@ const { images, name, tagline } = Astro.props;
 <script>
   const FIRST_SLIDE_DELAY = 3500;
   const SLIDE_INTERVAL = 5500;
-  const ENTER_SCROLL_DURATION = 820;
-  const WHEEL_THRESHOLD = 48;
-  const SWIPE_THRESHOLD = 44;
-  const SEEN_KEY = 'boHomeIntroSeen';
+  const ENTER_SCROLL_DURATION = 1200;
   const isHomePath = () => (window.location.pathname.replace(/\/+$/, '') || '/') === '/';
   const HOME_INTRO_CLEANUP_KEY = '__boHomeIntroCleanup';
   const HOME_INTRO_INIT_KEY = '__boHomeIntroInitialize';
   const HOME_INTRO_PAGESHOW_KEY = '__boHomeIntroPageshow';
   const HOME_INTRO_PAGELOAD_KEY = '__boHomeIntroPageload';
 
-  const releaseStaleHomeLock = () => {
+  const releaseHomeLock = () => {
     document.documentElement.classList.remove('home-intro-locked');
-    if ('scrollRestoration' in history && history.scrollRestoration === 'manual') {
-      history.scrollRestoration = 'auto';
-    }
-  };
-
-  const getSeenState = () => {
-    try {
-      return window.localStorage.getItem(SEEN_KEY) === 'true';
-    } catch {
-      return false;
-    }
-  };
-
-  const markIntroSeen = () => {
-    try {
-      window.localStorage.setItem(SEEN_KEY, 'true');
-    } catch {
-      // Private browsing may deny localStorage; the current visit still works.
-    }
-  };
-
-  const clearIntroSeen = () => {
-    try {
-      window.localStorage.removeItem(SEEN_KEY);
-    } catch {
-      // Ignore storage restrictions and let the replay navigation continue.
-    }
+    document.body.classList.remove('home-intro-locked');
   };
 
   const runExistingHomeCleanup = () => {
@@ -123,7 +93,7 @@ const { images, name, tagline } = Astro.props;
   const initializeHomeIntro = () => {
     if (!isHomePath()) {
       runExistingHomeCleanup();
-      releaseStaleHomeLock();
+      releaseHomeLock();
       return;
     }
 
@@ -133,12 +103,6 @@ const { images, name, tagline } = Astro.props;
 
     runExistingHomeCleanup();
 
-    const replayRequested = new URLSearchParams(window.location.search).get('replay') === '1';
-    if (replayRequested) {
-      clearIntroSeen();
-      window.history.replaceState({}, '', `${window.location.pathname}${window.location.hash}`);
-    }
-
     intro.dataset.ready = 'true';
 
     const root = document.documentElement;
@@ -147,36 +111,16 @@ const { images, name, tagline } = Astro.props;
     const dots = Array.from(intro.querySelectorAll('[data-intro-dot]'));
     const selectedWork = document.querySelector('#selected-work');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!replayRequested && getSeenState()) {
-      intro.dataset.state = 'dismissed';
-      releaseStaleHomeLock();
-
-      if (!window.location.hash && window.scrollY < 2 && selectedWork) {
-        window.requestAnimationFrame(() => {
-          if (window.scrollY < 2) selectedWork.scrollIntoView({ block: 'start', behavior: 'auto' });
-        });
-      }
-      return;
-    }
-
-    intro.dataset.state = 'locked';
     let activeIndex = 0;
     let rotationId;
     let manualTransitionId;
     let enterScrollFrameId;
     let disposed = false;
-    let isEntering = false;
-    let wheelDistance = 0;
-    let touchStartY = null;
     const interactionController = new AbortController();
-    const previousScrollRestoration = 'scrollRestoration' in history
-      ? history.scrollRestoration
-      : null;
 
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     root.classList.add('home-intro-locked');
+    document.body.classList.add('home-intro-locked');
 
     const showSlide = (nextIndex, immediate = false) => {
       if (nextIndex < 0 || nextIndex >= slides.length) return;
@@ -208,15 +152,7 @@ const { images, name, tagline } = Astro.props;
     };
 
     const releaseScrollLock = () => {
-      root.classList.remove('home-intro-locked');
-      if (previousScrollRestoration !== null && 'scrollRestoration' in history) {
-        history.scrollRestoration = previousScrollRestoration;
-      }
-    };
-
-    const completeIntro = () => {
-      intro.dataset.state = 'dismissed';
-      intro.classList.remove('is-entering');
+      releaseHomeLock();
     };
 
     const cleanupHomeIntro = () => {
@@ -243,7 +179,7 @@ const { images, name, tagline } = Astro.props;
 
     const scheduleNextSlide = (delay) => {
       clearRotation();
-      if (reduceMotion || slides.length < 2 || intro.dataset.state !== 'locked') return;
+      if (reduceMotion || slides.length < 2) return;
 
       rotationId = window.setTimeout(() => {
         showSlide((activeIndex + 1) % slides.length);
@@ -251,90 +187,49 @@ const { images, name, tagline } = Astro.props;
       }, delay);
     };
 
-    const enterIntro = () => {
-      if (disposed || isEntering || intro.dataset.state !== 'locked') return;
-      isEntering = true;
-      markIntroSeen();
+    const enterSite = () => {
+      if (disposed) return;
       clearRotation();
       if (manualTransitionId) window.clearTimeout(manualTransitionId);
-      interactionController.abort();
-      intro.dataset.state = 'entering';
-      intro.classList.add('is-entering');
+      intro.classList.remove('is-manual-switch');
 
-      const targetTop = selectedWork
-        ? selectedWork.getBoundingClientRect().top + window.scrollY
-        : 0;
       releaseScrollLock();
 
-      if (reduceMotion || !selectedWork) {
-        window.scrollTo({ top: targetTop, left: 0, behavior: 'auto' });
-        completeIntro();
-        return;
-      }
+      enterScrollFrameId = window.requestAnimationFrame(() => {
+        enterScrollFrameId = window.requestAnimationFrame(() => {
+          if (disposed || !isHomePath() || !selectedWork) {
+            enterScrollFrameId = undefined;
+            return;
+          }
 
-      const startTop = window.scrollY;
-      const distance = targetTop - startTop;
-      const startedAt = performance.now();
-      const previousScrollBehavior = root.style.scrollBehavior;
-      root.style.scrollBehavior = 'auto';
+          const targetTop = selectedWork.getBoundingClientRect().top + window.scrollY;
+          if (reduceMotion) {
+            window.scrollTo({ top: targetTop, left: 0, behavior: 'auto' });
+            return;
+          }
 
-      const scrollFrame = (now) => {
-        if (disposed || !isHomePath()) return;
-        const progress = Math.min((now - startedAt) / ENTER_SCROLL_DURATION, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        window.scrollTo(0, startTop + distance * eased);
+          const startTop = window.scrollY;
+          const distance = targetTop - startTop;
+          const startedAt = performance.now();
+          const previousScrollBehavior = root.style.scrollBehavior;
+          root.style.scrollBehavior = 'auto';
 
-        if (progress < 1) {
+          const scrollFrame = (now) => {
+            const progress = Math.min((now - startedAt) / ENTER_SCROLL_DURATION, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            window.scrollTo(0, startTop + distance * eased);
+
+            if (progress < 1) {
+              enterScrollFrameId = window.requestAnimationFrame(scrollFrame);
+            } else {
+              enterScrollFrameId = undefined;
+              root.style.scrollBehavior = previousScrollBehavior;
+            }
+          };
+
           enterScrollFrameId = window.requestAnimationFrame(scrollFrame);
-        } else {
-          enterScrollFrameId = undefined;
-          root.style.scrollBehavior = previousScrollBehavior;
-          completeIntro();
-        }
-      };
-
-      enterScrollFrameId = window.requestAnimationFrame(scrollFrame);
-    };
-
-    const onWheel = (event) => {
-      if (intro.dataset.state !== 'locked') return;
-      event.preventDefault();
-      if (event.deltaY <= 0) {
-        wheelDistance = 0;
-        return;
-      }
-      wheelDistance += event.deltaY;
-      if (wheelDistance >= WHEEL_THRESHOLD) enterIntro();
-    };
-
-    const onTouchStart = (event) => {
-      if (intro.dataset.state === 'locked') touchStartY = event.touches[0]?.clientY ?? null;
-    };
-
-    const onTouchMove = (event) => {
-      if (intro.dataset.state === 'locked') event.preventDefault();
-    };
-
-    const onTouchEnd = (event) => {
-      if (intro.dataset.state !== 'locked' || touchStartY === null) return;
-      const endY = event.changedTouches[0]?.clientY ?? touchStartY;
-      const distance = touchStartY - endY;
-      touchStartY = null;
-      if (distance > SWIPE_THRESHOLD) {
-        event.preventDefault();
-        enterIntro();
-      }
-    };
-
-    const onKeyDown = (event) => {
-      if (intro.dataset.state !== 'locked') return;
-      const shouldEnter = event.key === 'ArrowDown'
-        || event.key === 'PageDown'
-        || event.key === 'Enter'
-        || event.code === 'Space';
-      if (!shouldEnter) return;
-      event.preventDefault();
-      enterIntro();
+        });
+      });
     };
 
     dots.forEach((dot) => {
@@ -346,12 +241,7 @@ const { images, name, tagline } = Astro.props;
       }, { signal: interactionController.signal });
     });
 
-    enter?.addEventListener('click', enterIntro, { signal: interactionController.signal });
-    window.addEventListener('wheel', onWheel, { passive: false, signal: interactionController.signal });
-    window.addEventListener('touchstart', onTouchStart, { passive: true, signal: interactionController.signal });
-    window.addEventListener('touchmove', onTouchMove, { passive: false, signal: interactionController.signal });
-    window.addEventListener('touchend', onTouchEnd, { passive: false, signal: interactionController.signal });
-    window.addEventListener('keydown', onKeyDown, { signal: interactionController.signal });
+    enter?.addEventListener('click', enterSite, { once: true, signal: interactionController.signal });
     scheduleNextSlide(FIRST_SLIDE_DELAY);
   };
 
@@ -367,7 +257,7 @@ const { images, name, tagline } = Astro.props;
     window[HOME_INTRO_PAGESHOW_KEY] = () => {
       const initialize = window[HOME_INTRO_INIT_KEY];
       if (typeof initialize === 'function') initialize();
-      else releaseStaleHomeLock();
+      else releaseHomeLock();
     };
     window.addEventListener('pageshow', window[HOME_INTRO_PAGESHOW_KEY]);
   }
@@ -382,13 +272,12 @@ const { images, name, tagline } = Astro.props;
 </script>
 
 <style>
-  :global(html:has(.home-intro[data-state='locked'])),
   :global(html.home-intro-locked) {
     overflow: hidden;
     overscroll-behavior: none;
   }
 
-  :global(body:has(.home-intro[data-state='locked'])) {
+  :global(body.home-intro-locked) {
     height: 100svh;
     overflow: hidden;
   }
@@ -405,13 +294,6 @@ const { images, name, tagline } = Astro.props;
     overflow: hidden;
     color: #fff;
     background: #161615;
-    transition: opacity 820ms cubic-bezier(.22, .61, .36, 1);
-  }
-
-  .home-intro[data-state='entering'],
-  .home-intro[data-state='dismissed'] {
-    opacity: 0;
-    pointer-events: none;
   }
 
   .home-intro__images,
@@ -608,10 +490,6 @@ const { images, name, tagline } = Astro.props;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .home-intro {
-      transition: none;
-    }
-
     .home-intro__slide {
       transition: none;
     }
