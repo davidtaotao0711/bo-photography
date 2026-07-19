@@ -2,7 +2,7 @@
   {
     "slug": "b-and-w",
     "title": "B&W",
-    "year": "",
+    "year": "2025",
     "description": "",
     "coverImage": "/images/series/b-and-w/010.jpg",
     "order": 1
@@ -25,7 +25,7 @@
   },
   {
     "slug": "single-and-loneliness",
-    "title": "Single&loneliness",
+    "title": "Single&Loneliness",
     "year": "",
     "description": "Do they equal?",
     "coverImage": "/images/series/single-and-loneliness/001.jpg",
@@ -33,7 +33,7 @@
   },
   {
     "slug": "motion-and-blur",
-    "title": "Motion&Blur&swing",
+    "title": "Motion&Blur&Swing",
     "year": "2025",
     "description": "Just excuses of losing focus",
     "coverImage": "/images/series/motion-and-blur/001.jpg",
