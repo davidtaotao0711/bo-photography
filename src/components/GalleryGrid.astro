@@ -49,6 +49,7 @@ const { photos, class: className, reveal = true } = Astro.props;
     let debounceTimer = 0;
     let lastWidth = Math.round(gallery.getBoundingClientRect().width);
     let lastBreakpoint = mobileLayout.matches ? 'mobile' : 'desktop';
+    const cards = Array.from(gallery.querySelectorAll(':scope > .photo-card'));
     const schedule = (debounced = false) => {
       window.cancelAnimationFrame(frame);
       window.clearTimeout(debounceTimer);
@@ -59,13 +60,32 @@ const { photos, class: className, reveal = true } = Astro.props;
       else run();
     };
 
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      const width = Math.round(entry.contentRect.width);
-      if (width === lastWidth) return;
-      lastWidth = width;
-      schedule(true);
+    const resizeObserver = new ResizeObserver((entries) => {
+      let cardResized = false;
+
+      entries.forEach((entry) => {
+        if (entry.target !== gallery) {
+          cardResized = true;
+          return;
+        }
+
+        const width = Math.round(entry.contentRect.width);
+        if (width === lastWidth) return;
+        lastWidth = width;
+        cardResized = true;
+      });
+
+      if (cardResized) schedule(true);
     });
     resizeObserver.observe(gallery);
+    cards.forEach((card) => resizeObserver.observe(card));
+
+    gallery.querySelectorAll('img').forEach((image) => {
+      if (image.complete || image.dataset.masonryBound === 'true') return;
+      image.dataset.masonryBound = 'true';
+      image.addEventListener('load', () => schedule(), { once: true });
+    });
+
     const onBreakpointChange = () => {
       const nextBreakpoint = mobileLayout.matches ? 'mobile' : 'desktop';
       if (nextBreakpoint === lastBreakpoint) return;
