@@ -22,5 +22,21 @@
     "description": "",
     "coverImage": "/images/series/diptychs-and-triptychs/001.jpg",
     "order": 3
+  },
+  {
+    "slug": "single-and-loneliness",
+    "title": "Single&loneliness",
+    "year": "",
+    "description": "Do they equal?",
+    "coverImage": "/images/series/single-and-loneliness/001.jpg",
+    "order": 4
+  },
+  {
+    "slug": "motion-and-blur",
+    "title": "Motion&Blur&swing",
+    "year": "2025",
+    "description": "Just excuses of losing focus",
+    "coverImage": "/images/series/motion-and-blur/001.jpg",
+    "order": 5
   }
 ]
