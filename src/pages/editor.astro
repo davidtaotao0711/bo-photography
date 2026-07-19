@@ -2,12 +2,14 @@
 import photos from '../data/photos.json';
 import series from '../data/series.json';
 import site from '../data/site.json';
+import imageManifest from '../data/image-manifest.json';
 import { photoCategories as categoryConfig } from '../data/categories.js';
 
 const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
 const serializedSite = JSON.stringify(site).replace(/</g, '\\u003c');
 const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u003c');
+const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -24,6 +26,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     <script id="initial-series" type="application/json" set:html={serializedSeries}></script>
     <script id="initial-site" type="application/json" set:html={serializedSite}></script>
     <script id="initial-categories" type="application/json" set:html={serializedCategories}></script>
+    <script id="initial-image-manifest" type="application/json" set:html={serializedImageManifest}></script>
 
     <header class="editor-header">
       <a class="wordmark" href="/">BO DAVID</a>
@@ -392,10 +395,12 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
       const initialSeriesNode = document.querySelector('#initial-series');
       const initialSiteNode = document.querySelector('#initial-site');
       const initialCategoriesNode = document.querySelector('#initial-categories');
+      const initialImageManifestNode = document.querySelector('#initial-image-manifest');
       const initialPhotos = JSON.parse(initialNode?.textContent || '[]');
       const initialSeries = JSON.parse(initialSeriesNode?.textContent || '[]');
       const initialSite = JSON.parse(initialSiteNode?.textContent || '{}');
       const photoCategoryConfig = JSON.parse(initialCategoriesNode?.textContent || '[]');
+      const imageManifest = JSON.parse(initialImageManifestNode?.textContent || '{}');
       let photoData = migratePortfolioPhotos(initialPhotos);
       let seriesData = structuredClone(initialSeries);
       let siteData = structuredClone(initialSite);
@@ -478,7 +483,14 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
 
         void container.offsetWidth;
         const rowSize = Number.parseFloat(getComputedStyle(container).gridAutoRows) || 1;
-        const rowSpans = cards.map((card) => Math.max(1, Math.ceil(card.offsetHeight / rowSize)));
+        const styles = getComputedStyle(container);
+        const editorChrome = Number.parseFloat(styles.getPropertyValue('--editor-layout-chrome')) || 0;
+        const gap = Number.parseFloat(styles.getPropertyValue('--gallery-gap')) || 0;
+        const rowSpans = cards.map((card) => {
+          const image = card.querySelector('.editor-card__image');
+          const imageHeight = image?.offsetHeight || card.offsetHeight;
+          return Math.max(1, Math.ceil((imageHeight + gap + editorChrome) / rowSize));
+        });
         cards.forEach((card, index) => {
           card.style.gridRowEnd = `span ${rowSpans[index]}`;
         });
@@ -663,8 +675,17 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
         updateLayoutToolbar();
       }
 
+      function getEditorImageDimensions(photo) {
+        const entry = imageManifest[photo?.image];
+        const width = Number(entry?.width);
+        const height = Number(entry?.height);
+        return width > 0 && height > 0 ? { width, height } : null;
+      }
+
       function collageEditorCard(photo, index, cover = '', portfolioStatus = '') {
         const layout = normalizeCollageLayout(photo);
+        const dimensions = getEditorImageDimensions(photo);
+        const dimensionAttributes = dimensions ? `width="${dimensions.width}" height="${dimensions.height}"` : '';
         const isSeriesPhoto = viewFilter.value === 'series';
         const isPortfolioPhoto = Boolean(portfolioStatus);
         const isCover = Boolean(cover && photo.image === cover);
@@ -676,10 +697,10 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
             class="editor-card editor-card--collage ${isPortfolioPhoto ? `editor-card--portfolio editor-card--portfolio-${portfolioStatus}` : ''} ${layout.crop ? 'editor-card--cropped' : ''} ${layout.ratio ? 'is-ratio-adjusted' : ''} ${selectedLayoutPhotoId === photo.id ? 'is-selected' : ''}"
             data-id="${escapeHtml(photo.id)}"
             ${isPortfolioPhoto ? `data-portfolio-status="${portfolioStatus}"` : ''}
-            style="--editor-col-span:${layout.colSpan}; --editor-aspect:${layout.colSpan}/${layout.rowSpan}; ${layout.ratio ? `--editor-display-aspect:1/${layout.ratio};` : ''} --editor-fit:${layout.fit}; --editor-focal-x:${layout.focalX}%; --editor-focal-y:${layout.focalY}%"
+            style="--editor-col-span:${layout.colSpan}; --editor-aspect:${layout.colSpan}/${layout.rowSpan}; ${dimensions ? `--editor-natural-aspect:${dimensions.width}/${dimensions.height};` : ''} ${layout.ratio ? `--editor-display-aspect:1/${layout.ratio};` : ''} --editor-fit:${layout.fit}; --editor-focal-x:${layout.focalX}%; --editor-focal-y:${layout.focalY}%"
           >
             <div class="editor-card__image" data-layout-select>
-              <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" loading="lazy" />
+              <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.alt || '')}" ${dimensionAttributes} loading="lazy" />
               <span class="card-badge">${String(index + 1).padStart(2, '0')}</span>
               ${isPortfolioPhoto ? `<label class="portfolio-select" title="Select photo"><input type="checkbox" data-portfolio-select value="${escapeHtml(photo.id)}" /><span aria-hidden="true"></span><span class="sr-only">Select ${escapeHtml(photo.title || photo.id)}</span></label>` : ''}
               ${isCover ? '<span class="cover-badge">Cover</span>' : ''}
@@ -759,7 +780,9 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
           canvasStage.style.width = '100%';
         } else {
           const sitePadding = Math.min(72, Math.max(20, window.innerWidth * 0.04));
-          canvasStage.style.width = `${document.documentElement.clientWidth - sitePadding * 2}px`;
+          // Keep the editor canvas on the same sub-pixel grid as the public
+          // page shell; dense placement is sensitive to a single rounding step.
+          canvasStage.style.width = `${document.documentElement.clientWidth - sitePadding * 2 - 0.2}px`;
         }
         const designWidth = canvasStage.offsetWidth;
         const availableWidth = canvasViewport.clientWidth;
@@ -2674,6 +2697,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
   .photo-grid--collage,
   .series-photo-grid {
     --gallery-gap: 12px;
+    --editor-layout-chrome: 69px;
     width: 100%;
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -2697,6 +2721,7 @@ const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u00
     transition: opacity 140ms ease;
   }
   .editor-card--collage .editor-card__image {
+    aspect-ratio: var(--editor-natural-aspect, 4 / 3);
     overflow: visible;
     background: transparent;
     cursor: grab;

@@ -37,7 +37,12 @@ const { photos, class: className, reveal = true } = Astro.props;
     }
 
     void gallery.offsetWidth;
-    const rowSpans = cards.map((card) => Math.max(1, card.offsetHeight));
+    // The editor reserves a small control area below each photograph. Reserve
+    // the same footprint here so its saved 12-column composition packs into
+    // the exact same grid cells on the public pages.
+    const editorChrome = Number.parseFloat(getComputedStyle(gallery).getPropertyValue('--gallery-editor-chrome')) || 0;
+    const rowSize = Number.parseFloat(getComputedStyle(gallery).gridAutoRows) || 1;
+    const rowSpans = cards.map((card) => Math.max(1, Math.ceil((card.offsetHeight + editorChrome) / rowSize)));
     cards.forEach((card, index) => {
       card.style.gridRowEnd = `span ${rowSpans[index]}`;
     });
@@ -45,6 +50,7 @@ const { photos, class: className, reveal = true } = Astro.props;
   }
 
   function setupGallery(gallery) {
+    const cards = Array.from(gallery.querySelectorAll(':scope > .photo-card'));
     let frame = 0;
     let debounceTimer = 0;
     let lastWidth = Math.round(gallery.getBoundingClientRect().width);
@@ -59,13 +65,26 @@ const { photos, class: className, reveal = true } = Astro.props;
       else run();
     };
 
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      const width = Math.round(entry.contentRect.width);
-      if (width === lastWidth) return;
-      lastWidth = width;
-      schedule(true);
+    const resizeObserver = new ResizeObserver((entries) => {
+      let shouldRepack = false;
+      entries.forEach((entry) => {
+        if (entry.target === gallery) {
+          const width = Math.round(entry.contentRect.width);
+          if (width === lastWidth) return;
+          lastWidth = width;
+        }
+        shouldRepack = true;
+      });
+      if (shouldRepack) schedule(true);
     });
     resizeObserver.observe(gallery);
+    cards.forEach((card) => resizeObserver.observe(card));
+    gallery.querySelectorAll('img').forEach((image) => {
+      if (image.complete || image.dataset.masonryBound === 'true') return;
+      image.dataset.masonryBound = 'true';
+      image.addEventListener('load', () => schedule(), { once: true });
+      image.addEventListener('error', () => schedule(), { once: true });
+    });
     const onBreakpointChange = () => {
       const nextBreakpoint = mobileLayout.matches ? 'mobile' : 'desktop';
       if (nextBreakpoint === lastBreakpoint) return;
