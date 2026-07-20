@@ -3,6 +3,7 @@ import path from 'node:path';
 import { Readable } from 'node:stream';
 import { photoCategorySlugs } from '../src/data/categories.js';
 import { migratePortfolioPhotos } from '../src/utils/portfolio-status.js';
+import { updateResponsiveManifest } from './generate-responsive-images.mjs';
 
 const CATEGORY_ENDPOINT = '/__editor/import-photos';
 const SERIES_CREATE_ENDPOINT = '/__editor/series/create';
@@ -159,7 +160,7 @@ function photoMetadata(value, index) {
 }
 
 function maxPhotosForOrientation(orientation) {
-  return orientation === 'portrait' ? 4 : 3;
+  return 4;
 }
 
 function completeLayoutRows(rows, photos) {
@@ -205,17 +206,25 @@ async function importCategoryPhotos(request, projectRoot) {
   const existingFiles = await readdir(targetDirectory);
   let sequence = nextCategorySequence(existingFiles, category);
   const imported = [];
+  const optimization = { ready: [], failed: [] };
 
   for (let index = 0; index < uploads.length; index += 1) {
     const upload = uploads[index];
     const id = `${category}-${String(sequence).padStart(3, '0')}`;
     const fileName = `${id}${extensions[index]}`;
-    await writeFile(path.join(targetDirectory, fileName), Buffer.from(await upload.arrayBuffer()), { flag: 'wx' });
+    const filePath = path.join(targetDirectory, fileName);
+    await writeFile(filePath, Buffer.from(await upload.arrayBuffer()), { flag: 'wx' });
+    try {
+      const result = await updateResponsiveManifest(filePath, { projectRoot });
+      optimization.ready.push({ id, generated: result.generated });
+    } catch (error) {
+      optimization.failed.push({ id, message: error.message });
+    }
     imported.push({ index, id, image: `/images/${category}/${fileName}`, originalName: upload.name });
     sequence += 1;
   }
 
-  return { files: imported };
+  return { files: imported, optimization };
 }
 
 async function createSeries(request, projectRoot) {
@@ -281,6 +290,7 @@ async function uploadSeriesPhotos(request, projectRoot) {
   const existingIds = new Set(photos.map((photo) => String(photo.id).toLowerCase()));
   const additions = [];
   const createdPaths = [];
+  const optimization = { ready: [], failed: [] };
 
   try {
     for (let index = 0; index < uploads.length; index += 1) {
@@ -294,6 +304,12 @@ async function uploadSeriesPhotos(request, projectRoot) {
       const details = photoMetadata(metadata, index);
       await writeFile(filePath, Buffer.from(await upload.arrayBuffer()), { flag: 'wx' });
       createdPaths.push(filePath);
+      try {
+        const result = await updateResponsiveManifest(filePath, { projectRoot });
+        optimization.ready.push({ id, generated: result.generated });
+      } catch (error) {
+        optimization.failed.push({ id, message: error.message });
+      }
       additions.push({
         id,
         title: `No. ${String(seriesPhotos.length + index + 1).padStart(2, '0')}`,
@@ -322,7 +338,7 @@ async function uploadSeriesPhotos(request, projectRoot) {
     series[seriesIndex] = updatedSeries;
     await writeJson(paths.photos, [...photos, ...additions]);
     await writeJson(paths.series, series);
-    return { photos: additions, series: updatedSeries };
+    return { photos: additions, series: updatedSeries, optimization };
   } catch (error) {
     await Promise.all(createdPaths.map((filePath) => unlink(filePath).catch(() => {})));
     throw error;

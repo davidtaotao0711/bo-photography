@@ -539,6 +539,28 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         );
       }
 
+      function portfolioUsesRows(category = viewFilter.value) {
+        return photoData.some((photo) => (
+          photo.category === category
+          && getPortfolioStatus(photo, category) === 'selected'
+          && photo.layoutMode === 'rows'
+        ));
+      }
+
+      function setPortfolioRowsMode(enabled) {
+        if (!isPortfolioView()) return;
+        const category = viewFilter.value;
+        snapshot();
+        photoData.forEach((photo) => {
+          if (photo.category !== category) return;
+          if (enabled && getPortfolioStatus(photo, category) === 'selected') photo.layoutMode = 'rows';
+          else if (!enabled) delete photo.layoutMode;
+        });
+        setDirty(true, enabled ? '已启用行布局，尚未保存' : '已恢复瀑布流布局，尚未保存');
+        render();
+        showToast(enabled ? 'Selected Portfolio 已启用行布局' : '已恢复当前分类的瀑布流布局');
+      }
+
       function normalizePortfolioOrders(category = viewFilter.value) {
         if (!photoCategories.includes(category)) return;
         const selected = portfolioItems('selected', category);
@@ -570,6 +592,8 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           photo.portfolioStatus = nextStatus;
           photo.selectedOrder = nextStatus === 'selected' ? nextOrder : null;
           photo.archiveOrder = nextStatus === 'archive' ? nextOrder : null;
+          if (nextStatus === 'selected' && portfolioUsesRows(category)) photo.layoutMode = 'rows';
+          if (nextStatus === 'archive') delete photo.layoutMode;
           nextOrder += 1;
         });
         normalizePortfolioOrders(category);
@@ -922,9 +946,32 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         if (items.length) renderSeriesRows(items, cover);
       }
 
+      function renderPortfolioRows(status, category) {
+        const items = portfolioItems(status, category, true);
+        const rows = buildOrientationRows(items);
+        let displayIndex = 0;
+        return rows.map((row, rowIndex) => {
+          const rowStart = displayIndex;
+          displayIndex += row.items.length;
+          return `
+            <section class="editor-row-wrap" data-category-row-index="${rowIndex}" data-portfolio-row-status="${status}">
+              <header class="category-row-controls">
+                <span>${row.items.length} images · row ${rowIndex + 1}</span>
+                <div>
+                  ${[1, 2, 3, 4].map((count) => `<button type="button" data-category-row-action="set-${count}" ${row.items.length === count ? 'disabled' : ''} aria-label="Set row to ${count} images">${count}</button>`).join('')}
+                </div>
+              </header>
+              <div class="editor-row portfolio-row" data-portfolio-row-grid="${status}" style="--category-row-columns:${row.items.length}">
+                ${row.items.map((photo, index) => collageEditorCard(photo, rowStart + index, '', status)).join('')}
+              </div>
+            </section>`;
+        }).join('');
+      }
+
       function renderPortfolioSections() {
         const category = viewFilter.value;
         const title = viewFilter.options[viewFilter.selectedIndex]?.textContent || category;
+        const usesRows = portfolioUsesRows(category);
         const sections = ['selected', 'archive'].map((status) => {
           const items = portfolioItems(status, category, true);
           const isSelected = status === 'selected';
@@ -945,13 +992,16 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
                   ${isSelected ? `<p class="portfolio-section__recommendation">${recommendation}</p>` : ''}
                 </div>
                 <div class="portfolio-section__actions">
+                  ${isSelected ? `<button class="button button--quiet" type="button" data-category-layout-mode="${usesRows ? 'collage' : 'rows'}">${usesRows ? 'Use collage' : 'Use rows'}</button>` : ''}
                   <label class="portfolio-select-all"><input type="checkbox" data-portfolio-select-all="${status}" /> Select all</label>
                   <button class="button" type="button" data-portfolio-batch="${action}" data-portfolio-status="${status}" ${items.length ? '' : 'disabled'}>${actionLabel}</button>
                 </div>
               </header>
-              <div class="photo-grid photo-grid--collage portfolio-photo-grid" data-portfolio-grid="${status}" aria-label="${label}">
-                ${items.map((photo, index) => collageEditorCard(photo, index, '', status)).join('')}
-              </div>
+              ${isSelected && usesRows
+                ? renderPortfolioRows(status, category)
+                : `<div class="photo-grid photo-grid--collage portfolio-photo-grid" data-portfolio-grid="${status}" aria-label="${label}">
+                    ${items.map((photo, index) => collageEditorCard(photo, index, '', status)).join('')}
+                  </div>`}
             </section>`;
         }).join('');
         categorySections.innerHTML = sections;
@@ -1337,22 +1387,25 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         return true;
       }
 
-      function adjustCategoryRow(rowIndex, action) {
-        if (!rowLayoutCategories.includes(viewFilter.value)) return;
-        const visible = getVisiblePhotos();
+      function adjustCategoryRow(rowIndex, action, status = 'selected') {
+        if (!rowLayoutCategories.includes(viewFilter.value) || !portfolioUsesRows(viewFilter.value)) return;
+        const visible = portfolioItems(status, viewFilter.value, true);
         const rows = buildOrientationRows(visible);
         const row = rows[rowIndex];
-        if (!row || !['increase', 'decrease'].includes(action)) return;
+        if (!row || (!['increase', 'decrease'].includes(action) && !/^set-[1-4]$/.test(action))) return;
         const orientationRows = rows.filter((candidate) => candidate.orientation === row.orientation);
         const orientationIndex = rows.slice(0, rowIndex + 1).filter((candidate) => candidate.orientation === row.orientation).length - 1;
         const currentSizes = orientationRows.map((candidate) => candidate.items.length);
         const max = maxRowPhotos(row.orientation);
-        const target = currentSizes[orientationIndex] + (action === 'increase' ? 1 : -1);
+        const target = action.startsWith('set-')
+          ? Number(action.slice(4))
+          : currentSizes[orientationIndex] + (action === 'increase' ? 1 : -1);
         if (target < 1 || target > max) return;
 
         const orientationPhotos = visible.filter((photo) => (photo.orientation === 'portrait' ? 'portrait' : 'landscape') === row.orientation);
         const photosBeforeNextRow = currentSizes.slice(0, orientationIndex + 1).reduce((sum, size) => sum + size, 0);
-        if (action === 'increase' && photosBeforeNextRow >= orientationPhotos.length) return;
+        if (target > currentSizes[orientationIndex]
+          && photosBeforeNextRow - currentSizes[orientationIndex] + target > orientationPhotos.length) return;
 
         snapshot();
         currentSizes[orientationIndex] = target;
@@ -1425,7 +1478,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         if (!photoCategories.includes(category) || !files.length) return;
 
         addPhotosButton.disabled = true;
-        addPhotosLabel.textContent = '正在添加…';
+        addPhotosLabel.textContent = 'Optimizing image…';
         try {
           const orientations = await Promise.all(files.map(getImageOrientation));
           const formData = new FormData();
@@ -1463,7 +1516,9 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           searchInput.value = '';
           setDirty(true, `已添加 ${additions.length} 张照片，请保存 photos.json`);
           render();
-          showToast(`${additions.length} 张照片已添加并自动排列`);
+          showToast(result.optimization?.failed?.length
+            ? `${additions.length} 张照片已添加，部分图片优化失败，已保留原图`
+            : `${additions.length} 张照片已添加 · Image ready`);
         } catch (error) {
           window.alert(`添加照片失败：${error.message}`);
         } finally {
@@ -1726,7 +1781,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         const button = $('#upload-series-photos');
         button.disabled = true;
         const label = button.querySelector('span:last-child');
-        label.textContent = 'Uploading…';
+        label.textContent = 'Optimizing image…';
         sessionStorage.setItem('editorView', 'series');
         sessionStorage.setItem('editorSeriesSlug', activeSeriesSlug);
 
@@ -1744,7 +1799,9 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           layoutDraftSlug = '';
           setDirty(false, `${result.photos.length} 张 Series 照片已写入 photos.json`);
           renderSeries();
-          showToast(`${result.photos.length} 张照片已上传，横竖方向已识别`);
+          showToast(result.optimization?.failed?.length
+            ? `${result.photos.length} 张照片已上传，部分图片优化失败，已保留原图`
+            : `${result.photos.length} 张照片已上传 · Image ready`);
         } catch (error) {
           window.alert(`上传 Series 照片失败：${error.message}`);
         } finally {
@@ -1764,6 +1821,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           if (!['portrait', 'landscape'].includes(photo.orientation)) throw new Error(`${photo.id} 的画面方向无效。`);
           if (photoCategories.includes(photo.category)) {
             if (photo.portfolioStatus !== undefined && !['selected', 'archive'].includes(photo.portfolioStatus)) throw new Error(`${photo.id} 的 portfolioStatus 无效。`);
+            if (photo.layoutMode !== undefined && !['rows'].includes(photo.layoutMode)) throw new Error(`${photo.id} 的 layoutMode 无效。`);
             ['selectedOrder', 'archiveOrder'].forEach((field) => {
               if (photo[field] !== undefined && photo[field] !== null && (!Number.isFinite(Number(photo[field])) || Number(photo[field]) < 1)) {
                 throw new Error(`${photo.id} 的 ${field} 必须是正数或空值。`);
@@ -1969,11 +2027,11 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         container.addEventListener('pointerdown', (event) => {
           const handle = event.target.closest('[data-layout-select]');
           const card = event.target.closest('.editor-card--portfolio');
-          const photoGrid = card?.closest('[data-portfolio-grid]');
+          const photoGrid = card?.closest('[data-portfolio-grid], .editor-row');
           if (!handle || !card || !photoGrid || event.target.closest('button, input, label')) return;
 
           const draggedId = card.dataset.id;
-          const status = photoGrid.dataset.portfolioGrid;
+          const status = photoGrid.dataset.portfolioGrid || photoGrid.dataset.portfolioRowGrid;
           const pointerId = event.pointerId;
           const startX = event.clientX;
           const startY = event.clientY;
@@ -2061,7 +2119,8 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           const startX = event.clientX;
           const startY = event.clientY;
           const startLayout = normalizeCollageLayout(photo);
-          const layoutContainer = handle.closest('.photo-grid') || container;
+          const layoutContainer = handle.closest('.photo-grid--collage, .series-photo-grid, .editor-row') || container;
+          const shouldPack = layoutContainer.matches?.('.photo-grid--collage, .series-photo-grid');
           const image = card.querySelector('img');
           const imageBounds = card.querySelector('.editor-card__image')?.getBoundingClientRect();
           const naturalRatio = image?.naturalWidth && image?.naturalHeight
@@ -2089,7 +2148,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
             changed = true;
             setPhotoLayout(photo, values);
             applyCollageLayoutPreview(card, photo);
-            scheduleEditorMasonry(layoutContainer);
+            if (shouldPack) scheduleEditorMasonry(layoutContainer);
           };
 
           const onMove = (moveEvent) => {
@@ -2114,7 +2173,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
             window.removeEventListener('pointerup', onEnd);
             window.removeEventListener('pointercancel', onEnd);
             card.classList.remove('is-layout-resizing', 'is-height-resizing');
-            scheduleEditorMasonry(layoutContainer);
+            if (shouldPack) scheduleEditorMasonry(layoutContainer);
 
             if (!changed) return;
             setDirty(true);
@@ -2132,6 +2191,21 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       }
 
       categorySections.addEventListener('click', (event) => {
+        const layoutModeButton = event.target.closest('[data-category-layout-mode]');
+        if (layoutModeButton) {
+          setPortfolioRowsMode(layoutModeButton.dataset.categoryLayoutMode === 'rows');
+          return;
+        }
+        const categoryRowButton = event.target.closest('[data-category-row-action]');
+        const categoryRow = event.target.closest('[data-category-row-index]');
+        if (categoryRowButton && categoryRow) {
+          adjustCategoryRow(
+            Number(categoryRow.dataset.categoryRowIndex),
+            categoryRowButton.dataset.categoryRowAction,
+            categoryRow.dataset.portfolioRowStatus || 'selected',
+          );
+          return;
+        }
         const batchButton = event.target.closest('[data-portfolio-batch]');
         if (batchButton) {
           const section = batchButton.closest('[data-portfolio-section]');
@@ -2931,6 +3005,8 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
   .editor-row { display: grid; align-items: start; gap: clamp(1.25rem, 2.5vw, 3rem); margin-bottom: clamp(5rem, 10vw, 10rem); }
   .editor-row-wrap .editor-row { grid-template-columns: repeat(var(--category-row-columns), minmax(0, 1fr)); margin-bottom: 0; }
   .editor-row .editor-card { grid-column: auto; justify-self: center; }
+  .portfolio-row { --gallery-gap: 12px; }
+  .portfolio-row .editor-card--collage { width: 100%; padding-bottom: 0; }
   .photo-grid:not(.photo-grid--collage)[data-view='portrait'] > .editor-card:nth-child(3n+2) { margin-top: clamp(3rem, 9vw, 9rem); }
   .editor-card__image { position: relative; overflow: hidden; background: #e4e2dc; cursor: grab; touch-action: none; }
   .editor-card.is-positioning { z-index: 6; transition: none; }
@@ -3074,6 +3150,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     .photo-grid[data-view='featured'] .editor-card:nth-child(n),
     .photo-grid:not([data-view='featured']) .editor-card:nth-child(n) { grid-column: auto; margin-top: 0; }
     .editor-row { display: block; margin: 0; }
+    .portfolio-row .editor-card + .editor-card { margin-top: 4.5rem; }
     .editor-row-wrap { margin-bottom: 4.5rem; }
     .photo-grid .editor-card { width: 100% !important; margin-bottom: 4.5rem; transform: none !important; justify-self: stretch !important; }
     .photo-grid .editor-card--portrait { width: 82% !important; margin-inline: auto; }

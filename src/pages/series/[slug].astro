@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GalleryGrid from '../../components/GalleryGrid.astro';
+import PhotoCard from '../../components/PhotoCard.astro';
 import ScrollReveal from '../../components/ScrollReveal.astro';
 import photos from '../../data/photos.json';
 import series from '../../data/series.json';
 import site from '../../data/site.json';
-import { sortPhotosByOrder } from '../../utils/collage-layout.js';
+import { normalizeCollageLayout, sortPhotosByOrder } from '../../utils/collage-layout.js';
+import { buildOrientationRows } from '../../utils/photo-layout.js';
 
 export function getStaticPaths() {
   return series.map((item) => ({ params: { slug: item.slug }, props: { item } }));
@@ -13,6 +15,24 @@ export function getStaticPaths() {
 
 const { item } = Astro.props;
 const items = sortPhotosByOrder(photos.filter((photo) => photo.series === item.slug));
+const photosById = new Map(items.map((photo) => [photo.id, photo]));
+const usedRowIds = new Set();
+const savedRows = Array.isArray(item.layoutRows)
+  ? item.layoutRows.map((row) => {
+      const orientation = row?.orientation === 'portrait' ? 'portrait' : 'landscape';
+      return {
+        orientation,
+        items: (Array.isArray(row?.photoIds) ? row.photoIds : [])
+          .map((id) => photosById.get(id))
+          .filter((photo) => photo && !usedRowIds.has(photo.id) && (photo.orientation === 'portrait' ? 'portrait' : 'landscape') === orientation)
+          .slice(0, 4),
+      };
+    }).filter((row) => row.items.length > 0)
+  : [];
+savedRows.forEach((row) => row.items.forEach((photo) => usedRowIds.add(photo.id)));
+const missingRows = buildOrientationRows(items.filter((photo) => !usedRowIds.has(photo.id)));
+const rows = [...savedRows, ...missingRows];
+const useRows = savedRows.length > 0;
 ---
 
 <BaseLayout title={`${item.title} ${item.year} — ${site.name}`} description={item.description}>
@@ -25,7 +45,15 @@ const items = sortPhotosByOrder(photos.filter((photo) => photo.series === item.s
     </header>
     <div class="series-flow page-shell">
       {items.length
-        ? <GalleryGrid photos={items} class="series-collage" />
+        ? useRows
+          ? <section class="gallery gallery--rows">
+              {rows.map((row) => (
+                <div class="gallery-row" class:list={[`gallery-row--${row.orientation}`]} style={`--gallery-row-count:${row.items.length}`}>
+                  {row.items.map((photo, index) => <PhotoCard photo={photo} eager={index < 3} layoutScope="none" layout={normalizeCollageLayout(photo)} collage reveal />)}
+                </div>
+              ))}
+            </section>
+          : <GalleryGrid photos={items} class="series-collage" />
         : <div class="series-detail__empty"><p>This series is waiting for its first photograph.</p></div>}
     </div>
     <footer class="series-detail__end page-shell">

@@ -9,7 +9,7 @@ export function buildOrientationRows(photos) {
   while (queues.portrait.length || queues.landscape.length) {
     if (!queues[next].length) next = next === 'portrait' ? 'landscape' : 'portrait';
     const defaultSize = next === 'portrait' ? 3 : 2;
-    const maxSize = next === 'portrait' ? 4 : 3;
+    const maxSize = 4;
     const savedSize = Number(queues[next][0]?.categoryRowSize);
     const size = Number.isFinite(savedSize) ? Math.min(maxSize, Math.max(1, Math.round(savedSize))) : defaultSize;
     rows.push({ orientation: next, items: queues[next].splice(0, size) });
