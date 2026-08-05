@@ -3,6 +3,7 @@ import photos from '../data/photos.json';
 import series from '../data/series.json';
 import site from '../data/site.json';
 import portraitBooks from '../data/portrait-books.json';
+import portfolioCategories from '../data/portfolio-categories.json';
 import imageManifest from '../data/image-manifest.json';
 import { photoCategories as categoryConfig } from '../data/categories.js';
 
@@ -10,6 +11,7 @@ const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
 const serializedSite = JSON.stringify(site).replace(/</g, '\\u003c');
 const serializedPortraitBooks = JSON.stringify(portraitBooks).replace(/</g, '\\u003c');
+const serializedPortfolioCategories = JSON.stringify(portfolioCategories).replace(/</g, '\\u003c');
 const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u003c');
 const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u003c');
 ---
@@ -28,6 +30,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     <script id="initial-series" type="application/json" set:html={serializedSeries}></script>
     <script id="initial-site" type="application/json" set:html={serializedSite}></script>
     <script id="initial-portrait-books" type="application/json" set:html={serializedPortraitBooks}></script>
+    <script id="initial-portfolio-categories" type="application/json" set:html={serializedPortfolioCategories}></script>
     <script id="initial-categories" type="application/json" set:html={serializedCategories}></script>
     <script id="initial-image-manifest" type="application/json" set:html={serializedImageManifest}></script>
 
@@ -467,6 +470,43 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       </form>
     </dialog>
 
+    <dialog id="portrait-category-cover-dialog" class="portrait-photo-picker-dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Portfolio entrance</p>
+            <h2>Portrait Covers</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+        </div>
+        <div class="portrait-photo-picker__meta">
+          <p>依次选择左、中、右三张竖图。Selected 与 Archive 中的 Portrait 均可使用。</p>
+          <span id="portrait-category-cover-count">0 / 3 selected</span>
+        </div>
+        <input
+          id="portrait-category-cover-search"
+          class="portrait-photo-picker__search"
+          type="search"
+          placeholder="Search by number or filename…"
+          autocomplete="off"
+        />
+        <div
+          id="portrait-category-cover-grid"
+          class="portrait-photo-picker__grid"
+          role="listbox"
+          aria-multiselectable="true"
+          aria-label="Choose three Portrait entrance covers"
+        ></div>
+        <div class="dialog-actions portrait-photo-picker__actions">
+          <span id="portrait-category-cover-selection" aria-live="polite">Choose left cover first</span>
+          <div>
+            <button class="text-button" value="cancel" type="submit">取消</button>
+            <button class="button button--primary" id="save-portrait-category-covers" type="button" disabled>Save three covers</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="portrait-photo-picker-dialog" class="portrait-photo-picker-dialog">
       <form method="dialog">
         <div class="dialog-head">
@@ -518,12 +558,14 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       const initialSeriesNode = document.querySelector('#initial-series');
       const initialSiteNode = document.querySelector('#initial-site');
       const initialPortraitBooksNode = document.querySelector('#initial-portrait-books');
+      const initialPortfolioCategoriesNode = document.querySelector('#initial-portfolio-categories');
       const initialCategoriesNode = document.querySelector('#initial-categories');
       const initialImageManifestNode = document.querySelector('#initial-image-manifest');
       const initialPhotos = JSON.parse(initialNode?.textContent || '[]');
       const initialSeries = JSON.parse(initialSeriesNode?.textContent || '[]');
       const initialSite = JSON.parse(initialSiteNode?.textContent || '{}');
       const initialPortraitBooks = normalizePortraitBooks(JSON.parse(initialPortraitBooksNode?.textContent || '{}'));
+      const initialPortfolioCategories = JSON.parse(initialPortfolioCategoriesNode?.textContent || '[]');
       const photoCategoryConfig = JSON.parse(initialCategoriesNode?.textContent || '[]');
       const imageManifest = JSON.parse(initialImageManifestNode?.textContent || '{}');
       let photoData = migratePortfolioPhotos(initialPhotos);
@@ -531,12 +573,14 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       let siteData = structuredClone(initialSite);
       let siteDirty = false;
       let portraitBooksData = structuredClone(initialPortraitBooks);
+      let portfolioCategoriesData = structuredClone(initialPortfolioCategories);
       let portraitBooksDirty = false;
       let portraitBooksFileHandle = null;
       let activePortraitBookSlug = sessionStorage.getItem('editorPortraitBookSlug') || '';
       const portraitBooksHistory = [];
       let portraitPhotoPickerGroupId = '';
       let portraitPhotoPickerSelectionId = '';
+      let portraitCategoryCoverSelection = [];
       let fileHandle = null;
       let dirty = false;
       let activeSeriesSlug = sessionStorage.getItem('editorSeriesSlug') || '';
@@ -574,6 +618,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       const portraitBooksGrid = document.querySelector('#portrait-books-grid');
       const portraitBookDialog = document.querySelector('#portrait-book-dialog');
       const portraitPhotoPickerDialog = document.querySelector('#portrait-photo-picker-dialog');
+      const portraitCategoryCoverDialog = document.querySelector('#portrait-category-cover-dialog');
       const seriesListView = document.querySelector('#series-list-view');
       const seriesDetailView = document.querySelector('#series-detail-view');
       const seriesEditorGrid = document.querySelector('#series-editor-grid');
@@ -1176,7 +1221,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
                   </div>`}
             </section>`;
         }).join('');
-        categorySections.innerHTML = sections;
+        categorySections.innerHTML = `${category === 'portrait' ? portraitCategoryCoverPanel() : ''}${sections}`;
         categorySections.querySelectorAll('.portfolio-photo-grid').forEach((container) => scheduleEditorMasonry(container));
       }
 
@@ -1208,6 +1253,140 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           'archive',
         );
         return [...selected, ...archive];
+      }
+
+      function portraitCategoryEntry() {
+        return portfolioCategoriesData.find((entry) => entry.id === 'portrait');
+      }
+
+      function portraitCategoryCoverImages() {
+        const entry = portraitCategoryEntry();
+        const images = Array.isArray(entry?.coverImages) ? entry.coverImages.filter(Boolean).slice(0, 3) : [];
+        if (images.length === 3) return images;
+        return entry?.coverImage ? [entry.coverImage] : [];
+      }
+
+      function normalizePortraitCategoryCoverPosition(value) {
+        const keyword = { left: 0, center: 50, right: 100, top: 0, bottom: 100 };
+        const parts = String(value || 'center center').trim().split(/\s+/).slice(0, 2);
+        const numberFor = (part, fallback) => {
+          if (part in keyword) return keyword[part];
+          const parsed = Number.parseFloat(part);
+          return Number.isFinite(parsed) ? Math.min(100, Math.max(0, parsed)) : fallback;
+        };
+        const x = numberFor(parts[0], 50);
+        const y = numberFor(parts[1], 50);
+        return { x, y, value: `${Number(x.toFixed(1))}% ${Number(y.toFixed(1))}%` };
+      }
+
+      function portraitCategoryCoverPositions() {
+        const entry = portraitCategoryEntry();
+        const positions = Array.isArray(entry?.coverPositions) ? entry.coverPositions.slice(0, 3) : [];
+        return [0, 1, 2].map((index) => normalizePortraitCategoryCoverPosition(positions[index]).value);
+      }
+
+      function portraitCategoryCoverPanel() {
+        const images = portraitCategoryCoverImages();
+        const positions = portraitCategoryCoverPositions();
+        const photosByImage = new Map(portraitBookPhotos().map((photo) => [photo.image, photo]));
+        return `
+          <section class="portrait-category-cover-panel">
+            <div>
+              <p class="eyebrow">Portfolio entrance</p>
+              <h2>Portrait covers</h2>
+              <p>Choose three vertical photographs, then drag each preview to adjust its visible area.</p>
+            </div>
+            <div class="portrait-category-cover-panel__images">
+              ${images.map((image, index) => {
+                const photo = photosByImage.get(image);
+                const label = ['Left', 'Center', 'Right'][index];
+                return photo ? `<span
+                  data-portrait-category-cover-position="${index}"
+                  style="--cover-position: ${positions[index]};"
+                  aria-label="Drag to reposition ${label.toLowerCase()} Portrait cover"
+                ><b>${label}</b>${editorThumbnailMarkup(photo, `${label} Portrait cover`)}<em>Drag to reposition</em></span>` : '';
+              }).join('')}
+            </div>
+            <button class="button" type="button" data-open-portrait-category-covers>Choose three covers</button>
+          </section>`;
+      }
+
+      function renderPortraitCategoryCoverPicker(query = '') {
+        const normalizedQuery = query.trim().toLowerCase();
+        const photos = portraitBookPhotos();
+        const filteredPhotos = photos.filter((photo) => {
+          if (!normalizedQuery) return true;
+          const filename = (photo.image.split('/').pop() || '').replace(/\.[^.]+$/, '');
+          return [photo.title, photo.id, filename, photo.image]
+            .filter(Boolean)
+            .some((value) => String(value).toLowerCase().includes(normalizedQuery));
+        });
+        $('#portrait-category-cover-grid').innerHTML = filteredPhotos.length
+          ? filteredPhotos.map((photo) => {
+              const selectionIndex = portraitCategoryCoverSelection.indexOf(photo.image);
+              const isSelected = selectionIndex >= 0;
+              return `
+                <button
+                  class="portrait-book-cover-option ${isSelected ? 'is-selected' : ''}"
+                  type="button"
+                  role="option"
+                  aria-selected="${isSelected}"
+                  data-portrait-category-cover="${escapeHtml(photo.image)}"
+                >
+                  <span class="portrait-book-cover-option__image">
+                    ${editorThumbnailMarkup(photo)}
+                    <span class="portrait-book-cover-option__check" aria-hidden="true">${isSelected ? selectionIndex + 1 : ''}</span>
+                  </span>
+                  <small>${escapeHtml(portraitBookCoverLabel(photo))}</small>
+                </button>`;
+            }).join('')
+          : '<p class="portrait-book-cover-empty">No matching Portrait photographs.</p>';
+        $('#portrait-category-cover-count').textContent = `${portraitCategoryCoverSelection.length} / 3 selected`;
+        $('#portrait-category-cover-selection').textContent = portraitCategoryCoverSelection.length === 0
+          ? 'Choose left cover first'
+          : portraitCategoryCoverSelection.length === 1
+            ? 'Now choose the center cover'
+            : portraitCategoryCoverSelection.length === 2
+              ? 'Now choose the right cover'
+              : 'Left, center, and right covers ready';
+        $('#save-portrait-category-covers').disabled = portraitCategoryCoverSelection.length !== 3;
+      }
+
+      function openPortraitCategoryCoverDialog() {
+        portraitCategoryCoverSelection = portraitCategoryCoverImages();
+        $('#portrait-category-cover-search').value = '';
+        renderPortraitCategoryCoverPicker();
+        portraitCategoryCoverDialog.showModal();
+      }
+
+      async function persistPortraitCategoryCovers(coverImages, coverPositions) {
+        const response = await fetch('/__editor/portfolio-categories/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: 'portrait', coverImages, coverPositions }),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Portfolio cover save failed.');
+        portfolioCategoriesData = portfolioCategoriesData.map((entry) => entry.id === 'portrait' ? result.entry : entry);
+        return result.entry;
+      }
+
+      async function savePortraitCategoryCovers() {
+        if (portraitCategoryCoverSelection.length !== 3) return;
+        const button = $('#save-portrait-category-covers');
+        button.disabled = true;
+        button.textContent = 'Saving…';
+        try {
+          await persistPortraitCategoryCovers(portraitCategoryCoverSelection, ['50% 50%', '50% 50%', '50% 50%']);
+          portraitCategoryCoverDialog.close('saved');
+          renderPortfolioSections();
+          showToast('Portrait 首页三张封面已保存');
+        } catch (error) {
+          window.alert(`保存失败：${error.message}`);
+        } finally {
+          button.textContent = 'Save three covers';
+          button.disabled = portraitCategoryCoverSelection.length !== 3;
+        }
       }
 
       function orderedPortraitBooks() {
@@ -3012,6 +3191,10 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       }
 
       categorySections.addEventListener('click', (event) => {
+        if (event.target.closest('[data-open-portrait-category-covers]')) {
+          openPortraitCategoryCoverDialog();
+          return;
+        }
         const layoutModeButton = event.target.closest('[data-category-layout-mode]');
         if (layoutModeButton) {
           setPortfolioRowsMode(layoutModeButton.dataset.categoryLayoutMode === 'rows');
@@ -3315,6 +3498,54 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         if (action === 'open-photo-picker') openPortraitPhotoPicker(groupId);
       });
 
+      categorySections.addEventListener('pointerdown', (event) => {
+        const frame = event.target.closest('[data-portrait-category-cover-position]');
+        if (!frame || event.target.closest('button')) return;
+        const image = frame.querySelector('img');
+        const entry = portraitCategoryEntry();
+        const coverImages = portraitCategoryCoverImages();
+        if (!image || !entry || coverImages.length !== 3) return;
+
+        event.preventDefault();
+        const index = Number(frame.dataset.portraitCategoryCoverPosition);
+        const positions = portraitCategoryCoverPositions();
+        const start = normalizePortraitCategoryCoverPosition(positions[index]);
+        const bounds = frame.getBoundingClientRect();
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const pointerId = event.pointerId;
+        let changed = false;
+        frame.classList.add('is-repositioning');
+        frame.setPointerCapture?.(pointerId);
+
+        const onMove = (moveEvent) => {
+          const x = Math.min(100, Math.max(0, start.x - ((moveEvent.clientX - startX) / bounds.width) * 100));
+          const y = Math.min(100, Math.max(0, start.y - ((moveEvent.clientY - startY) / bounds.height) * 100));
+          positions[index] = `${Number(x.toFixed(1))}% ${Number(y.toFixed(1))}%`;
+          frame.style.setProperty('--cover-position', positions[index]);
+          changed = true;
+        };
+        const onEnd = async () => {
+          if (frame.hasPointerCapture?.(pointerId)) frame.releasePointerCapture(pointerId);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onEnd);
+          window.removeEventListener('pointercancel', onEnd);
+          frame.classList.remove('is-repositioning');
+          if (!changed) return;
+
+          try {
+            await persistPortraitCategoryCovers(coverImages, positions);
+            showToast(`${index === 0 ? '左侧' : '右侧'}封面位置已保存`);
+          } catch (error) {
+            renderPortfolioSections();
+            window.alert(`封面位置保存失败：${error.message}`);
+          }
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onEnd);
+        window.addEventListener('pointercancel', onEnd);
+      });
+
       portraitLayoutGroups.addEventListener('change', (event) => {
         const groupCard = event.target.closest('[data-portrait-group-id]');
         if (!groupCard) return;
@@ -3351,6 +3582,25 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       $('#new-portrait-book').addEventListener('click', () => openPortraitBookDialog());
       $('#edit-portrait-book').addEventListener('click', () => openPortraitBookDialog(activePortraitBookSlug));
       $('#save-portrait-book-details').addEventListener('click', savePortraitBookDetails);
+      $('#portrait-category-cover-search').addEventListener('input', (event) => {
+        renderPortraitCategoryCoverPicker(event.target.value);
+      });
+      $('#portrait-category-cover-grid').addEventListener('click', (event) => {
+        const option = event.target.closest('[data-portrait-category-cover]');
+        if (!option) return;
+        const image = option.dataset.portraitCategoryCover;
+        const selectedIndex = portraitCategoryCoverSelection.indexOf(image);
+        if (selectedIndex >= 0) portraitCategoryCoverSelection.splice(selectedIndex, 1);
+        else if (portraitCategoryCoverSelection.length < 3) portraitCategoryCoverSelection.push(image);
+        else portraitCategoryCoverSelection[2] = image;
+        renderPortraitCategoryCoverPicker($('#portrait-category-cover-search').value);
+      });
+      $('#save-portrait-category-covers').addEventListener('click', savePortraitCategoryCovers);
+      portraitCategoryCoverDialog.addEventListener('close', () => {
+        portraitCategoryCoverSelection = [];
+        $('#portrait-category-cover-search').value = '';
+        $('#portrait-category-cover-grid').replaceChildren();
+      });
       $('#portrait-book-cover-search').addEventListener('input', (event) => {
         renderPortraitBookCoverPicker($('#portrait-book-form-cover').value, event.target.value);
       });
@@ -3874,6 +4124,17 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
   .series-photo-empty span { font-size: .7rem; }
   .photo-grid { width: 100%; display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(3.5rem, 8vw, 8rem) 2.5vw; align-items: start; }
   .category-sections[hidden] { display: none; }
+  .portrait-category-cover-panel { margin-bottom: clamp(2.5rem, 5vw, 5rem); padding: clamp(1rem, 2vw, 1.5rem); display: grid; grid-template-columns: minmax(13rem, .75fr) minmax(28rem, 1.55fr) auto; align-items: center; gap: 1.5rem; border: 1px solid var(--line); background: rgba(255,255,255,.24); }
+  .portrait-category-cover-panel h2 { margin: .45rem 0 0; font: 400 clamp(1.8rem, 3vw, 3rem)/.95 var(--serif); }
+  .portrait-category-cover-panel p:last-child { max-width: 28rem; margin: .7rem 0 0; color: var(--muted); font-size: .66rem; line-height: 1.55; }
+  .portrait-category-cover-panel__images { min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+  .portrait-category-cover-panel__images > span { min-width: 0; position: relative; display: block; aspect-ratio: 3/4; overflow: hidden; background: #e6e3dc; cursor: grab; touch-action: none; user-select: none; }
+  .portrait-category-cover-panel__images > span.is-repositioning { cursor: grabbing; }
+  .portrait-category-cover-panel__images b { position: absolute; z-index: 2; top: .4rem; left: .4rem; padding: .25rem .4rem; color: #fff; background: rgba(20,20,19,.55); font-size: .48rem; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; }
+  .portrait-category-cover-panel__images picture,
+  .portrait-category-cover-panel__images img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .portrait-category-cover-panel__images img { object-position: var(--cover-position, 50% 50%); pointer-events: none; }
+  .portrait-category-cover-panel__images em { position: absolute; z-index: 2; right: .45rem; bottom: .4rem; padding: .22rem .35rem; color: rgba(255,255,255,.9); background: rgba(20,20,19,.42); font-size: .46rem; font-style: normal; letter-spacing: .08em; text-transform: uppercase; pointer-events: none; }
   .portfolio-section { margin-top: clamp(2.5rem, 5vw, 5rem); padding-top: 1.5rem; border-top: 1px solid var(--line); }
   .portfolio-section:first-child { margin-top: 0; }
   .portfolio-section__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; }
@@ -4285,6 +4546,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     .portrait-photo-picker__meta { flex-direction: column; }
     .portrait-photo-picker__actions { align-items: stretch; flex-direction: column; gap: .75rem; }
     .portrait-photo-picker__actions > span { max-width: 100%; }
+    .portrait-category-cover-panel { grid-template-columns: 1fr; align-items: stretch; }
     .portfolio-section__head { align-items: flex-start; flex-direction: column; }
     .portfolio-section__actions { width: 100%; align-items: stretch; justify-content: space-between; }
     .portfolio-section__actions .button { flex: 1; }

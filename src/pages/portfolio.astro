@@ -14,8 +14,10 @@ const entries = categories
   .sort((a, b) => a.order - b.order || a.index - b.index)
   .map(({ entry }) => entry);
 
-const standardEntries = entries.filter((entry) => entry.variant !== 'feature');
-const featureEntries = entries.filter((entry) => entry.variant === 'feature');
+const numberedEntries = entries.map((entry, index) => ({ entry, number: index + 1 }));
+const portraitFeature = numberedEntries.find(({ entry }) => entry.id === 'portrait');
+const standardEntries = numberedEntries.filter(({ entry }) => ['street', 'scenes', 'nature'].includes(entry.id));
+const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'series');
 ---
 
 <BaseLayout title={`Portfolio — ${site.name}`}>
@@ -26,17 +28,25 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
       <p class="archive-intro__copy">Photographs arranged by subject,<br /> then gathered into longer stories.</p>
     </header>
 
-    <div class="archive-cards" aria-label="Portfolio categories">
-      {standardEntries.map((entry, index) => (
-        <CategoryCard entry={entry} number={index + 1} priority />
+    {portraitFeature && (
+      <div class="portfolio-entry__portrait">
+        <FeaturedSeriesCard entry={portraitFeature.entry} number={portraitFeature.number} priority compact />
+      </div>
+    )}
+  </section>
+
+  <section class="archive-categories page-shell" aria-label="Portfolio categories">
+    <div class="archive-cards">
+      {standardEntries.map(({ entry, number }) => (
+        <CategoryCard entry={entry} number={number} />
       ))}
     </div>
   </section>
 
   <section class="archive-series page-shell" aria-label="Photography series">
-    {featureEntries.map((entry, index) => (
+    {seriesFeatures.map(({ entry, number }) => (
       <div class="portfolio-entry__feature">
-        <FeaturedSeriesCard entry={entry} number={standardEntries.length + index + 1} />
+        <FeaturedSeriesCard entry={entry} number={number} />
       </div>
     ))}
   </section>
@@ -51,8 +61,13 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
   }
 
   .archive-opening,
+  .archive-categories,
   .archive-series {
     padding-inline: clamp(1.25rem, 2.5vw, 2.75rem);
+  }
+
+  .archive-opening {
+    padding-inline: clamp(1rem, 1.6vw, 1.75rem);
   }
 
   .archive-intro {
@@ -67,24 +82,33 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
 
   .archive-intro__copy {
     margin-top: clamp(.9rem, 1.8vh, 1.25rem);
+    margin-bottom: clamp(1.4rem, 2.5vh, 2rem);
     color: var(--muted);
     font: 400 clamp(1rem, 1.25vw, 1.2rem)/1.5 var(--serif);
   }
 
+  .portfolio-entry__portrait {
+    margin-top: 0;
+  }
+
+  .archive-categories {
+    padding-top: clamp(6rem, 11vw, 11rem);
+  }
+
   .archive-cards {
     min-height: 0;
-    margin-top: clamp(1.75rem, 3.5vh, 2.75rem);
+    width: min(100%, 94rem);
+    margin-inline: auto;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(.8rem, 1.15vw, 1.25rem);
-    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 3.5rem);
   }
 
   .archive-cards :global(.category-card) {
     height: auto;
     min-height: 0;
-    aspect-ratio: 1 / 1;
-    grid-template-rows: clamp(7.5rem, 9.25vw, 8.5rem) minmax(0, 1fr);
+    aspect-ratio: 4 / 5;
+    grid-template-rows: clamp(8rem, 9vw, 9.5rem) minmax(0, 1fr);
   }
 
   .archive-cards :global(.category-card h2) {
@@ -130,8 +154,9 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
     margin-top: clamp(4.5rem, 7vw, 7rem);
   }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 900px) {
     .archive-opening,
+    .archive-categories,
     .archive-series {
       padding-inline: clamp(1.25rem, 3.5vw, 2.5rem);
     }
@@ -150,7 +175,7 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
     }
 
     .archive-cards :global(.category-card) {
-      aspect-ratio: 5 / 4;
+      aspect-ratio: 4 / 5;
       grid-template-rows: clamp(7.5rem, 13vw, 8.5rem) minmax(0, 1fr);
     }
 
@@ -166,6 +191,10 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
     .portfolio-entry__feature {
       margin-top: 4rem;
     }
+
+    .archive-categories {
+      padding-top: 6rem;
+    }
   }
 
   @media (max-width: 620px) {
@@ -173,6 +202,15 @@ const featureEntries = entries.filter((entry) => entry.variant === 'feature');
       padding-top: 1.5rem;
       padding-inline: clamp(1rem, 4.5vw, 1.15rem);
       padding-bottom: 2rem;
+    }
+
+    .archive-categories,
+    .archive-series {
+      padding-inline: clamp(1rem, 4.5vw, 1.15rem);
+    }
+
+    .portfolio-entry__portrait {
+      margin-top: 1rem;
     }
 
     .archive-intro h1 {

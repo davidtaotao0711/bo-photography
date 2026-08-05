@@ -6,19 +6,29 @@ interface Entry {
   description: string;
   href: string;
   coverImage: string;
+  coverImages?: string[];
+  coverPosition?: string;
+  coverPositions?: string[];
   label?: string;
 }
 
 interface Props {
   entry: Entry;
   number: number;
+  priority?: boolean;
+  compact?: boolean;
 }
 
-const { entry, number } = Astro.props;
+const { entry, number, priority = false, compact = false } = Astro.props;
 const label = String(number).padStart(2, '0');
+const imageStyle = entry.coverPosition ? `object-position: ${entry.coverPosition};` : undefined;
+const coverImages = Array.isArray(entry.coverImages) && entry.coverImages.length >= 2
+  ? entry.coverImages.slice(0, 3)
+  : [entry.coverImage];
+const hasCoverGrid = coverImages.length >= 2;
 ---
 
-<a class="series-entry" href={entry.href}>
+<a class:list={['series-entry', { 'series-entry--compact': compact }]} href={entry.href}>
   <div class="series-entry__copy">
     <div class="series-entry__meta">
       <span>{label}</span>
@@ -34,13 +44,32 @@ const label = String(number).padStart(2, '0');
     </div>
   </div>
 
-  <figure class="series-entry__media">
-    <ResponsiveImage
-      src={entry.coverImage}
-      alt={`${entry.title} photography books`}
-      loading="lazy"
-      sizes="(max-width: 760px) 100vw, 62vw"
-    />
+  <figure class:list={['series-entry__media', { 'series-entry__media--diptych': hasCoverGrid }]}>
+    {hasCoverGrid ? (
+      <div class="series-entry__media-grid" style={`--cover-count: ${coverImages.length};`}>
+        {coverImages.map((src, index) => (
+          <span class="series-entry__media-frame">
+            <ResponsiveImage
+              src={src}
+              alt={`${entry.title} portrait ${index + 1}`}
+              loading={priority ? 'eager' : 'lazy'}
+              fetchpriority={priority && index === 0 ? 'high' : undefined}
+              sizes="(max-width: 760px) 30vw, 20vw"
+              style={entry.coverPositions?.[index] ? `object-position: ${entry.coverPositions[index]};` : undefined}
+            />
+          </span>
+        ))}
+      </div>
+    ) : (
+      <ResponsiveImage
+        src={entry.coverImage}
+        alt={`${entry.title} photography books`}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
+        sizes="(max-width: 760px) 100vw, 62vw"
+        style={imageStyle}
+      />
+    )}
     <span class="series-entry__spine" aria-hidden="true"></span>
     <span class="series-entry__wash" aria-hidden="true"></span>
   </figure>
@@ -49,7 +78,8 @@ const label = String(number).padStart(2, '0');
 
 <style>
   .series-entry {
-    min-height: clamp(28rem, 42vw, 39rem);
+    height: clamp(28rem, 42vw, 39rem);
+    min-height: 0;
     position: relative;
     display: grid;
     grid-template-columns: minmax(17rem, .72fr) minmax(28rem, 1.38fr);
@@ -66,8 +96,13 @@ const label = String(number).padStart(2, '0');
     transition: transform 500ms cubic-bezier(.16, 1, .3, 1), box-shadow 450ms ease, border-color 300ms ease;
   }
 
+  .series-entry--compact {
+    height: clamp(27rem, 36vw, 34rem);
+  }
+
   .series-entry__copy {
     min-width: 0;
+    min-height: 0;
     position: relative;
     z-index: 2;
     display: flex;
@@ -115,6 +150,7 @@ const label = String(number).padStart(2, '0');
 
   .series-entry__media {
     min-width: 0;
+    min-height: 0;
     margin: .55rem .55rem .55rem 0;
     position: relative;
     overflow: hidden;
@@ -129,6 +165,39 @@ const label = String(number).padStart(2, '0');
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  .series-entry__media-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(var(--cover-count, 2), minmax(0, 1fr));
+    gap: clamp(.75rem, 1.6vw, 1.8rem);
+    padding: clamp(.75rem, 1.4vw, 1.4rem);
+    box-sizing: border-box;
+    overflow: hidden;
+    background: rgba(247, 244, 237, .72);
+  }
+
+  .series-entry__media-frame {
+    min-width: 0;
+    min-height: 0;
+    display: block;
+    overflow: hidden;
+    background: #d8d2c6;
+  }
+
+  .series-entry--compact .series-entry__media-grid {
+    align-items: center;
+  }
+
+  .series-entry--compact .series-entry__media-frame {
+    aspect-ratio: 3 / 4;
+  }
+
+  .series-entry__media--diptych .series-entry__spine {
+    display: none;
   }
 
   .series-entry__media :global(img) {
@@ -193,8 +262,13 @@ const label = String(number).padStart(2, '0');
 
   @media (max-width: 760px) {
     .series-entry {
+      height: auto;
       min-height: 0;
       grid-template-columns: 1fr;
+    }
+
+    .series-entry--compact {
+      height: auto;
     }
 
     .series-entry__copy {
@@ -206,6 +280,15 @@ const label = String(number).padStart(2, '0');
       margin: 0 .45rem .45rem;
       aspect-ratio: 4 / 3;
       box-shadow: none;
+    }
+
+    .series-entry--compact .series-entry__media {
+      aspect-ratio: 9 / 4;
+    }
+
+    .series-entry__media-grid {
+      gap: .45rem;
+      padding: .45rem;
     }
 
     .series-entry__media :global(img) {

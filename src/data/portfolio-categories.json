@@ -5,7 +5,7 @@
     "description": "Unplanned gestures and everyday light.",
     "href": "/portfolio/street",
     "coverImage": "/images/street/street-041.jpg",
-    "order": 1,
+    "order": 2,
     "variant": "standard"
   },
   {
@@ -13,10 +13,21 @@
     "title": "Portrait",
     "description": "Faces, presence, and quiet exchange.",
     "href": "/portfolio/portrait",
-    "coverImage": "/images/portrait/portrait-006.jpg",
+    "coverImage": "/images/portrait/portrait-036.jpg",
+    "coverImages": [
+      "/images/portrait/portrait-036.jpg",
+      "/images/portrait/portrait-031.jpg",
+      "/images/portrait/portrait-003.jpg"
+    ],
     "coverPosition": "center 75%",
-    "order": 2,
-    "variant": "standard"
+    "coverPositions": [
+      "50% 50%",
+      "50% 50%",
+      "49.6% 54.4%"
+    ],
+    "order": 1,
+    "variant": "feature",
+    "label": "Portrait / Books / Archive"
   },
   {
     "id": "scenes",

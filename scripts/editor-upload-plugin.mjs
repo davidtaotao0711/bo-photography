@@ -17,8 +17,9 @@ const SERIES_LAYOUT_ENDPOINT = '/__editor/series/layout';
 const PHOTOS_SAVE_ENDPOINT = '/__editor/photos/save';
 const SITE_SAVE_ENDPOINT = '/__editor/site/save';
 const PORTRAIT_BOOKS_SAVE_ENDPOINT = '/__editor/portrait-books/save';
+const PORTFOLIO_CATEGORIES_SAVE_ENDPOINT = '/__editor/portfolio-categories/save';
 const EDITOR_HEALTH_ENDPOINT = '/__editor/health';
-const EDITOR_API_VERSION = 3;
+const EDITOR_API_VERSION = 7;
 const CATEGORIES = new Set(photoCategorySlugs);
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -126,6 +127,7 @@ function dataPaths(projectRoot) {
   return {
     photos: path.join(projectRoot, 'src', 'data', 'photos.json'),
     portraitBooks: path.join(projectRoot, 'src', 'data', 'portrait-books.json'),
+    portfolioCategories: path.join(projectRoot, 'src', 'data', 'portfolio-categories.json'),
     series: path.join(projectRoot, 'src', 'data', 'series.json'),
     site: path.join(projectRoot, 'src', 'data', 'site.json'),
   };
@@ -186,6 +188,58 @@ function photoMetadata(value, index) {
 
 function maxPhotosForOrientation(orientation) {
   return 4;
+}
+
+function normalizeCoverPosition(value) {
+  const keywords = { left: 0, center: 50, right: 100, top: 0, bottom: 100 };
+  const parts = String(value || '').trim().toLowerCase().split(/\s+/);
+  if (parts.length !== 2) throw new RequestError(400, 'Cover positions must use x% y% values.');
+  const numberFor = (part) => Object.hasOwn(keywords, part) ? keywords[part] : Number.parseFloat(part);
+  const x = numberFor(parts[0]);
+  const y = numberFor(parts[1]);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) {
+    throw new RequestError(400, 'Cover positions must use x% y% values.');
+  }
+  if (x < 0 || x > 100 || y < 0 || y > 100) {
+    throw new RequestError(400, 'Cover positions must stay between 0% and 100%.');
+  }
+  return `${Number(x.toFixed(1))}% ${Number(y.toFixed(1))}%`;
+}
+
+async function savePortfolioCategoryCovers(request, projectRoot) {
+  const body = await webRequestFrom(request, PORTFOLIO_CATEGORIES_SAVE_ENDPOINT).json().catch(() => {
+    throw new RequestError(400, 'Portfolio cover settings must be valid JSON.');
+  });
+  if (body?.id !== 'portrait') throw new RequestError(400, 'Only the Portrait entrance cover can be changed here.');
+  const coverImages = Array.isArray(body.coverImages) ? body.coverImages.map((value) => String(value || '').trim()) : [];
+  if (coverImages.length !== 3 || coverImages.some((value) => !value) || new Set(coverImages).size !== 3) {
+    throw new RequestError(400, 'Choose exactly three different Portrait photographs.');
+  }
+  const coverPositions = Array.isArray(body.coverPositions)
+    ? body.coverPositions.map(normalizeCoverPosition)
+    : ['50% 50%', '50% 50%', '50% 50%'];
+  if (coverPositions.length !== 3) throw new RequestError(400, 'Three cover positions are required.');
+
+  const paths = dataPaths(projectRoot);
+  const [photos, categories] = await Promise.all([readJson(paths.photos), readJson(paths.portfolioCategories)]);
+  const validPortraitImages = new Set(migratePortfolioPhotos(photos)
+    .filter((photo) => photo.category === 'portrait' && ['selected', 'archive'].includes(getPortfolioStatus(photo, 'portrait')))
+    .map((photo) => photo.image));
+  if (coverImages.some((image) => !validPortraitImages.has(image))) {
+    throw new RequestError(400, 'Both covers must come from Portrait Photos.');
+  }
+  const index = categories.findIndex((entry) => entry.id === 'portrait');
+  if (index < 0) throw new RequestError(404, 'Portrait category configuration was not found.');
+  const updatedEntry = {
+    ...categories[index],
+    coverImage: coverImages[0],
+    coverImages,
+    coverPositions,
+  };
+  const updatedCategories = [...categories];
+  updatedCategories[index] = updatedEntry;
+  await writeJson(paths.portfolioCategories, updatedCategories);
+  return { entry: updatedEntry };
 }
 
 async function savePortraitBooks(request, projectRoot) {
@@ -635,6 +689,7 @@ export function editorUploadPlugin() {
           [PHOTOS_SAVE_ENDPOINT, savePhotos],
           [SITE_SAVE_ENDPOINT, saveSiteIntro],
           [PORTRAIT_BOOKS_SAVE_ENDPOINT, savePortraitBooks],
+          [PORTFOLIO_CATEGORIES_SAVE_ENDPOINT, savePortfolioCategoryCovers],
         ]);
         const handler = handlers.get(pathname);
         if (!handler) return next();
