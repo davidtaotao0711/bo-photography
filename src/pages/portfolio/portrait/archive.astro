@@ -2,15 +2,22 @@
 import GalleryGrid from '../../../components/GalleryGrid.astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PhotoLightbox from '../../../components/PhotoLightbox.astro';
+import PortraitViewSwitch from '../../../components/PortraitViewSwitch.astro';
 import photos from '../../../data/photos.json';
 import site from '../../../data/site.json';
 import { getPhotoMeta } from '../../../utils/photo-metadata.js';
 import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
 
-const archiveItems = sortPortfolioPhotos(
-  migratePortfolioPhotos(photos).filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'archive'),
+const portraitItems = migratePortfolioPhotos(photos).filter((photo) => photo.category === 'portrait');
+const selectedPortraits = sortPortfolioPhotos(
+  portraitItems.filter((photo) => getPortfolioStatus(photo, 'portrait') === 'selected'),
+  'selected',
+);
+const archivedPortraits = sortPortfolioPhotos(
+  portraitItems.filter((photo) => getPortfolioStatus(photo, 'portrait') === 'archive'),
   'archive',
 );
+const archiveItems = [...selectedPortraits, ...archivedPortraits];
 const lightboxData = archiveItems.map((photo) => ({
   id: photo.id,
   image: photo.image,
@@ -26,9 +33,11 @@ const lightboxData = archiveItems.map((photo) => ({
     <div>
       <p class="eyebrow">Archive / Portrait</p>
       <h1>Portrait Archive</h1>
-      <p class="archive-head__count">{archiveItems.length} additional photographs</p>
+      <p class="archive-head__count">{archiveItems.length} photographs</p>
     </div>
   </section>
+
+  <PortraitViewSwitch active="archive" />
 
   {archiveItems.length ? (
     <section class="gallery gallery--archive page-shell">
@@ -36,7 +45,7 @@ const lightboxData = archiveItems.map((photo) => ({
     </section>
   ) : (
     <section class="archive-empty page-shell">
-      <p>No additional photographs in this archive.</p>
+      <p>No photographs in this archive.</p>
     </section>
   )}
 

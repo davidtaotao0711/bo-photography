@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PortraitShelf from '../../../components/PortraitShelf.astro';
+import PortraitViewSwitch from '../../../components/PortraitViewSwitch.astro';
 import portraitBooksData from '../../../data/portrait-books.json';
 import photos from '../../../data/photos.json';
 import site from '../../../data/site.json';
@@ -32,6 +33,7 @@ const books = normalizePortraitBooks(portraitBooksData).books.map((book) => ({
     <p class="category-head__count">{books.length} {books.length === 1 ? 'book' : 'books'}</p>
   </section>
 
+  <PortraitViewSwitch active="books" />
   <PortraitShelf books={books} />
 
   <section class="category-archive-entry page-shell" aria-labelledby="portrait-archive-title">

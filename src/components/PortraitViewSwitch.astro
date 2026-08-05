@@ -1,0 +1,55 @@
+---
+interface Props {
+  active: 'books' | 'archive';
+}
+
+const { active } = Astro.props;
+---
+
+<nav class="portrait-view-switch page-shell" aria-label="Portrait view">
+  <a href="/portfolio/portrait" aria-current={active === 'books' ? 'page' : undefined}>Books</a>
+  <a href="/portfolio/portrait/archive" aria-current={active === 'archive' ? 'page' : undefined}>Archive</a>
+</nav>
+
+<style>
+  .portrait-view-switch {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1.7rem, 3vw, 3rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .portrait-view-switch a {
+    position: relative;
+    padding: .35rem 0;
+    color: var(--muted);
+    font-size: .63rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    transition: color 160ms ease;
+  }
+
+  .portrait-view-switch a::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    content: '';
+    opacity: 0;
+    transform: scaleX(.3);
+    transition: opacity 160ms ease, transform 160ms ease;
+  }
+
+  .portrait-view-switch a:hover,
+  .portrait-view-switch a:focus-visible,
+  .portrait-view-switch a[aria-current='page'] {
+    color: var(--ink);
+  }
+
+  .portrait-view-switch a[aria-current='page']::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+</style>
