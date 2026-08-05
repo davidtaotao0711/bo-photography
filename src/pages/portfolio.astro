@@ -25,7 +25,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
     <header class="archive-intro">
       <p class="eyebrow">{site.name} / Archive</p>
       <h1 id="archive-title">Portfolio</h1>
-      <p class="archive-intro__copy">Photographs arranged by subject,<br /> then gathered into longer stories.</p>
+      <p class="archive-intro__copy">Photographs arranged by subject, then gathered into longer stories.</p>
     </header>
 
     {portraitFeature && (
@@ -85,6 +85,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
     margin-bottom: clamp(1.4rem, 2.5vh, 2rem);
     color: var(--muted);
     font: 400 clamp(1rem, 1.25vw, 1.2rem)/1.5 var(--serif);
+    white-space: nowrap;
   }
 
   .portfolio-entry__portrait {
@@ -92,7 +93,11 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
   }
 
   .archive-categories {
-    padding-top: clamp(6rem, 11vw, 11rem);
+    min-height: 100svh;
+    padding-block: clamp(3rem, 6vh, 5rem);
+    display: grid;
+    align-items: center;
+    box-sizing: border-box;
   }
 
   .archive-cards {
@@ -107,7 +112,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
   .archive-cards :global(.category-card) {
     height: auto;
     min-height: 0;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 4;
     grid-template-rows: clamp(8rem, 9vw, 9.5rem) minmax(0, 1fr);
   }
 
@@ -175,7 +180,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
     }
 
     .archive-cards :global(.category-card) {
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 3 / 4;
       grid-template-rows: clamp(7.5rem, 13vw, 8.5rem) minmax(0, 1fr);
     }
 
@@ -193,7 +198,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
     }
 
     .archive-categories {
-      padding-top: 6rem;
+      padding-block: 4rem;
     }
   }
 
@@ -209,12 +214,21 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
       padding-inline: clamp(1rem, 4.5vw, 1.15rem);
     }
 
+    .archive-categories {
+      min-height: 0;
+      padding-block: 4rem;
+    }
+
     .portfolio-entry__portrait {
       margin-top: 1rem;
     }
 
     .archive-intro h1 {
       font-size: clamp(4rem, 20vw, 6rem);
+    }
+
+    .archive-intro__copy {
+      white-space: normal;
     }
 
     .archive-cards {
