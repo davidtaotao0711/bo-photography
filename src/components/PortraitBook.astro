@@ -1,0 +1,386 @@
+---
+import ResponsiveImage from './ResponsiveImage.astro';
+import { normalizePortraitLayout, resolvePortraitSpread } from '../utils/portrait-layout.js';
+
+interface PortraitPhoto {
+  id: string;
+  image: string;
+  alt?: string;
+  orientation?: string;
+}
+
+interface Props {
+  photos: PortraitPhoto[];
+  layout: unknown;
+}
+
+const { photos, layout } = Astro.props;
+const normalizedLayout = normalizePortraitLayout(layout);
+const photosById = new Map(photos.map((photo) => [photo.id, photo]));
+const spreads = normalizedLayout.groups.map((group, index) => {
+  const withPhotos = {
+    ...group,
+    items: group.items
+      .map((item) => ({ ...item, photo: photosById.get(item.photoId) }))
+      .filter((item) => Boolean(item.photo)),
+  };
+  return { ...withPhotos, pages: resolvePortraitSpread(withPhotos, index) };
+});
+
+const pageSizes = '(max-width: 720px) 100vw, 44vw';
+const spreadSizes = '(max-width: 720px) 100vw, 90vw';
+---
+
+<article class="portrait-book" aria-label={`${normalizedLayout.title} portrait book`}>
+  {normalizedLayout.introduction && <p class="portrait-book__introduction">{normalizedLayout.introduction}</p>}
+  {spreads.map((spread, spreadIndex) => (
+    <section
+      class:list={['portrait-spread', `portrait-spread--${spread.preset.toLowerCase()}`]}
+      data-portrait-group={spread.id}
+      aria-label={`Spread ${String(spreadIndex + 1).padStart(2, '0')} · ${spread.preset}`}
+    >
+      <p class="portrait-spread__number">Spread {String(spreadIndex + 1).padStart(2, '0')} / {spread.preset}</p>
+      <div class="portrait-spread__book">
+        <article class:list={['portrait-page', 'portrait-page--left', { 'is-blank': spread.pages.left.blank }]}>
+          {!spread.pages.left.blank && spread.pages.left.kind.startsWith('text') ? (
+            <div class:list={['portrait-page__text', `portrait-page__text--${spread.pages.left.kind}`]}>
+              {spread.title && <h2>{spread.title}</h2>}
+              {spread.pages.left.kind !== 'text-title' && spread.text && <p>{spread.text}</p>}
+            </div>
+          ) : !spread.pages.left.blank && spread.pages.left.items.length ? (
+            <div class:list={['portrait-page__media', `has-${spread.pages.left.items.length}`]}>
+              {spread.pages.left.items.map((item, itemIndex) => (
+                <article class:list={['photo-card', 'portrait-book__photo', { 'is-cover': item.cover }]} data-photo-id={item.photo.id}>
+                  <a href={`/photo/${item.photo.id}`} aria-label={`View ${item.photo.alt || 'portrait photograph'}`}>
+                    <ResponsiveImage
+                      src={item.photo.image}
+                      alt={item.photo.alt || 'Portrait photograph'}
+                      loading={spreadIndex === 0 && itemIndex === 0 ? 'eager' : 'lazy'}
+                      fetchpriority={spreadIndex === 0 && itemIndex === 0 ? 'high' : undefined}
+                      sizes={pageSizes}
+                    />
+                  </a>
+                </article>
+              ))}
+            </div>
+          ) : null}
+        </article>
+
+        <div class="portrait-spread__spine" aria-hidden="true"></div>
+
+        <article class:list={['portrait-page', 'portrait-page--right', { 'is-blank': spread.pages.right.blank }]}>
+          {!spread.pages.right.blank && spread.pages.right.kind.startsWith('text') ? (
+            <div class:list={['portrait-page__text', `portrait-page__text--${spread.pages.right.kind}`]}>
+              {spread.pages.right.kind !== 'text-body' && spread.title && <h2>{spread.title}</h2>}
+              {spread.text && <p>{spread.text}</p>}
+            </div>
+          ) : !spread.pages.right.blank && spread.pages.right.items.length ? (
+            <div class:list={['portrait-page__media', `has-${spread.pages.right.items.length}`]}>
+              {spread.pages.right.items.map((item, itemIndex) => (
+                <article class:list={['photo-card', 'portrait-book__photo', { 'is-cover': item.cover }]} data-photo-id={item.photo.id}>
+                  <a href={`/photo/${item.photo.id}`} aria-label={`View ${item.photo.alt || 'portrait photograph'}`}>
+                    <ResponsiveImage
+                      src={item.photo.image}
+                      alt={item.photo.alt || 'Portrait photograph'}
+                      loading={spreadIndex === 0 && itemIndex === 0 ? 'eager' : 'lazy'}
+                      fetchpriority={spreadIndex === 0 && itemIndex === 0 ? 'high' : undefined}
+                      sizes={pageSizes}
+                    />
+                  </a>
+                </article>
+              ))}
+            </div>
+          ) : null}
+        </article>
+
+        {spread.pages.spanItems.length > 0 && (
+          <div class="portrait-spread__full">
+            {spread.pages.spanItems.map((item, itemIndex) => (
+              <article class:list={['photo-card', 'portrait-book__photo', { 'is-cover': item.cover }]} data-photo-id={item.photo.id}>
+                <a href={`/photo/${item.photo.id}`} aria-label={`View ${item.photo.alt || 'portrait photograph'}`}>
+                  <ResponsiveImage
+                    src={item.photo.image}
+                    alt={item.photo.alt || 'Portrait photograph'}
+                    loading={spreadIndex === 0 && itemIndex === 0 ? 'eager' : 'lazy'}
+                    fetchpriority={spreadIndex === 0 && itemIndex === 0 ? 'high' : undefined}
+                    sizes={spreadSizes}
+                  />
+                </a>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+      {spread.preset !== 'TEXT' && (spread.title || spread.text) && (
+        <footer class="portrait-spread__caption">
+          {spread.title && <h2>{spread.title}</h2>}
+          {spread.text && <p>{spread.text}</p>}
+        </footer>
+      )}
+    </section>
+  ))}
+</article>
+
+<style>
+  .portrait-book {
+    width: min(100%, 112rem);
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 3vw, 3.5rem);
+  }
+
+  .portrait-book__introduction {
+    max-width: 34rem;
+    margin: 0 0 clamp(4rem, 8vw, 8rem) auto;
+    color: var(--muted);
+    font-size: clamp(.72rem, .9vw, .9rem);
+    line-height: 1.7;
+  }
+
+  .portrait-spread {
+    width: min(100%, 94rem);
+    margin: 0 auto clamp(7rem, 13vw, 13rem);
+  }
+
+  .portrait-spread__number {
+    margin: 0 0 .8rem;
+    color: var(--muted);
+    font-size: .56rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+
+  .portrait-spread__book {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(.7rem, 1.2vw, 1.15rem) minmax(0, 1fr);
+    align-items: stretch;
+    filter: drop-shadow(0 1.1rem 1.8rem rgba(22, 21, 18, .08));
+  }
+
+  .portrait-page {
+    min-width: 0;
+    aspect-ratio: 3 / 4;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: grid;
+    place-items: stretch;
+    background: #f5f1e8;
+  }
+
+  .portrait-page--left {
+    box-shadow: inset -1.2rem 0 1.7rem -1.7rem rgba(15, 14, 12, .32);
+  }
+
+  .portrait-page--right {
+    box-shadow: inset 1.2rem 0 1.7rem -1.7rem rgba(15, 14, 12, .32);
+  }
+
+  .portrait-page.is-blank {
+    background: #f7f3eb;
+  }
+
+  .portrait-spread__spine {
+    position: relative;
+    z-index: 3;
+    background: linear-gradient(90deg, rgba(255,255,255,.5), rgba(28,26,22,.18) 48%, rgba(255,255,255,.52));
+    box-shadow: 0 0 .7rem rgba(20,18,15,.16);
+  }
+
+  /* A spanning image is one continuous composition, so it must not carry a book spine. */
+  .portrait-spread:has(.portrait-spread__full) .portrait-spread__spine {
+    display: none;
+  }
+
+  .portrait-page__media {
+    min-height: 0;
+    padding: clamp(.75rem, 1.5vw, 1.5rem);
+    display: grid;
+    align-content: center;
+    gap: clamp(.45rem, .8vw, .8rem);
+  }
+
+  .portrait-page__media.has-2 {
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .portrait-page__media.has-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .portrait-spread--triptych .portrait-page__media.has-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .portrait-spread--triptych .portrait-spread__full {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: clamp(.45rem, .8vw, .8rem);
+    padding: clamp(.75rem, 1.5vw, 1.5rem);
+  }
+
+  .portrait-spread--triptych .portrait-spread__full .portrait-book__photo {
+    aspect-ratio: 3 / 4;
+    height: auto;
+  }
+
+  .portrait-spread--feature .portrait-page--left .portrait-page__media {
+    padding: clamp(.45rem, .9vw, .9rem);
+  }
+
+  .portrait-page__text {
+    align-self: center;
+    padding: clamp(1.5rem, 4vw, 4rem);
+  }
+
+  .portrait-page__text h2,
+  .portrait-spread__caption h2 {
+    margin: 0;
+    font: 400 clamp(1.7rem, 3.2vw, 4rem)/.96 var(--serif);
+    letter-spacing: -.04em;
+  }
+
+  .portrait-page__text p,
+  .portrait-spread__caption p {
+    margin: .9rem 0 0;
+    color: var(--muted);
+    font-size: clamp(.68rem, .85vw, .86rem);
+    line-height: 1.7;
+  }
+
+  .portrait-page__text--text-title p {
+    display: none;
+  }
+
+  .portrait-book__photo,
+  .portrait-book__photo a,
+  .portrait-book__photo :global(.responsive-image) {
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .portrait-book__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .portrait-book__photo.is-cover,
+  .portrait-book__photo.is-cover a,
+  .portrait-book__photo.is-cover :global(.responsive-image),
+  .portrait-book__photo.is-cover :global(img) {
+    height: 100%;
+  }
+
+  .portrait-book__photo.is-cover :global(img) {
+    object-fit: cover;
+  }
+
+  .portrait-spread__full {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    display: grid;
+    background: #eee9df;
+  }
+
+  .portrait-spread__full .portrait-book__photo,
+  .portrait-spread__full .portrait-book__photo a,
+  .portrait-spread__full .portrait-book__photo :global(.responsive-image) {
+    height: 100%;
+  }
+
+  .portrait-spread__full :global(img) {
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .portrait-spread__full .is-cover :global(img) {
+    object-fit: cover;
+  }
+
+  .portrait-spread__caption {
+    max-width: 32rem;
+    margin: 1.35rem 0 0 auto;
+  }
+
+  .portrait-spread__caption h2 {
+    font-size: clamp(1.25rem, 2vw, 2rem);
+  }
+
+  @media (max-width: 720px) {
+    .portrait-book {
+      padding: 0 clamp(1rem, 4.5vw, 1.5rem);
+    }
+
+    .portrait-book__introduction {
+      margin-bottom: 3.5rem;
+    }
+
+    .portrait-spread {
+      margin-bottom: 6rem;
+    }
+
+    .portrait-spread__book {
+      grid-template-columns: minmax(0, 1fr);
+      gap: .8rem;
+      filter: none;
+    }
+
+    .portrait-page {
+      grid-column: 1;
+      box-shadow: 0 .8rem 1.8rem rgba(22,21,18,.07);
+    }
+
+    .portrait-page--left { grid-row: 1; }
+    .portrait-page--right { grid-row: 2; }
+    .portrait-spread__spine { display: none; }
+
+    .portrait-spread__full {
+      aspect-ratio: 3 / 4;
+      position: relative;
+      inset: auto;
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .portrait-spread--full:has(.portrait-spread__full) .portrait-page {
+      display: none;
+    }
+
+    .portrait-spread--triptych .portrait-page__media.has-2 {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .portrait-spread--triptych .portrait-page__media.has-3 {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
+
+    .portrait-spread--triptych .portrait-spread__full {
+      aspect-ratio: auto;
+      grid-template-columns: 1fr;
+      grid-auto-rows: auto;
+      align-content: start;
+      padding: 0;
+    }
+
+    .portrait-spread--triptych:has(.portrait-spread__full) .portrait-page {
+      display: none;
+    }
+
+    .portrait-spread--triptych .portrait-spread__full .portrait-book__photo {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+    }
+  }
+</style>

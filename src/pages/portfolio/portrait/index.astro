@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PortraitShelf from '../../../components/PortraitShelf.astro';
+import portraitBooksData from '../../../data/portrait-books.json';
+import photos from '../../../data/photos.json';
+import site from '../../../data/site.json';
+import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
+import { normalizePortraitBooks } from '../../../utils/portrait-layout.js';
+
+const normalizedPhotos = migratePortfolioPhotos(photos);
+const selectedPortraits = sortPortfolioPhotos(
+  normalizedPhotos.filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'selected'),
+  'selected',
+);
+const archiveItems = sortPortfolioPhotos(
+  normalizedPhotos.filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'archive'),
+  'archive',
+);
+const books = normalizePortraitBooks(portraitBooksData).books.map((book) => ({
+  ...book,
+  coverAlt: selectedPortraits.find((photo) => photo.image === book.coverImage)?.alt || `${book.title} cover`,
+}));
+---
+
+<BaseLayout title={`Portrait Books - ${site.name}`}>
+  <section class="category-head page-shell">
+    <a class="back-link" href="/portfolio">&larr; Portfolio</a>
+    <div>
+      <p class="eyebrow">Portrait / Books</p>
+      <h1>Portrait</h1>
+    </div>
+    <p class="category-head__count">{books.length} {books.length === 1 ? 'book' : 'books'}</p>
+  </section>
+
+  <PortraitShelf books={books} />
+
+  <section class="category-archive-entry page-shell" aria-labelledby="portrait-archive-title">
+    <div>
+      <p class="eyebrow">Further portraits</p>
+      <h2 id="portrait-archive-title">Portrait Archive</h2>
+      <p class="category-archive-entry__count">{archiveItems.length} additional photographs</p>
+    </div>
+    <a class="text-link" href="/portfolio/portrait/archive">View archive <span aria-hidden="true">↗</span></a>
+  </section>
+</BaseLayout>

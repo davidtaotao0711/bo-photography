@@ -2,24 +2,13 @@
 import GalleryGrid from '../../../components/GalleryGrid.astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PhotoLightbox from '../../../components/PhotoLightbox.astro';
-import { getPhotoCategory, photoCategories } from '../../../data/categories.js';
 import photos from '../../../data/photos.json';
-import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
 import site from '../../../data/site.json';
 import { getPhotoMeta } from '../../../utils/photo-metadata.js';
+import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
 
-export function getStaticPaths() {
-  return photoCategories
-    .filter((category) => category.slug !== 'portrait')
-    .map((category) => ({ params: { category: category.slug } }));
-}
-
-const { category } = Astro.params;
-const categoryConfig = getPhotoCategory(category);
-const title = categoryConfig?.title || '';
-const normalizedPhotos = migratePortfolioPhotos(photos);
 const archiveItems = sortPortfolioPhotos(
-  normalizedPhotos.filter((photo) => photo.category === category && getPortfolioStatus(photo, category) === 'archive'),
+  migratePortfolioPhotos(photos).filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'archive'),
   'archive',
 );
 const lightboxData = archiveItems.map((photo) => ({
@@ -31,12 +20,12 @@ const lightboxData = archiveItems.map((photo) => ({
 }));
 ---
 
-<BaseLayout title={`${title} Archive - ${site.name}`}>
+<BaseLayout title={`Portrait Archive - ${site.name}`}>
   <section class="archive-head page-shell">
-    <a class="back-link" href={`/portfolio/${category}`}>&larr; Selected {title}</a>
+    <a class="back-link" href="/portfolio/portrait">&larr; Portrait Books</a>
     <div>
-      <p class="eyebrow">Archive / {title}</p>
-      <h1>{title} Archive</h1>
+      <p class="eyebrow">Archive / Portrait</p>
+      <h1>Portrait Archive</h1>
       <p class="archive-head__count">{archiveItems.length} additional photographs</p>
     </div>
   </section>

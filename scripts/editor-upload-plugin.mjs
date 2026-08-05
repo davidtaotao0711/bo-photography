@@ -2,7 +2,8 @@ import { access, mkdir, readFile, readdir, rename, unlink, writeFile } from 'nod
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { photoCategorySlugs } from '../src/data/categories.js';
-import { migratePortfolioPhotos } from '../src/utils/portfolio-status.js';
+import { getPortfolioStatus, migratePortfolioPhotos } from '../src/utils/portfolio-status.js';
+import { PORTRAIT_LAYOUT_PRESETS, normalizePortraitBooks } from '../src/utils/portrait-layout.js';
 import { updateResponsiveManifest } from './generate-responsive-images.mjs';
 
 const CATEGORY_ENDPOINT = '/__editor/import-photos';
@@ -15,6 +16,9 @@ const SERIES_DELETE_ENDPOINT = '/__editor/series/delete';
 const SERIES_LAYOUT_ENDPOINT = '/__editor/series/layout';
 const PHOTOS_SAVE_ENDPOINT = '/__editor/photos/save';
 const SITE_SAVE_ENDPOINT = '/__editor/site/save';
+const PORTRAIT_BOOKS_SAVE_ENDPOINT = '/__editor/portrait-books/save';
+const EDITOR_HEALTH_ENDPOINT = '/__editor/health';
+const EDITOR_API_VERSION = 3;
 const CATEGORIES = new Set(photoCategorySlugs);
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -69,8 +73,28 @@ async function savePhotos(request, projectRoot) {
   });
 
   const normalizedPhotos = migratePortfolioPhotos(photos);
-  await writeJson(dataPaths(projectRoot).photos, normalizedPhotos);
-  return { photos: normalizedPhotos, count: normalizedPhotos.length };
+  const paths = dataPaths(projectRoot);
+  await writeJson(paths.photos, normalizedPhotos);
+
+  let removedPortraitBookReferences = 0;
+  try {
+    const portraitBooks = normalizePortraitBooks(await readJson(paths.portraitBooks));
+    const validPortraitIds = new Set(normalizedPhotos
+      .filter((photo) => photo.category === 'portrait' && ['selected', 'archive'].includes(getPortfolioStatus(photo, 'portrait')))
+      .map((photo) => photo.id));
+    portraitBooks.books.forEach((book) => {
+      book.layout.groups.forEach((group) => {
+        const before = group.items.length;
+        group.items = group.items.filter((item) => validPortraitIds.has(item.photoId));
+        removedPortraitBookReferences += before - group.items.length;
+      });
+    });
+    if (removedPortraitBookReferences > 0) await writeJson(paths.portraitBooks, portraitBooks);
+  } catch (error) {
+    console.warn('[editor] Could not prune Portrait Book references after saving photos:', error.message);
+  }
+
+  return { photos: normalizedPhotos, count: normalizedPhotos.length, removedPortraitBookReferences };
 }
 
 async function saveSiteIntro(request, projectRoot) {
@@ -101,6 +125,7 @@ async function saveSiteIntro(request, projectRoot) {
 function dataPaths(projectRoot) {
   return {
     photos: path.join(projectRoot, 'src', 'data', 'photos.json'),
+    portraitBooks: path.join(projectRoot, 'src', 'data', 'portrait-books.json'),
     series: path.join(projectRoot, 'src', 'data', 'series.json'),
     site: path.join(projectRoot, 'src', 'data', 'site.json'),
   };
@@ -163,6 +188,76 @@ function maxPhotosForOrientation(orientation) {
   return 4;
 }
 
+async function savePortraitBooks(request, projectRoot) {
+  const body = await webRequestFrom(request, PORTRAIT_BOOKS_SAVE_ENDPOINT).json().catch(() => {
+    throw new RequestError(400, 'Portrait Books 内容不是有效 JSON。');
+  });
+  const collection = body?.books;
+  if (!collection || typeof collection !== 'object' || Array.isArray(collection) || !Array.isArray(collection.books)) {
+    throw new RequestError(400, 'Portrait Books 必须包含 books 数组。');
+  }
+  if (collection.books.length > 80) throw new RequestError(400, 'Portrait Books 数量过多。');
+
+  const paths = dataPaths(projectRoot);
+  const photos = migratePortfolioPhotos(await readJson(paths.photos));
+  const selectedPortraits = photos.filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'selected');
+  const bookPortraitIds = new Set(photos
+    .filter((photo) => photo.category === 'portrait' && ['selected', 'archive'].includes(getPortfolioStatus(photo, 'portrait')))
+    .map((photo) => photo.id));
+  const selectedPortraitImages = new Set(selectedPortraits.map((photo) => photo.image));
+  const presetCapacity = { HERO: 1, DIPTYCH: 2, TRIPTYCH: 3, FEATURE: 3, FULL: 1, TEXT: 0, SPACER: 0 };
+  const slugs = new Set();
+  let removedPhotoReferences = 0;
+
+  collection.books.forEach((book, bookIndex) => {
+    if (!book || typeof book !== 'object' || Array.isArray(book)) throw new RequestError(400, `第 ${bookIndex + 1} 本 Portrait Book 无效。`);
+    const title = String(book.title || '').trim();
+    const slug = String(book.slug || '').trim();
+    if (!title || title.length > 120) throw new RequestError(400, `第 ${bookIndex + 1} 本书的 title 无效。`);
+    if (!SLUG_PATTERN.test(slug) || slug === 'archive' || slug.length > 80) throw new RequestError(400, `${title} 的 slug 无效。`);
+    if (slugs.has(slug)) throw new RequestError(400, `Portrait Book slug 重复：${slug}`);
+    if (String(book.year || '').length > 20 || String(book.description || '').length > 500) throw new RequestError(400, `${title} 的文字过长。`);
+    if (!selectedPortraitImages.has(String(book.coverImage || ''))) throw new RequestError(400, `${title} 的书封必须来自 Selected Portrait。`);
+    if (!Number.isFinite(Number(book.order)) || Number(book.order) < 1) throw new RequestError(400, `${title} 的 order 无效。`);
+    if (!book.layout || typeof book.layout !== 'object' || Array.isArray(book.layout) || !Array.isArray(book.layout.groups)) throw new RequestError(400, `${title} 缺少有效 layout。`);
+    if (book.layout.groups.length > 80) throw new RequestError(400, `${title} 的 Spread 数量过多。`);
+    slugs.add(slug);
+    const groupIds = new Set();
+    const usedPhotoIds = new Set();
+
+    book.layout.groups.forEach((group, groupIndex) => {
+      if (!group || typeof group !== 'object' || Array.isArray(group)) throw new RequestError(400, `${title} 的第 ${groupIndex + 1} 个 Spread 无效。`);
+      const id = String(group.id || '').trim();
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) || id.length > 80) throw new RequestError(400, `${title} 的第 ${groupIndex + 1} 个 Spread ID 无效。`);
+      if (groupIds.has(id)) throw new RequestError(400, `${title} 的 Spread ID 重复：${id}`);
+      groupIds.add(id);
+      if (!PORTRAIT_LAYOUT_PRESETS.includes(group.preset)) throw new RequestError(400, `${title} / ${id} 的 preset 无效。`);
+      if (group.leftBlank !== undefined && typeof group.leftBlank !== 'boolean') throw new RequestError(400, `${title} / ${id} 的 leftBlank 必须为 boolean。`);
+      if (group.rightBlank !== undefined && typeof group.rightBlank !== 'boolean') throw new RequestError(400, `${title} / ${id} 的 rightBlank 必须为 boolean。`);
+      if (String(group.title || '').length > 120 || String(group.text || '').length > 500) throw new RequestError(400, `${title} / ${id} 的文字过长。`);
+      const items = (Array.isArray(group.items) ? group.items : []).filter((item) => {
+        const photoId = String(item?.photoId || '').trim();
+        if (bookPortraitIds.has(photoId)) return true;
+        removedPhotoReferences += 1;
+        return false;
+      });
+      group.items = items;
+      if (items.length > presetCapacity[group.preset]) throw new RequestError(400, `${title} / ${id} 的照片数量超过 ${group.preset} 预设上限。`);
+      items.forEach((item) => {
+        const photoId = String(item?.photoId || '').trim();
+        if (!bookPortraitIds.has(photoId)) throw new RequestError(400, `${photoId || id} 不是 Selected 或 Archive Portrait。`);
+        if (usedPhotoIds.has(photoId)) throw new RequestError(400, `${photoId} 不能在同一本书中重复出现。`);
+        if (item.cover !== undefined && typeof item.cover !== 'boolean') throw new RequestError(400, `${photoId} 的 cover 必须为 true 或 false。`);
+        usedPhotoIds.add(photoId);
+      });
+    });
+  });
+
+  const normalized = normalizePortraitBooks(collection);
+  await writeJson(paths.portraitBooks, normalized);
+  return { books: normalized, removedPhotoReferences };
+}
+
 function completeLayoutRows(rows, photos) {
   const photosById = new Map(photos.map((photo) => [photo.id, photo]));
   const used = new Set();
@@ -200,31 +295,81 @@ async function importCategoryPhotos(request, projectRoot) {
   if (!CATEGORIES.has(category)) throw new RequestError(400, '照片分类无效。');
   if (!uploads.length) throw new RequestError(400, '没有收到照片。');
   const extensions = uploads.map(validateUpload);
+  let metadata = [];
+  try {
+    metadata = JSON.parse(String(formData.get('metadata') || '[]'));
+  } catch {
+    throw new RequestError(400, '图片尺寸信息无效。');
+  }
 
+  const paths = dataPaths(projectRoot);
+  const photos = await readJson(paths.photos);
   const targetDirectory = path.join(projectRoot, 'public', 'images', category);
   await mkdir(targetDirectory, { recursive: true });
   const existingFiles = await readdir(targetDirectory);
   let sequence = nextCategorySequence(existingFiles, category);
+  const categoryPhotos = photos.filter((photo) => photo.category === category);
+  const nextTitleNumber = categoryPhotos.reduce((highest, photo) => {
+    const match = String(photo.title || '').match(/^No\.\s*(\d+)$/i);
+    return Math.max(highest, match ? Number(match[1]) : 0);
+  }, 0) + 1;
+  let nextArchiveOrder = categoryPhotos.reduce((highest, photo) => {
+    if (getPortfolioStatus(photo, category) !== 'archive') return highest;
+    const order = Number(photo.archiveOrder);
+    return Math.max(highest, Number.isFinite(order) ? order : 0);
+  }, 0) + 1;
+  const existingIds = new Set(photos.map((photo) => String(photo.id).toLowerCase()));
   const imported = [];
+  const additions = [];
+  const createdPaths = [];
   const optimization = { ready: [], failed: [] };
 
-  for (let index = 0; index < uploads.length; index += 1) {
-    const upload = uploads[index];
-    const id = `${category}-${String(sequence).padStart(3, '0')}`;
-    const fileName = `${id}${extensions[index]}`;
-    const filePath = path.join(targetDirectory, fileName);
-    await writeFile(filePath, Buffer.from(await upload.arrayBuffer()), { flag: 'wx' });
-    try {
-      const result = await updateResponsiveManifest(filePath, { projectRoot });
-      optimization.ready.push({ id, generated: result.generated });
-    } catch (error) {
-      optimization.failed.push({ id, message: error.message });
+  try {
+    for (let index = 0; index < uploads.length; index += 1) {
+      while (existingIds.has(`${category}-${String(sequence).padStart(3, '0')}`)) sequence += 1;
+      const upload = uploads[index];
+      const id = `${category}-${String(sequence).padStart(3, '0')}`;
+      const fileName = `${id}${extensions[index]}`;
+      const filePath = path.join(targetDirectory, fileName);
+      const image = `/images/${category}/${fileName}`;
+      const details = photoMetadata(metadata, index);
+      await writeFile(filePath, Buffer.from(await upload.arrayBuffer()), { flag: 'wx' });
+      createdPaths.push(filePath);
+      try {
+        const result = await updateResponsiveManifest(filePath, { projectRoot });
+        optimization.ready.push({ id, generated: result.generated });
+      } catch (error) {
+        optimization.failed.push({ id, message: error.message });
+      }
+      imported.push({ index, id, image, originalName: upload.name });
+      additions.push({
+        id,
+        title: `No. ${String(nextTitleNumber + index).padStart(2, '0')}`,
+        category,
+        series: '',
+        location: '',
+        date: String(new Date().getFullYear()),
+        image,
+        featured: false,
+        portfolioStatus: 'archive',
+        selectedOrder: null,
+        archiveOrder: nextArchiveOrder,
+        aspect: details.aspect,
+        orientation: details.orientation,
+        alt: `${category.charAt(0).toUpperCase() + category.slice(1)} photograph by Bo David`,
+      });
+      existingIds.add(id);
+      nextArchiveOrder += 1;
+      sequence += 1;
     }
-    imported.push({ index, id, image: `/images/${category}/${fileName}`, originalName: upload.name });
-    sequence += 1;
-  }
 
-  return { files: imported, optimization };
+    const photoData = [...photos, ...additions];
+    await writeJson(paths.photos, photoData);
+    return { files: imported, photos: additions, photoData, optimization };
+  } catch (error) {
+    await Promise.all(createdPaths.map((filePath) => unlink(filePath).catch(() => {})));
+    throw error;
+  }
 }
 
 async function createSeries(request, projectRoot) {
@@ -474,6 +619,10 @@ export function editorUploadPlugin() {
     configureServer(server) {
       server.middlewares.use(async (request, response, next) => {
         const pathname = new URL(request.url || '/', 'http://localhost').pathname;
+        if (pathname === EDITOR_HEALTH_ENDPOINT) {
+          if (request.method !== 'GET') return sendJson(response, 405, { error: 'Only GET is supported.' });
+          return sendJson(response, 200, { editorApiVersion: EDITOR_API_VERSION });
+        }
         const handlers = new Map([
           [CATEGORY_ENDPOINT, importCategoryPhotos],
           [SERIES_CREATE_ENDPOINT, createSeries],
@@ -485,6 +634,7 @@ export function editorUploadPlugin() {
           [SERIES_LAYOUT_ENDPOINT, saveSeriesLayout],
           [PHOTOS_SAVE_ENDPOINT, savePhotos],
           [SITE_SAVE_ENDPOINT, saveSiteIntro],
+          [PORTRAIT_BOOKS_SAVE_ENDPOINT, savePortraitBooks],
         ]);
         const handler = handlers.get(pathname);
         if (!handler) return next();

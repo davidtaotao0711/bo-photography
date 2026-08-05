@@ -1,0 +1,194 @@
+---
+import ResponsiveImage from './ResponsiveImage.astro';
+
+interface PortraitBookCard {
+  title: string;
+  slug: string;
+  year?: string;
+  description?: string;
+  coverImage: string;
+  coverAlt?: string;
+}
+
+interface Props {
+  books: PortraitBookCard[];
+}
+
+const { books } = Astro.props;
+---
+
+<section class="portrait-shelf page-shell" aria-label="Portrait books">
+  <div class="portrait-shelf__grid">
+    {books.map((book) => (
+      <article class="portrait-shelf__book" data-portrait-book-card>
+        <a href={`/portfolio/portrait/${book.slug}`} data-portrait-book-link>
+          <span class="portrait-shelf__cover">
+            <ResponsiveImage
+              src={book.coverImage}
+              alt={book.coverAlt || `${book.title} cover`}
+              loading="eager"
+              sizes="(max-width: 720px) 78vw, (max-width: 1200px) 34vw, 24vw"
+            />
+          </span>
+          <span class="portrait-shelf__meta">
+            <span>
+              <strong>{book.title}</strong>
+              {book.year && <small>{book.year}</small>}
+            </span>
+            {book.description && <span>{book.description}</span>}
+          </span>
+        </a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('[data-portrait-book-link]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (reducedMotion.matches) return;
+      event.preventDefault();
+      const card = link.closest('[data-portrait-book-card]');
+      card?.classList.add('is-opening');
+      window.setTimeout(() => { window.location.href = link.href; }, 220);
+    });
+  });
+  window.addEventListener('pageshow', () => {
+    document.querySelectorAll('[data-portrait-book-card].is-opening').forEach((card) => card.classList.remove('is-opening'));
+  });
+</script>
+
+<style>
+  .portrait-shelf {
+    padding-bottom: clamp(5rem, 10vw, 10rem);
+  }
+
+  .portrait-shelf__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(2rem, 4vw, 5rem);
+    align-items: start;
+  }
+
+  .portrait-shelf__book {
+    min-width: 0;
+    transition: opacity 220ms ease, transform 220ms cubic-bezier(.2,.7,.2,1);
+  }
+
+  .portrait-shelf__book > a {
+    display: block;
+  }
+
+  .portrait-shelf__cover {
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #e7e3da;
+    box-shadow: 0 .9rem 2.4rem rgba(28, 27, 24, .08);
+    transition: transform 240ms cubic-bezier(.2,.7,.2,1), box-shadow 240ms ease;
+  }
+
+  .portrait-shelf__cover :global(.responsive-image),
+  .portrait-shelf__cover :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .portrait-shelf__cover :global(img) {
+    object-fit: cover;
+    transition: transform 400ms cubic-bezier(.2,.7,.2,1);
+  }
+
+  .portrait-shelf__meta {
+    padding-top: 1rem;
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    gap: 1rem;
+    transition: opacity 180ms ease, transform 220ms ease;
+  }
+
+  .portrait-shelf__meta > span:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: .28rem;
+  }
+
+  .portrait-shelf__meta strong {
+    font: 400 clamp(1.45rem, 2vw, 2.2rem)/1 var(--serif);
+    letter-spacing: -.03em;
+  }
+
+  .portrait-shelf__meta small {
+    color: var(--muted);
+    font-size: .58rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+
+  .portrait-shelf__meta > span:last-child {
+    color: var(--muted);
+    font-size: clamp(.68rem, .8vw, .82rem);
+    line-height: 1.55;
+  }
+
+  .portrait-shelf__book > a:hover .portrait-shelf__cover,
+  .portrait-shelf__book > a:focus-visible .portrait-shelf__cover {
+    box-shadow: 0 1.2rem 3rem rgba(28, 27, 24, .13);
+    transform: translateY(-3px);
+  }
+
+  .portrait-shelf__book > a:hover .portrait-shelf__cover :global(img),
+  .portrait-shelf__book > a:focus-visible .portrait-shelf__cover :global(img) {
+    transform: scale(1.015);
+  }
+
+  .portrait-shelf__book.is-opening {
+    opacity: .72;
+    transform: scale(.992);
+    pointer-events: none;
+  }
+
+  .portrait-shelf__book.is-opening .portrait-shelf__cover {
+    box-shadow: 0 .45rem 1.2rem rgba(28, 27, 24, .06);
+    transform: translateY(2px) scale(.985);
+  }
+
+  .portrait-shelf__book.is-opening .portrait-shelf__meta {
+    opacity: .4;
+    transform: translateY(3px);
+  }
+
+  @media (max-width: 900px) {
+    .portrait-shelf__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .portrait-shelf__grid {
+      grid-template-columns: 1fr;
+      gap: 4rem;
+    }
+
+    .portrait-shelf__book {
+      width: min(100%, 26rem);
+      margin-inline: auto;
+    }
+
+    .portrait-shelf__meta {
+      grid-template-columns: 1fr;
+      gap: .65rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portrait-shelf__book,
+    .portrait-shelf__cover,
+    .portrait-shelf__cover :global(img),
+    .portrait-shelf__meta {
+      transition: none;
+    }
+  }
+</style>

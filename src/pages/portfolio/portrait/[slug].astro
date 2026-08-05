@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PortraitBook from '../../../components/PortraitBook.astro';
+import PhotoLightbox from '../../../components/PhotoLightbox.astro';
+import portraitBooksData from '../../../data/portrait-books.json';
+import photos from '../../../data/photos.json';
+import site from '../../../data/site.json';
+import { getPhotoMeta } from '../../../utils/photo-metadata.js';
+import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
+import { normalizePortraitBooks, portraitVisiblePhotoIds } from '../../../utils/portrait-layout.js';
+
+export function getStaticPaths() {
+  return normalizePortraitBooks(portraitBooksData).books.map((book) => ({
+    params: { slug: book.slug },
+    props: { book },
+  }));
+}
+
+const { book } = Astro.props;
+const migratedPhotos = migratePortfolioPhotos(photos);
+const selectedPortraits = sortPortfolioPhotos(
+  migratedPhotos.filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'selected'),
+  'selected',
+);
+const archivePortraits = sortPortfolioPhotos(
+  migratedPhotos.filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'archive'),
+  'archive',
+);
+const bookPortraits = [...selectedPortraits, ...archivePortraits];
+const portraitsById = new Map(bookPortraits.map((photo) => [photo.id, photo]));
+const displayedItems = portraitVisiblePhotoIds(book.layout).map((id) => portraitsById.get(id)).filter(Boolean);
+const lightboxData = displayedItems.map((photo) => ({
+  id: photo.id,
+  image: photo.image,
+  alt: photo.alt,
+  orientation: photo.orientation,
+  ...getPhotoMeta(photo),
+}));
+---
+
+<BaseLayout title={`${book.title} - Portrait - ${site.name}`}>
+  <section class="category-head page-shell">
+    <a class="back-link" href="/portfolio/portrait">&larr; Portrait Books</a>
+    <div>
+      <p class="eyebrow">Portrait Book {book.year ? `/ ${book.year}` : ''}</p>
+      <h1>{book.title}</h1>
+    </div>
+    <p class="category-head__count">{displayedItems.length} photographs</p>
+  </section>
+
+  <PortraitBook photos={bookPortraits} layout={book.layout} />
+  <PhotoLightbox photos={lightboxData} gallerySelector=".portrait-book" />
+</BaseLayout>

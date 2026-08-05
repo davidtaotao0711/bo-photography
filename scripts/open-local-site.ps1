@@ -6,6 +6,8 @@ $ErrorActionPreference = 'SilentlyContinue'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $url = 'http://127.0.0.1:4326/'
+$healthUrl = 'http://127.0.0.1:4326/__editor/health'
+$requiredEditorApiVersion = 3
 $nodePath = 'C:\Program Files\nodejs\node.exe'
 $astroPath = Join-Path $projectRoot 'node_modules\astro\astro.js'
 
@@ -18,7 +20,40 @@ function Test-BoDavidSite {
   }
 }
 
-if (-not (Test-BoDavidSite)) {
+function Test-BoDavidEditorApi {
+  try {
+    $response = Invoke-RestMethod -Uri $healthUrl -Method Get -TimeoutSec 2
+    return [int]$response.editorApiVersion -eq $requiredEditorApiVersion
+  } catch {
+    return $false
+  }
+}
+
+function Stop-StaleBoDavidSite {
+  $listenerProcessId = 0
+  $listenerLines = netstat -ano | Select-String ':4326\s'
+  foreach ($line in $listenerLines) {
+    if ($line.Line -match '^\s*TCP\s+127\.0\.0\.1:4326\s+\S+\s+LISTENING\s+(\d+)\s*$') {
+      $listenerProcessId = [int]$Matches[1]
+      break
+    }
+  }
+  if ($listenerProcessId -gt 0) {
+    Stop-Process -Id $listenerProcessId -Force
+    for ($attempt = 0; $attempt -lt 20; $attempt += 1) {
+      Start-Sleep -Milliseconds 150
+      if (-not (Test-BoDavidSite)) { break }
+    }
+  }
+}
+
+$siteIsReady = Test-BoDavidSite
+if ($siteIsReady -and -not (Test-BoDavidEditorApi)) {
+  Stop-StaleBoDavidSite
+  $siteIsReady = $false
+}
+
+if (-not $siteIsReady) {
   if (-not (Test-Path -LiteralPath $nodePath) -or -not (Test-Path -LiteralPath $astroPath)) {
     Add-Type -AssemblyName PresentationFramework
     [System.Windows.MessageBox]::Show(
@@ -41,7 +76,7 @@ if (-not (Test-BoDavidSite)) {
   }
 }
 
-if (-not (Test-BoDavidSite)) {
+if (-not (Test-BoDavidSite) -or -not (Test-BoDavidEditorApi)) {
   Add-Type -AssemblyName PresentationFramework
   [System.Windows.MessageBox]::Show(
     'The local website did not become ready. Port 4326 may be occupied.',

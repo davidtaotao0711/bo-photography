@@ -1,0 +1,453 @@
+{
+  "version": 1,
+  "books": [
+    {
+      "title": "清冷",
+      "slug": "black-bob",
+      "year": "2026",
+      "description": "Three close portrait studies arranged as a small editorial book.",
+      "coverImage": "/images/portrait/portrait-016.jpg",
+      "order": 1,
+      "layout": {
+        "version": 1,
+        "title": "清冷",
+        "introduction": "Direct gaze, quiet gestures and winter light.",
+        "groups": [
+          {
+            "id": "black-bob-opening",
+            "preset": "HERO",
+            "title": "清冷",
+            "text": "A quiet opening portrait.",
+            "leftBlank": true,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-053",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "black-bob-close-studies",
+            "preset": "DIPTYCH",
+            "title": "Close Studies",
+            "text": "A direct gaze beside a small gesture.",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-015",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-055",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-3",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-056",
+                "cover": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "title": "AK2D",
+      "slug": "ak2d",
+      "year": "2025-2026",
+      "description": "",
+      "coverImage": "/images/portrait/portrait-005.jpg",
+      "order": 2,
+      "layout": {
+        "version": 1,
+        "title": "AK2D",
+        "introduction": "",
+        "groups": [
+          {
+            "id": "portrait-group-1",
+            "preset": "HERO",
+            "title": "",
+            "text": "",
+            "leftBlank": true,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-009",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-2",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-036",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-008",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-3",
+            "preset": "TRIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-041",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-038",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-040",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-4",
+            "preset": "HERO",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-002",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-5",
+            "preset": "FULL",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-039",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-6",
+            "preset": "TRIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-060",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-058",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-059",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-7",
+            "preset": "FULL",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": []
+          }
+        ]
+      }
+    },
+    {
+      "title": "Nature",
+      "slug": "outdoors",
+      "year": "",
+      "description": "",
+      "coverImage": "/images/portrait/portrait-003.jpg",
+      "order": 3,
+      "layout": {
+        "version": 1,
+        "title": "Nature",
+        "introduction": "",
+        "groups": [
+          {
+            "id": "portrait-group-1",
+            "preset": "HERO",
+            "title": "",
+            "text": "",
+            "leftBlank": true,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-012",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-2",
+            "preset": "TRIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-004",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-021",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-003",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-3",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-018",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-001",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-4",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": true,
+            "items": [
+              {
+                "photoId": "portrait-014",
+                "cover": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "title": "Outdoors",
+      "slug": "outdoor",
+      "year": "",
+      "description": "",
+      "coverImage": "/images/portrait/portrait-031.jpg",
+      "order": 4,
+      "layout": {
+        "version": 1,
+        "title": "Outdoors",
+        "introduction": "",
+        "groups": [
+          {
+            "id": "portrait-group-1",
+            "preset": "HERO",
+            "title": "",
+            "text": "",
+            "leftBlank": true,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-023",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-2",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-034",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-027",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-3",
+            "preset": "TRIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-017",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-033",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-025",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-4",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-019",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-031",
+                "cover": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "title": "Indoors",
+      "slug": "indoors",
+      "year": "",
+      "description": "",
+      "coverImage": "/images/home/009.jpg",
+      "order": 5,
+      "layout": {
+        "version": 1,
+        "title": "Indoors",
+        "introduction": "",
+        "groups": [
+          {
+            "id": "portrait-group-1",
+            "preset": "HERO",
+            "title": "",
+            "text": "",
+            "leftBlank": true,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-006",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-2",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-024",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-032",
+                "cover": false
+              }
+            ]
+          },
+          {
+            "id": "portrait-group-3",
+            "preset": "DIPTYCH",
+            "title": "",
+            "text": "",
+            "leftBlank": false,
+            "rightBlank": false,
+            "items": [
+              {
+                "photoId": "portrait-029",
+                "cover": false
+              },
+              {
+                "photoId": "portrait-008",
+                "cover": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "title": "untitled",
+      "slug": "untitled",
+      "year": "",
+      "description": "",
+      "coverImage": "/images/portrait/portrait-022.jpg",
+      "order": 6,
+      "layout": {
+        "version": 1,
+        "title": "untitled",
+        "introduction": "",
+        "groups": [
+          {
+            "id": "portrait-group-1",
+            "preset": "HERO",
+            "title": "",
+            "text": "",
+            "leftBlank": true,
+            "rightBlank": false,
+            "items": []
+          }
+        ]
+      }
+    }
+  ]
+}

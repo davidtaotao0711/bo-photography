@@ -2,12 +2,14 @@
 import photos from '../data/photos.json';
 import series from '../data/series.json';
 import site from '../data/site.json';
+import portraitBooks from '../data/portrait-books.json';
 import imageManifest from '../data/image-manifest.json';
 import { photoCategories as categoryConfig } from '../data/categories.js';
 
 const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
 const serializedSite = JSON.stringify(site).replace(/</g, '\\u003c');
+const serializedPortraitBooks = JSON.stringify(portraitBooks).replace(/</g, '\\u003c');
 const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u003c');
 const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u003c');
 ---
@@ -25,6 +27,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     <script id="initial-photos" type="application/json" set:html={serializedPhotos}></script>
     <script id="initial-series" type="application/json" set:html={serializedSeries}></script>
     <script id="initial-site" type="application/json" set:html={serializedSite}></script>
+    <script id="initial-portrait-books" type="application/json" set:html={serializedPortraitBooks}></script>
     <script id="initial-categories" type="application/json" set:html={serializedCategories}></script>
     <script id="initial-image-manifest" type="application/json" set:html={serializedImageManifest}></script>
 
@@ -49,7 +52,8 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           <select id="view-filter">
             <option value="featured">首页精选</option>
             <option value="all">全部照片</option>
-            {categoryConfig.map((category) => <option value={category.slug}>{category.title}</option>)}
+            {categoryConfig.map((category) => <option value={category.slug}>{category.slug === 'portrait' ? 'Portrait Photos' : category.title}</option>)}
+            <option value="portrait-layout">Portrait Books</option>
             <option value="series">Series</option>
           </select>
         </div>
@@ -72,7 +76,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
             <li>选择照片后使用 S / M / L / W / T / Full</li>
             <li>所有尺寸都会吸附到隐形 12 列网格</li>
             <li>点击照片编辑属性</li>
-            <li>Street / Portrait / Scenes / Nature 与 Series 共用同一套拼贴规则</li>
+            <li>Street / Scenes / Nature 使用拼贴规则；Portrait Books 先管理书架，再进入单书排版</li>
             <li>进入分类页后可一次添加单张或多张照片</li>
             <li>Series 先新建影集，再进入影集上传与选择封面</li>
             <li>删除只移除网站记录，不删除磁盘原图</li>
@@ -142,6 +146,40 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
             <div id="photo-grid" class="photo-grid" aria-label="可自由定位的照片版面"></div>
             <div id="category-sections" class="category-sections" aria-label="Portfolio selected and archive" hidden></div>
           </div>
+        </div>
+        <div id="portrait-layout-workspace" class="portrait-layout-workspace" hidden>
+          <section id="portrait-books-list-view">
+            <header class="portrait-layout-head">
+              <div>
+                <p class="eyebrow">Portrait books</p>
+                <h2>Portrait Books</h2>
+                <p>管理 Portrait 书架：创建、排序、编辑资料并选择统一书封。进入一本书后再编辑内部杂志化排版。</p>
+              </div>
+              <div class="portrait-layout-head__actions">
+                <button class="button" id="new-portrait-book" type="button">+ New Book</button>
+                <button class="button button--primary" id="save-portrait-books" type="button" disabled>Save Portrait Books</button>
+              </div>
+            </header>
+            <div id="portrait-books-grid" class="portrait-books-grid series-editor-grid"></div>
+          </section>
+
+          <section id="portrait-book-detail-view" hidden>
+            <button class="series-back" id="portrait-book-back" type="button">← Portrait Books</button>
+            <header class="portrait-layout-head">
+              <div>
+                <p class="eyebrow">Edit book</p>
+                <h2 id="portrait-book-title"></h2>
+                <p id="portrait-book-meta"></p>
+              </div>
+              <div class="portrait-layout-head__actions">
+                <button class="button" id="edit-portrait-book" type="button">Book details</button>
+                <button class="button" id="add-portrait-group" type="button">+ New spread</button>
+                <button class="button button--primary" id="save-portrait-layout" type="button" disabled>Save Book</button>
+              </div>
+            </header>
+            <p id="portrait-layout-error" class="form-error" role="alert"></p>
+            <div id="portrait-layout-groups" class="portrait-layout-groups"></div>
+          </section>
         </div>
         <div id="series-workspace" class="series-workspace" hidden>
           <section id="series-list-view">
@@ -381,6 +419,90 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       </form>
     </dialog>
 
+    <dialog id="portrait-book-dialog" class="series-dialog">
+      <form id="portrait-book-form" method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Portrait book</p>
+            <h2 id="portrait-book-dialog-title">New Portrait Book</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭" type="submit" formnovalidate>×</button>
+        </div>
+        <p class="series-dialog__intro">书封只影响 Portrait 书架；组图中的 Cover 开关仍只控制书内裁切。</p>
+        <input id="portrait-book-original-slug" type="hidden" />
+        <div class="form-grid">
+          <label>Book title<input id="portrait-book-form-title" maxlength="120" required /></label>
+          <label>Slug<input id="portrait-book-form-slug" maxlength="80" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></label>
+          <label>Year<input id="portrait-book-form-year" maxlength="20" /></label>
+          <div class="portrait-book-cover-field full">
+            <div class="portrait-book-cover-field__head">
+              <label for="portrait-book-cover-search">Book cover</label>
+              <span id="portrait-book-cover-selection" aria-live="polite">Choose a Selected Portrait</span>
+            </div>
+            <input
+              id="portrait-book-cover-search"
+              class="portrait-book-cover-search"
+              type="search"
+              placeholder="Search by number or filename…"
+              autocomplete="off"
+            />
+            <input id="portrait-book-form-cover" type="hidden" />
+            <div
+              id="portrait-book-cover-grid"
+              class="portrait-book-cover-grid"
+              role="listbox"
+              aria-label="Choose a Portrait book cover"
+            ></div>
+          </div>
+          <label class="full">Description<textarea id="portrait-book-form-description" rows="3" maxlength="500"></textarea></label>
+        </div>
+        <p id="portrait-book-form-error" class="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <span></span>
+          <div>
+            <button class="text-button" value="cancel" type="submit" formnovalidate>取消</button>
+            <button class="button button--primary" id="save-portrait-book-details" type="button">Save Book</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="portrait-photo-picker-dialog" class="portrait-photo-picker-dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Portrait book</p>
+            <h2 id="portrait-photo-picker-title">Choose a photograph</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
+        </div>
+        <div class="portrait-photo-picker__meta">
+          <p>Selected Portfolio 与 Archive 中的 Portrait 照片均可用于书内排版。</p>
+          <span id="portrait-photo-picker-count"></span>
+        </div>
+        <input
+          id="portrait-photo-picker-search"
+          class="portrait-photo-picker__search"
+          type="search"
+          placeholder="Search by number or filename…"
+          autocomplete="off"
+        />
+        <div
+          id="portrait-photo-picker-grid"
+          class="portrait-photo-picker__grid"
+          role="listbox"
+          aria-label="Choose a Portrait photograph"
+        ></div>
+        <div class="dialog-actions portrait-photo-picker__actions">
+          <span id="portrait-photo-picker-selection" aria-live="polite">Choose one photograph</span>
+          <div>
+            <button class="text-button" value="cancel" type="submit">取消</button>
+            <button class="button button--primary" id="confirm-portrait-photo" type="button" disabled>Add photograph</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
     <input id="file-fallback" type="file" accept="application/json,.json" hidden />
     <input id="photo-file-input" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple hidden />
     <input id="series-photo-input" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple hidden />
@@ -390,21 +512,31 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       import { buildOrientationRows } from '../utils/photo-layout.js';
       import { collageLayoutPresets, normalizeCollageLayout, sortPhotosByOrder } from '../utils/collage-layout.js';
       import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../utils/portfolio-status.js';
+      import { PORTRAIT_LAYOUT_PRESETS, normalizePortraitBooks, normalizePortraitLayout, resolvePortraitSpread } from '../utils/portrait-layout.js';
 
       const initialNode = document.querySelector('#initial-photos');
       const initialSeriesNode = document.querySelector('#initial-series');
       const initialSiteNode = document.querySelector('#initial-site');
+      const initialPortraitBooksNode = document.querySelector('#initial-portrait-books');
       const initialCategoriesNode = document.querySelector('#initial-categories');
       const initialImageManifestNode = document.querySelector('#initial-image-manifest');
       const initialPhotos = JSON.parse(initialNode?.textContent || '[]');
       const initialSeries = JSON.parse(initialSeriesNode?.textContent || '[]');
       const initialSite = JSON.parse(initialSiteNode?.textContent || '{}');
+      const initialPortraitBooks = normalizePortraitBooks(JSON.parse(initialPortraitBooksNode?.textContent || '{}'));
       const photoCategoryConfig = JSON.parse(initialCategoriesNode?.textContent || '[]');
       const imageManifest = JSON.parse(initialImageManifestNode?.textContent || '{}');
       let photoData = migratePortfolioPhotos(initialPhotos);
       let seriesData = structuredClone(initialSeries);
       let siteData = structuredClone(initialSite);
       let siteDirty = false;
+      let portraitBooksData = structuredClone(initialPortraitBooks);
+      let portraitBooksDirty = false;
+      let portraitBooksFileHandle = null;
+      let activePortraitBookSlug = sessionStorage.getItem('editorPortraitBookSlug') || '';
+      const portraitBooksHistory = [];
+      let portraitPhotoPickerGroupId = '';
+      let portraitPhotoPickerSelectionId = '';
       let fileHandle = null;
       let dirty = false;
       let activeSeriesSlug = sessionStorage.getItem('editorSeriesSlug') || '';
@@ -435,6 +567,13 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       const largeFileWarning = document.querySelector('#large-file-warning');
       const newSeriesButton = document.querySelector('#new-series');
       const seriesWorkspace = document.querySelector('#series-workspace');
+      const portraitLayoutWorkspace = document.querySelector('#portrait-layout-workspace');
+      const portraitLayoutGroups = document.querySelector('#portrait-layout-groups');
+      const portraitBooksListView = document.querySelector('#portrait-books-list-view');
+      const portraitBookDetailView = document.querySelector('#portrait-book-detail-view');
+      const portraitBooksGrid = document.querySelector('#portrait-books-grid');
+      const portraitBookDialog = document.querySelector('#portrait-book-dialog');
+      const portraitPhotoPickerDialog = document.querySelector('#portrait-photo-picker-dialog');
       const seriesListView = document.querySelector('#series-list-view');
       const seriesDetailView = document.querySelector('#series-detail-view');
       const seriesEditorGrid = document.querySelector('#series-editor-grid');
@@ -445,7 +584,9 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       const layoutToolbar = document.querySelector('#layout-toolbar');
 
       const savedView = sessionStorage.getItem('editorView');
-      if (['featured', 'all', ...photoCategories, 'series'].includes(savedView)) viewFilter.value = savedView;
+      const requestedView = new URLSearchParams(window.location.search).get('view');
+      const initialView = requestedView || savedView;
+      if (['featured', 'all', ...photoCategories, 'portrait-layout', 'series'].includes(initialView)) viewFilter.value = initialView;
 
       const $ = (selector) => document.querySelector(selector);
       const escapeHtml = (value = '') => String(value)
@@ -537,6 +678,22 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           }),
           status,
         );
+      }
+
+      function snapshotPortraitBooks() {
+        portraitBooksHistory.push(structuredClone(portraitBooksData));
+        if (portraitBooksHistory.length > 30) portraitBooksHistory.shift();
+        if (viewFilter.value === 'portrait-layout') $('#undo').disabled = false;
+      }
+
+      function setPortraitBooksDirty(value, message) {
+        portraitBooksDirty = value;
+        $('#save-portrait-layout').disabled = !value;
+        $('#save-portrait-books').disabled = !value;
+        if (viewFilter.value !== 'portrait-layout') return;
+        const status = $('#save-status');
+        status.dataset.state = value ? 'dirty' : 'clean';
+        status.textContent = message || (value ? 'Portrait Books 有未保存修改' : 'Portrait Books 已保存');
       }
 
       function portfolioUsesRows(category = viewFilter.value) {
@@ -704,6 +861,21 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         const width = Number(entry?.width);
         const height = Number(entry?.height);
         return width > 0 && height > 0 ? { width, height } : null;
+      }
+
+      function editorThumbnailMarkup(photo, alt = '') {
+        const entry = imageManifest[photo?.image];
+        const variants = Array.isArray(entry?.variants)
+          ? [...entry.variants].filter((variant) => Number(variant.width) > 0 && variant.src).sort((a, b) => Number(a.width) - Number(b.width))
+          : [];
+        const dimensions = getEditorImageDimensions(photo);
+        const dimensionAttributes = dimensions ? `width="${dimensions.width}" height="${dimensions.height}"` : '';
+        const srcset = variants.map((variant) => `${escapeHtml(variant.src)} ${Number(variant.width)}w`).join(', ');
+        const fallback = variants[0]?.src || photo.image;
+        return `<picture>
+          ${srcset ? `<source type="image/webp" srcset="${srcset}" sizes="(max-width: 420px) 44vw, (max-width: 620px) 30vw, 9rem" />` : ''}
+          <img src="${escapeHtml(fallback)}" alt="${escapeHtml(alt)}" ${dimensionAttributes} loading="lazy" decoding="async" />
+        </picture>`;
       }
 
       function collageEditorCard(photo, index, cover = '', portfolioStatus = '') {
@@ -1008,18 +1180,520 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         categorySections.querySelectorAll('.portfolio-photo-grid').forEach((container) => scheduleEditorMasonry(container));
       }
 
+      const portraitPresetCapacity = {
+        HERO: 1,
+        DIPTYCH: 2,
+        TRIPTYCH: 3,
+        FEATURE: 3,
+        FULL: 1,
+        TEXT: 0,
+        SPACER: 0,
+      };
+
+      function portraitSelectedPhotos() {
+        return sortPortfolioPhotos(
+          photoData.filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'selected'),
+          'selected',
+        );
+      }
+
+      function portraitBookPhotos() {
+        const portraits = photoData.filter((photo) => photo.category === 'portrait');
+        const selected = sortPortfolioPhotos(
+          portraits.filter((photo) => getPortfolioStatus(photo, 'portrait') === 'selected'),
+          'selected',
+        );
+        const archive = sortPortfolioPhotos(
+          portraits.filter((photo) => getPortfolioStatus(photo, 'portrait') === 'archive'),
+          'archive',
+        );
+        return [...selected, ...archive];
+      }
+
+      function orderedPortraitBooks() {
+        return [...portraitBooksData.books].sort((a, b) => Number(a.order) - Number(b.order));
+      }
+
+      function activePortraitBook() {
+        return portraitBooksData.books.find((book) => book.slug === activePortraitBookSlug);
+      }
+
+      function portraitGroupById(groupId) {
+        return activePortraitBook()?.layout.groups.find((group) => group.id === groupId);
+      }
+
+      function nextPortraitGroupId() {
+        const groups = activePortraitBook()?.layout.groups || [];
+        let index = groups.length + 1;
+        let id = `portrait-group-${index}`;
+        const ids = new Set(groups.map((group) => group.id));
+        while (ids.has(id)) id = `portrait-group-${++index}`;
+        return id;
+      }
+
+      function portraitEditorPhotoMarkup(item) {
+        const photo = item.photo;
+        if (!photo) return '';
+        return `
+          <article class="portrait-layout-photo" data-portrait-photo-id="${escapeHtml(photo.id)}">
+            ${editorThumbnailMarkup(photo, photo.alt || '')}
+            <div>
+              <span><strong>${escapeHtml(photo.title || photo.id)}</strong><small>${escapeHtml(photo.id)}</small></span>
+              <label><input type="checkbox" data-portrait-cover ${item.cover ? 'checked' : ''} /> Cover</label>
+              <button type="button" data-portrait-action="remove-photo">Remove</button>
+            </div>
+          </article>`;
+      }
+
+      function portraitEditorPageMarkup(page, group) {
+        if (page.blank) {
+          return `<article class="portrait-layout-page portrait-layout-page--${page.side} is-blank"><span>Blank ${page.side} page</span></article>`;
+        }
+        if (page.kind.startsWith('text')) {
+          const showTitle = page.kind !== 'text-body';
+          const showText = page.kind !== 'text-title';
+          return `
+            <article class="portrait-layout-page portrait-layout-page--${page.side}">
+              <div class="portrait-layout-page__text">
+                ${showTitle && group.title ? `<strong>${escapeHtml(group.title)}</strong>` : ''}
+                ${showText && group.text ? `<p>${escapeHtml(group.text)}</p>` : ''}
+              </div>
+            </article>`;
+        }
+        return `
+          <article class="portrait-layout-page portrait-layout-page--${page.side}">
+            ${page.items.length ? `<div class="portrait-layout-page__media has-${page.items.length}">${page.items.map(portraitEditorPhotoMarkup).join('')}</div>` : '<span class="portrait-layout-page__paper">Open page</span>'}
+          </article>`;
+      }
+
+      function renderPortraitLayout(book) {
+        if (!book) return;
+        const portraits = portraitBookPhotos();
+        const photosById = new Map(portraits.map((photo) => [photo.id, photo]));
+        const assignedIds = new Set(book.layout.groups.flatMap((group) => group.items.map((item) => item.photoId)));
+        const available = portraits.filter((photo) => !assignedIds.has(photo.id));
+
+        $('#view-title').textContent = `${book.title} · Edit Book`;
+        $('#visible-count').textContent = String(book.layout.groups.length);
+        $('#featured-count').textContent = String(assignedIds.size);
+        $('#total-count').textContent = String(portraits.length);
+        $('#visible-label').textContent = '跨页';
+        $('#featured-label').textContent = '已排版照片';
+        $('#total-label').textContent = 'Selected + Archive';
+        $('#portrait-book-title').textContent = book.title;
+        $('#portrait-book-meta').textContent = [book.year, `${book.layout.groups.length} spreads`, book.slug].filter(Boolean).join(' · ');
+
+        portraitLayoutGroups.innerHTML = book.layout.groups.length
+          ? book.layout.groups.map((group, index) => {
+              const capacity = portraitPresetCapacity[group.preset] ?? 1;
+              const acceptsPhotos = capacity > 0;
+              const hydratedItems = group.items
+                .map((item) => ({ ...item, photo: photosById.get(item.photoId) }))
+                .filter((item) => item.photo);
+              const pages = resolvePortraitSpread({ ...group, items: hydratedItems }, index);
+              return `
+                <article class="portrait-layout-group" data-portrait-group-id="${escapeHtml(group.id)}">
+                  <header class="portrait-layout-group__head">
+                    <button class="portrait-layout-group__drag" type="button" data-portrait-drag-handle aria-label="Drag ${escapeHtml(group.title || group.id)} spread">⋮⋮</button>
+                    <div>
+                      <span>Spread ${String(index + 1).padStart(2, '0')}</span>
+                      <strong>${escapeHtml(group.id)}</strong>
+                    </div>
+                    <label>Preset
+                      <select data-portrait-field="preset">
+                        ${PORTRAIT_LAYOUT_PRESETS.map((preset) => `<option value="${preset}" ${preset === group.preset ? 'selected' : ''}>${preset}</option>`).join('')}
+                      </select>
+                    </label>
+                    <div class="portrait-layout-group__order">
+                      <button type="button" data-portrait-action="up" ${index === 0 ? 'disabled' : ''} aria-label="Move spread up">↑</button>
+                      <button type="button" data-portrait-action="down" ${index === book.layout.groups.length - 1 ? 'disabled' : ''} aria-label="Move spread down">↓</button>
+                      <button class="is-danger" type="button" data-portrait-action="delete">Delete</button>
+                    </div>
+                  </header>
+                  <div class="portrait-layout-group__fields">
+                    <label>Spread title<input data-portrait-field="title" value="${escapeHtml(group.title)}" maxlength="120" /></label>
+                    <label>Short text<textarea data-portrait-field="text" rows="2" maxlength="500">${escapeHtml(group.text)}</textarea></label>
+                  </div>
+                  <div class="portrait-layout-page-controls">
+                    <label><input type="checkbox" data-portrait-field="leftBlank" ${group.leftBlank ? 'checked' : ''} /> Left page · Blank</label>
+                    <label><input type="checkbox" data-portrait-field="rightBlank" ${group.rightBlank ? 'checked' : ''} /> Right page · Blank</label>
+                  </div>
+                  <div class="portrait-layout-spread-preview portrait-layout-spread-preview--${group.preset.toLowerCase()}">
+                    ${portraitEditorPageMarkup(pages.left, group)}
+                    <div class="portrait-layout-spine" aria-hidden="true"></div>
+                    ${portraitEditorPageMarkup(pages.right, group)}
+                    ${pages.spanItems.length ? `<div class="portrait-layout-full-spread">${pages.spanItems.map(portraitEditorPhotoMarkup).join('')}</div>` : ''}
+                  </div>
+                  ${acceptsPhotos ? `
+                    <div class="portrait-layout-group__add">
+                      <p class="portrait-layout-add-status">${group.items.length >= capacity ? 'This spread has reached its preset capacity.' : `${available.length} Selected + Archive photographs available.`}</p>
+                      <button class="button" type="button" data-portrait-action="open-photo-picker" ${group.items.length >= capacity || !available.length ? 'disabled' : ''}>Choose photo · ${group.items.length}/${capacity}</button>
+                    </div>` : ''}
+                </article>`;
+            }).join('')
+          : '<div class="portrait-layout-empty"><p>No portrait spreads yet.</p><span>Create a spread to begin the book sequence.</span></div>';
+      }
+
+      function renderPortraitBooks() {
+        const books = orderedPortraitBooks();
+        let activeBook = activePortraitBook();
+        if (activePortraitBookSlug && !activeBook) {
+          activePortraitBookSlug = '';
+          sessionStorage.removeItem('editorPortraitBookSlug');
+        }
+        activeBook = activePortraitBook();
+        portraitBooksListView.hidden = Boolean(activeBook);
+        portraitBookDetailView.hidden = !activeBook;
+        $('#open-file').textContent = '打开 portrait-books.json';
+        $('#undo').disabled = portraitBooksHistory.length === 0;
+        setPortraitBooksDirty(portraitBooksDirty);
+
+        if (activeBook) {
+          renderPortraitLayout(activeBook);
+          return;
+        }
+
+        const assigned = new Set(books.flatMap((book) => book.layout.groups.flatMap((group) => group.items.map((item) => item.photoId))));
+        $('#view-title').textContent = `Portrait Books · ${books.length} books`;
+        $('#visible-count').textContent = String(books.length);
+        $('#featured-count').textContent = String(books.filter((book) => book.coverImage).length);
+        $('#total-count').textContent = String(assigned.size);
+        $('#visible-label').textContent = '书籍数量';
+        $('#featured-label').textContent = '已有书封';
+        $('#total-label').textContent = '已引用照片';
+        portraitBooksGrid.innerHTML = books.length ? books.map((book, index) => `
+          <article class="series-editor-card" data-portrait-book-slug="${escapeHtml(book.slug)}">
+            <button class="series-editor-card__open" type="button" data-portrait-book-action="open" aria-label="Edit ${escapeHtml(book.title)}">
+              <span class="series-editor-card__cover ${book.coverImage ? '' : 'is-empty'}">
+                ${book.coverImage ? `<img src="${escapeHtml(book.coverImage)}" alt="" loading="lazy" />` : '<span>No book cover</span>'}
+              </span>
+              <span class="series-editor-card__body">
+                <span><strong>${escapeHtml(book.title)}</strong><small>${escapeHtml(book.year || 'Year not set')}</small></span>
+                <span>${book.layout.groups.length} spreads</span>
+              </span>
+            </button>
+            <div class="series-editor-card__order" aria-label="Portrait book management">
+              <button type="button" data-portrait-book-action="edit">Edit</button>
+              <button class="is-danger" type="button" data-portrait-book-action="delete">Delete</button>
+              <button type="button" data-portrait-book-action="up" ${index === 0 ? 'disabled' : ''} aria-label="Move book up">↑</button>
+              <button type="button" data-portrait-book-action="down" ${index === books.length - 1 ? 'disabled' : ''} aria-label="Move book down">↓</button>
+            </div>
+          </article>`).join('') : '<div class="portrait-layout-empty"><p>No portrait books yet.</p><span>Create a book to begin the shelf.</span></div>';
+      }
+
+      function updatePortraitGroup(groupId, update, message = 'Portrait Book 有未保存修改') {
+        const book = activePortraitBook();
+        const group = portraitGroupById(groupId);
+        if (!book || !group) return;
+        snapshotPortraitBooks();
+        update(group);
+        book.layout = normalizePortraitLayout(book.layout);
+        setPortraitBooksDirty(true, message);
+        renderPortraitLayout(book);
+      }
+
+      function movePortraitGroup(groupId, direction) {
+        const book = activePortraitBook();
+        if (!book) return;
+        const index = book.layout.groups.findIndex((group) => group.id === groupId);
+        const target = index + direction;
+        if (index < 0 || target < 0 || target >= book.layout.groups.length) return;
+        snapshotPortraitBooks();
+        [book.layout.groups[index], book.layout.groups[target]] = [book.layout.groups[target], book.layout.groups[index]];
+        setPortraitBooksDirty(true, '跨页顺序已更新');
+        renderPortraitLayout(book);
+      }
+
+      function reorderPortraitGroup(draggedId, targetId, placeAfter) {
+        const book = activePortraitBook();
+        if (!book) return;
+        if (!draggedId || !targetId || draggedId === targetId) return;
+        const groups = [...book.layout.groups];
+        const sourceIndex = groups.findIndex((group) => group.id === draggedId);
+        const targetIndex = groups.findIndex((group) => group.id === targetId);
+        if (sourceIndex < 0 || targetIndex < 0) return;
+        snapshotPortraitBooks();
+        const [source] = groups.splice(sourceIndex, 1);
+        const adjustedTarget = groups.findIndex((group) => group.id === targetId);
+        groups.splice(adjustedTarget + (placeAfter ? 1 : 0), 0, source);
+        book.layout.groups = groups;
+        setPortraitBooksDirty(true, '跨页顺序已更新');
+        renderPortraitLayout(book);
+      }
+
+      function addPortraitGroup() {
+        const book = activePortraitBook();
+        if (!book) return;
+        snapshotPortraitBooks();
+        const isOpeningSpread = book.layout.groups.length === 0;
+        book.layout.groups.push({
+          id: nextPortraitGroupId(),
+          preset: isOpeningSpread ? 'HERO' : 'DIPTYCH',
+          title: '',
+          text: '',
+          leftBlank: isOpeningSpread,
+          rightBlank: false,
+          items: [],
+        });
+        setPortraitBooksDirty(true, '已创建新跨页');
+        renderPortraitLayout(book);
+      }
+
+      function portraitBookCoverLabel(photo) {
+        const filename = (photo.image.split('/').pop() || photo.id).replace(/\.[^.]+$/, '');
+        return `${photo.title || photo.id} · ${filename}`;
+      }
+
+      function portraitPhotoPickerCandidates() {
+        const book = activePortraitBook();
+        if (!book) return [];
+        const assignedIds = new Set(book.layout.groups.flatMap((group) => group.items.map((item) => item.photoId)));
+        return portraitBookPhotos().filter((photo) => !assignedIds.has(photo.id));
+      }
+
+      function updatePortraitPhotoPickerSelection(photoId = '') {
+        const selectedPhoto = portraitPhotoPickerCandidates().find((photo) => photo.id === photoId);
+        portraitPhotoPickerSelectionId = selectedPhoto?.id || '';
+        $('#portrait-photo-picker-selection').textContent = selectedPhoto
+          ? portraitBookCoverLabel(selectedPhoto)
+          : 'Choose one photograph';
+        $('#confirm-portrait-photo').disabled = !selectedPhoto;
+        $('#portrait-photo-picker-grid').querySelectorAll('[data-portrait-photo-picker-option]').forEach((button) => {
+          const isSelected = button.dataset.portraitPhotoPickerOption === portraitPhotoPickerSelectionId;
+          button.classList.toggle('is-selected', isSelected);
+          button.setAttribute('aria-selected', String(isSelected));
+        });
+      }
+
+      function renderPortraitPhotoPicker(query = '') {
+        const normalizedQuery = query.trim().toLowerCase();
+        const candidates = portraitPhotoPickerCandidates();
+        const filteredPhotos = candidates.filter((photo) => {
+          if (!normalizedQuery) return true;
+          return [photo.title, photo.id, photo.image, getPortfolioStatus(photo, 'portrait')]
+            .filter(Boolean)
+            .some((value) => String(value).toLowerCase().includes(normalizedQuery));
+        });
+        $('#portrait-photo-picker-count').textContent = normalizedQuery
+          ? `${filteredPhotos.length} of ${candidates.length} photographs`
+          : `${candidates.length} photographs available`;
+        $('#portrait-photo-picker-grid').innerHTML = filteredPhotos.length
+          ? filteredPhotos.map((photo) => {
+              const label = portraitBookCoverLabel(photo);
+              const status = getPortfolioStatus(photo, 'portrait');
+              const isSelected = photo.id === portraitPhotoPickerSelectionId;
+              return `
+                <button
+                  class="portrait-book-cover-option portrait-photo-picker__option ${isSelected ? 'is-selected' : ''}"
+                  type="button"
+                  role="option"
+                  aria-label="Select ${escapeHtml(label)} from ${escapeHtml(status)}"
+                  aria-selected="${isSelected}"
+                  data-portrait-photo-picker-option="${escapeHtml(photo.id)}"
+                >
+                  <span class="portrait-book-cover-option__image">
+                    ${editorThumbnailMarkup(photo)}
+                    <span class="portrait-book-cover-option__check" aria-hidden="true">✓</span>
+                  </span>
+                  <small><span>${escapeHtml(label)}</span><em>${escapeHtml(status)}</em></small>
+                </button>`;
+            }).join('')
+          : '<p class="portrait-book-cover-empty">No matching Portrait photographs.</p>';
+        updatePortraitPhotoPickerSelection(portraitPhotoPickerSelectionId);
+      }
+
+      function openPortraitPhotoPicker(groupId) {
+        const group = portraitGroupById(groupId);
+        if (!group) return;
+        const capacity = portraitPresetCapacity[group.preset] ?? 0;
+        if (group.items.length >= capacity) return;
+        portraitPhotoPickerGroupId = groupId;
+        portraitPhotoPickerSelectionId = '';
+        $('#portrait-photo-picker-title').textContent = `Add to spread · ${group.title || group.id}`;
+        $('#portrait-photo-picker-search').value = '';
+        renderPortraitPhotoPicker();
+        portraitPhotoPickerDialog.showModal();
+      }
+
+      function addPortraitPhotoFromPicker() {
+        const groupId = portraitPhotoPickerGroupId;
+        const photoId = portraitPhotoPickerSelectionId;
+        if (!groupId || !photoId) return;
+        updatePortraitGroup(groupId, (group) => {
+          const capacity = portraitPresetCapacity[group.preset] ?? 0;
+          if (group.items.length < capacity) group.items.push({ photoId, cover: false });
+        }, '照片已加入 Portrait 跨页');
+        portraitPhotoPickerDialog.close('added');
+      }
+
+      function updatePortraitBookCoverSelection(selectedValue = '') {
+        const photos = portraitSelectedPhotos();
+        const selectedPhoto = photos.find((photo) => photo.image === selectedValue);
+        const value = selectedPhoto?.image || '';
+        $('#portrait-book-form-cover').value = value;
+        $('#portrait-book-cover-selection').textContent = selectedPhoto
+          ? portraitBookCoverLabel(selectedPhoto)
+          : 'Choose a Selected Portrait';
+        $('#portrait-book-cover-grid').querySelectorAll('[data-portrait-book-cover]').forEach((button) => {
+          const isSelected = button.dataset.portraitBookCover === value;
+          button.classList.toggle('is-selected', isSelected);
+          button.setAttribute('aria-selected', String(isSelected));
+        });
+      }
+
+      function renderPortraitBookCoverPicker(selectedValue = '', query = '') {
+        const normalizedQuery = query.trim().toLowerCase();
+        const photos = portraitSelectedPhotos();
+        const filteredPhotos = photos.filter((photo) => {
+          if (!normalizedQuery) return true;
+          const filename = (photo.image.split('/').pop() || '').replace(/\.[^.]+$/, '');
+          return [photo.title, photo.id, filename, photo.image]
+            .filter(Boolean)
+            .some((value) => String(value).toLowerCase().includes(normalizedQuery));
+        });
+        $('#portrait-book-cover-grid').innerHTML = filteredPhotos.length
+          ? filteredPhotos.map((photo) => {
+              const label = portraitBookCoverLabel(photo);
+              const isSelected = photo.image === selectedValue;
+              return `
+                <button
+                  class="portrait-book-cover-option ${isSelected ? 'is-selected' : ''}"
+                  type="button"
+                  role="option"
+                  aria-label="Use ${escapeHtml(label)} as book cover"
+                  aria-selected="${isSelected}"
+                  data-portrait-book-cover="${escapeHtml(photo.image)}"
+                >
+                  <span class="portrait-book-cover-option__image">
+                    ${editorThumbnailMarkup(photo)}
+                    <span class="portrait-book-cover-option__check" aria-hidden="true">✓</span>
+                  </span>
+                  <small>${escapeHtml(label)}</small>
+                </button>`;
+            }).join('')
+          : '<p class="portrait-book-cover-empty">No matching Portrait photographs.</p>';
+        updatePortraitBookCoverSelection(selectedValue);
+      }
+
+      function openPortraitBookDialog(slug = '') {
+        const book = portraitBooksData.books.find((item) => item.slug === slug);
+        $('#portrait-book-dialog-title').textContent = book ? 'Edit Portrait Book' : 'New Portrait Book';
+        $('#portrait-book-original-slug').value = book?.slug || '';
+        $('#portrait-book-form-title').value = book?.title || '';
+        $('#portrait-book-form-slug').value = book?.slug || '';
+        $('#portrait-book-form-slug').readOnly = Boolean(book);
+        $('#portrait-book-form-year').value = book?.year || '';
+        $('#portrait-book-form-description').value = book?.description || '';
+        $('#portrait-book-cover-search').value = '';
+        renderPortraitBookCoverPicker(book?.coverImage || '');
+        $('#portrait-book-form-error').textContent = '';
+        portraitBookDialog.showModal();
+      }
+
+      function savePortraitBookDetails() {
+        const originalSlug = $('#portrait-book-original-slug').value;
+        const title = $('#portrait-book-form-title').value.trim();
+        const slug = $('#portrait-book-form-slug').value.trim().toLowerCase();
+        const year = $('#portrait-book-form-year').value.trim();
+        const description = $('#portrait-book-form-description').value.trim();
+        const coverImage = $('#portrait-book-form-cover').value;
+        const error = $('#portrait-book-form-error');
+        error.textContent = '';
+        if (!title) { error.textContent = 'Book title is required.'; return; }
+        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug === 'archive') { error.textContent = 'Slug must use lowercase letters, numbers and hyphens, and cannot be archive.'; return; }
+        if (!coverImage) { error.textContent = 'Choose a book cover.'; return; }
+        if (!originalSlug && portraitBooksData.books.some((book) => book.slug === slug)) { error.textContent = 'This slug already exists.'; return; }
+
+        snapshotPortraitBooks();
+        if (originalSlug) {
+          const book = portraitBooksData.books.find((item) => item.slug === originalSlug);
+          if (!book) return;
+          const previousTitle = book.title;
+          Object.assign(book, { title, year, description, coverImage });
+          if (!book.layout.title || book.layout.title === previousTitle) book.layout.title = title;
+        } else {
+          portraitBooksData.books.push({
+            title,
+            slug,
+            year,
+            description,
+            coverImage,
+            order: portraitBooksData.books.length + 1,
+            layout: normalizePortraitLayout({
+              title,
+              introduction: description,
+              groups: [{
+                id: 'portrait-group-1',
+                preset: 'HERO',
+                title: '',
+                text: '',
+                leftBlank: true,
+                rightBlank: false,
+                items: [],
+              }],
+            }),
+          });
+        }
+        portraitBooksData = normalizePortraitBooks(portraitBooksData);
+        setPortraitBooksDirty(true, originalSlug ? '书籍资料与书封已更新' : '已创建 Portrait Book');
+        portraitBookDialog.close('saved');
+        renderPortraitBooks();
+      }
+
+      function movePortraitBook(slug, direction) {
+        const books = orderedPortraitBooks();
+        const index = books.findIndex((book) => book.slug === slug);
+        const target = index + direction;
+        if (index < 0 || target < 0 || target >= books.length) return;
+        snapshotPortraitBooks();
+        [books[index], books[target]] = [books[target], books[index]];
+        books.forEach((book, orderIndex) => { book.order = orderIndex + 1; });
+        portraitBooksData.books = books;
+        setPortraitBooksDirty(true, 'Portrait Books 顺序已更新');
+        renderPortraitBooks();
+      }
+
+      function deletePortraitBook(slug) {
+        const book = portraitBooksData.books.find((item) => item.slug === slug);
+        if (!book || !window.confirm(`删除 Portrait Book “${book.title}”？照片文件和 photos.json 不会被删除。`)) return;
+        snapshotPortraitBooks();
+        portraitBooksData.books = portraitBooksData.books.filter((item) => item.slug !== slug);
+        portraitBooksData = normalizePortraitBooks(portraitBooksData);
+        if (activePortraitBookSlug === slug) {
+          activePortraitBookSlug = '';
+          sessionStorage.removeItem('editorPortraitBookSlug');
+        }
+        setPortraitBooksDirty(true, 'Portrait Book 已移除，照片数据未更改');
+        renderPortraitBooks();
+      }
+
       function render() {
         const isSeriesView = viewFilter.value === 'series';
+        const isPortraitLayoutView = viewFilter.value === 'portrait-layout';
         sessionStorage.setItem('editorView', viewFilter.value);
+        const editorUrl = new URL(window.location.href);
+        if (editorUrl.searchParams.get('view') !== viewFilter.value) {
+          editorUrl.searchParams.set('view', viewFilter.value);
+          window.history.replaceState(null, '', `${editorUrl.pathname}${editorUrl.search}${editorUrl.hash}`);
+        }
         seriesWorkspace.hidden = !isSeriesView;
-        canvasViewport.hidden = isSeriesView;
+        portraitLayoutWorkspace.hidden = !isPortraitLayoutView;
+        canvasViewport.hidden = isSeriesView || isPortraitLayoutView;
         categorySections.hidden = !isPortfolioView();
         $('#empty-state').hidden = true;
-        $('#photo-search-field').hidden = isSeriesView;
+        $('#photo-search-field').hidden = isSeriesView || isPortraitLayoutView;
         addPhotosButton.hidden = true;
         newSeriesButton.hidden = !isSeriesView || Boolean(activeSeriesSlug);
         layoutToolbar.hidden = true;
         $('#canvas-scale').textContent = '';
+        if (isPortraitLayoutView) {
+          grid.hidden = true;
+          renderPortraitBooks();
+          return;
+        }
+        $('#undo').disabled = history.length === 0;
+        $('#open-file').textContent = '打开 photos.json';
+        setDirty(dirty);
         if (isSeriesView) {
           grid.hidden = true;
           renderSeries();
@@ -1345,6 +2019,9 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         if (!window.confirm(`确定从网站中删除“${photo.title || photo.id}”吗？\n\n这会移除 photos.json 中的记录，但不会删除磁盘里的原图文件。`)) return;
         snapshot();
         photoData = photoData.filter((item) => item.id !== id);
+        if (photo.category === 'portrait') {
+          portraitBooksData = pruneInvalidPortraitBookItems(portraitBooksData).books;
+        }
         if (inspector.open) inspector.close();
         setDirty(true, '照片已移除，保存后生效');
         render();
@@ -1476,26 +2153,36 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       async function importPhotos(files) {
         const category = viewFilter.value;
         if (!photoCategories.includes(category) || !files.length) return;
+        if (dirty) {
+          window.alert('请先保存当前照片修改，再上传新照片。');
+          return;
+        }
 
         addPhotosButton.disabled = true;
         addPhotosLabel.textContent = 'Optimizing image…';
         try {
-          const orientations = await Promise.all(files.map(getImageOrientation));
+          const metadata = await Promise.all(files.map(getImageDetails));
           const formData = new FormData();
           formData.append('category', category);
+          formData.append('metadata', JSON.stringify(metadata));
           files.forEach((file) => formData.append('photos', file, file.name));
 
           const response = await fetch('/__editor/import-photos', { method: 'POST', body: formData });
           const result = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(result.error || '本地导入接口没有响应，请通过 npm run editor 打开编辑器。');
 
-          const categoryCount = photoData.filter((photo) => photo.category === category).length;
           const archiveCount = portfolioItems('archive', category).length;
+          const nextPhotoNumber = photoData
+            .filter((photo) => photo.category === category)
+            .reduce((highest, photo) => {
+              const match = String(photo.title || '').match(/^No\.\s*(\d+)$/i);
+              return Math.max(highest, match ? Number(match[1]) : 0);
+            }, 0) + 1;
           const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
           const year = String(new Date().getFullYear());
-          const additions = result.files.map((savedFile, index) => ({
+          const fallbackAdditions = result.files.map((savedFile, index) => ({
             id: savedFile.id,
-            title: `No. ${String(categoryCount + index + 1).padStart(2, '0')}`,
+            title: `No. ${String(nextPhotoNumber + index).padStart(2, '0')}`,
             category,
             series: '',
             location: '',
@@ -1505,20 +2192,25 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
             portfolioStatus: 'archive',
             selectedOrder: null,
             archiveOrder: archiveCount + index + 1,
-            orientation: orientations[savedFile.index ?? index],
+            aspect: metadata[savedFile.index ?? index]?.aspect,
+            orientation: metadata[savedFile.index ?? index]?.orientation,
             alt: `${categoryLabel} photograph by Bo David`,
           }));
+          const additions = Array.isArray(result.photos) ? result.photos : fallbackAdditions;
 
           const duplicate = additions.find((photo) => photoData.some((existing) => existing.id === photo.id));
           if (duplicate) throw new Error(`照片 ID ${duplicate.id} 已存在，请检查对应图片目录。`);
           snapshot();
-          photoData.push(...additions);
+          if (Array.isArray(result.photoData)) photoData = migratePortfolioPhotos(result.photoData);
+          else photoData.push(...additions);
           searchInput.value = '';
-          setDirty(true, `已添加 ${additions.length} 张照片，请保存 photos.json`);
+          setDirty(!Array.isArray(result.photoData), Array.isArray(result.photoData)
+            ? `已添加 ${additions.length} 张照片到 ${categoryLabel} Archive`
+            : `已添加 ${additions.length} 张照片，请保存 photos.json`);
           render();
           showToast(result.optimization?.failed?.length
             ? `${additions.length} 张照片已添加，部分图片优化失败，已保留原图`
-            : `${additions.length} 张照片已添加 · Image ready`);
+            : `${additions.length} 张照片已添加到 Archive · Image ready`);
         } catch (error) {
           window.alert(`添加照片失败：${error.message}`);
         } finally {
@@ -1887,6 +2579,135 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         } catch (error) {
           window.alert(`导出失败：${error.message}`);
         }
+      }
+
+      function pruneInvalidPortraitBookItems(value) {
+        const normalized = normalizePortraitBooks(value);
+        const validPhotoIds = new Set(portraitBookPhotos().map((photo) => photo.id));
+        let removed = 0;
+        normalized.books.forEach((book) => {
+          book.layout.groups.forEach((group) => {
+            const before = group.items.length;
+            group.items = group.items.filter((item) => validPhotoIds.has(item.photoId));
+            removed += before - group.items.length;
+          });
+        });
+        return { books: normalized, removed };
+      }
+
+      function validatePortraitBooks(value) {
+        const { books: normalized } = pruneInvalidPortraitBookItems(value);
+        const selected = portraitSelectedPhotos();
+        const bookPhotoIds = new Set(portraitBookPhotos().map((photo) => photo.id));
+        const selectedImages = new Set(selected.map((photo) => photo.image));
+        const slugs = new Set();
+        normalized.books.forEach((book) => {
+          if (!book.title) throw new Error('每本 Portrait Book 都需要 title。');
+          if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(book.slug) || book.slug === 'archive') throw new Error(`${book.title} 的 slug 无效。`);
+          if (slugs.has(book.slug)) throw new Error(`Portrait Book slug 重复：${book.slug}`);
+          if (!selectedImages.has(book.coverImage)) throw new Error(`${book.title} 的书封必须来自 Selected Portrait。`);
+          slugs.add(book.slug);
+          const used = new Set();
+          book.layout.groups.forEach((group, index) => {
+            if (!PORTRAIT_LAYOUT_PRESETS.includes(group.preset)) throw new Error(`${book.title} 的 Spread ${index + 1} preset 无效。`);
+            const capacity = portraitPresetCapacity[group.preset] ?? 0;
+            if (group.items.length > capacity) throw new Error(`${book.title} / ${group.title || group.id} 最多可放 ${capacity} 张照片。`);
+            group.items.forEach((item) => {
+              if (!bookPhotoIds.has(item.photoId)) throw new Error(`${item.photoId} 不是 Selected 或 Archive Portrait。`);
+              if (used.has(item.photoId)) throw new Error(`${item.photoId} 不能在同一本书中重复出现。`);
+              used.add(item.photoId);
+            });
+          });
+        });
+        return normalized;
+      }
+
+      function serializePortraitBooks() {
+        portraitBooksData = validatePortraitBooks(portraitBooksData);
+        return `${JSON.stringify(portraitBooksData, null, 2)}\n`;
+      }
+
+      function downloadPortraitBooks() {
+        try {
+          const url = URL.createObjectURL(new Blob([serializePortraitBooks()], { type: 'application/json' }));
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'portrait-books.json';
+          link.click();
+          URL.revokeObjectURL(url);
+          showToast('portrait-books.json 副本已下载');
+        } catch (error) {
+          window.alert(`导出失败：${error.message}`);
+        }
+      }
+
+      async function loadPortraitBooksFile(file, handle = null) {
+        try {
+          const parsed = validatePortraitBooks(JSON.parse(await file.text()));
+          if (portraitBooksDirty && !window.confirm('打开新文件会放弃当前 Portrait Books 修改，继续吗？')) return;
+          portraitBooksData = parsed;
+          portraitBooksFileHandle = handle;
+          portraitBooksHistory.length = 0;
+          activePortraitBookSlug = '';
+          sessionStorage.removeItem('editorPortraitBookSlug');
+          setPortraitBooksDirty(false, `已打开 ${file.name}`);
+          renderPortraitBooks();
+          showToast(`已载入 ${parsed.books.length} 本 Portrait Books`);
+        } catch (error) {
+          window.alert(`无法打开 Portrait Books：${error.message}`);
+        }
+      }
+
+      async function savePortraitBooks() {
+        try {
+          portraitBooksData = validatePortraitBooks(portraitBooksData);
+          const response = await fetch('/__editor/portrait-books/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ books: portraitBooksData }),
+          });
+          if (response.ok) {
+            const result = await response.json();
+            portraitBooksData = validatePortraitBooks(result.books || portraitBooksData);
+            portraitBooksHistory.length = 0;
+            setPortraitBooksDirty(false);
+            $('#undo').disabled = true;
+            showToast(`已保存 ${portraitBooksData.books.length} 本书到 portrait-books.json`);
+            renderPortraitBooks();
+            return;
+          }
+          if (response.status !== 404) {
+            const result = await response.json().catch(() => ({}));
+            throw new Error(result.error || 'Portrait Books 保存接口失败。');
+          }
+
+          if (!portraitBooksFileHandle && 'showSaveFilePicker' in window) {
+            portraitBooksFileHandle = await window.showSaveFilePicker({
+              suggestedName: 'portrait-books.json',
+              types: [{ description: 'JSON 文件', accept: { 'application/json': ['.json'] } }],
+            });
+          }
+          if (!portraitBooksFileHandle) {
+            downloadPortraitBooks();
+            setPortraitBooksDirty(false, '副本已下载，请替换 src/data/portrait-books.json');
+            return;
+          }
+          const writable = await portraitBooksFileHandle.createWritable();
+          await writable.write(serializePortraitBooks());
+          await writable.close();
+          setPortraitBooksDirty(false);
+          showToast('Portrait Books 已保存到本地文件');
+        } catch (error) {
+          if (error.name !== 'AbortError') window.alert(`保存失败：${error.message}`);
+        }
+      }
+
+      function saveCurrentJson() {
+        return viewFilter.value === 'portrait-layout' ? savePortraitBooks() : saveJson();
+      }
+
+      function downloadCurrentJson() {
+        return viewFilter.value === 'portrait-layout' ? downloadPortraitBooks() : downloadJson();
       }
 
       async function saveJson() {
@@ -2406,6 +3227,57 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         showToast('版面设置已更新，点击保存写入 photos.json');
       });
 
+      function bindPortraitGroupDrag() {
+        portraitLayoutGroups.addEventListener('pointerdown', (event) => {
+          const handle = event.target.closest('[data-portrait-drag-handle]');
+          const card = event.target.closest('[data-portrait-group-id]');
+          if (!handle || !card) return;
+
+          const pointerId = event.pointerId;
+          const startX = event.clientX;
+          const startY = event.clientY;
+          const draggedId = card.dataset.portraitGroupId;
+          let moved = false;
+          let targetId = '';
+          let placeAfter = false;
+          handle.setPointerCapture?.(pointerId);
+
+          const clearIndicators = () => portraitLayoutGroups
+            .querySelectorAll('.is-drop-before, .is-drop-after')
+            .forEach((item) => item.classList.remove('is-drop-before', 'is-drop-after'));
+
+          const onMove = (moveEvent) => {
+            if (!moved && Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) < 8) return;
+            moved = true;
+            card.classList.add('is-dragging');
+            clearIndicators();
+            const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)?.closest('[data-portrait-group-id]');
+            if (!target || !portraitLayoutGroups.contains(target) || target === card) {
+              targetId = '';
+              return;
+            }
+            const rect = target.getBoundingClientRect();
+            placeAfter = moveEvent.clientY > rect.top + rect.height / 2;
+            targetId = target.dataset.portraitGroupId;
+            target.classList.add(placeAfter ? 'is-drop-after' : 'is-drop-before');
+          };
+
+          const onEnd = () => {
+            if (handle.hasPointerCapture?.(pointerId)) handle.releasePointerCapture(pointerId);
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onEnd);
+            window.removeEventListener('pointercancel', onEnd);
+            card.classList.remove('is-dragging');
+            clearIndicators();
+            if (moved && targetId) reorderPortraitGroup(draggedId, targetId, placeAfter);
+          };
+
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onEnd);
+          window.addEventListener('pointercancel', onEnd);
+        });
+      }
+
       $('#form-crop').addEventListener('change', updateInspectorCropControls);
 
       bindCollageDrag(grid);
@@ -2414,8 +3286,128 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       bindCollageResize(grid);
       bindCollageResize(seriesPhotoGrid);
       bindCollageResize(categorySections);
+      bindPortraitGroupDrag();
+
+      portraitLayoutGroups.addEventListener('click', (event) => {
+        const actionButton = event.target.closest('[data-portrait-action]');
+        const groupCard = event.target.closest('[data-portrait-group-id]');
+        if (!groupCard) return;
+        if (!actionButton) return;
+        const groupId = groupCard.dataset.portraitGroupId;
+        const action = actionButton.dataset.portraitAction;
+        if (action === 'up') movePortraitGroup(groupId, -1);
+        if (action === 'down') movePortraitGroup(groupId, 1);
+        if (action === 'delete' && window.confirm('删除这个跨页？照片本身不会被删除。')) {
+          const book = activePortraitBook();
+          if (!book) return;
+          snapshotPortraitBooks();
+          book.layout.groups = book.layout.groups.filter((group) => group.id !== groupId);
+          setPortraitBooksDirty(true, '已删除跨页，照片数据未更改');
+          renderPortraitLayout(book);
+        }
+        if (action === 'remove-photo') {
+          const photoId = event.target.closest('[data-portrait-photo-id]')?.dataset.portraitPhotoId;
+          if (!photoId) return;
+          updatePortraitGroup(groupId, (group) => {
+            group.items = group.items.filter((item) => item.photoId !== photoId);
+          }, '照片已从跨页移除，原照片未删除');
+        }
+        if (action === 'open-photo-picker') openPortraitPhotoPicker(groupId);
+      });
+
+      portraitLayoutGroups.addEventListener('change', (event) => {
+        const groupCard = event.target.closest('[data-portrait-group-id]');
+        if (!groupCard) return;
+        const groupId = groupCard.dataset.portraitGroupId;
+        const field = event.target.dataset.portraitField;
+        if (field === 'preset') {
+          updatePortraitGroup(groupId, (group) => {
+            group.preset = event.target.value;
+            group.items = group.items.slice(0, portraitPresetCapacity[group.preset] ?? 0);
+          }, '排版预设已更新');
+        }
+        if (field === 'title' || field === 'text') {
+          updatePortraitGroup(groupId, (group) => {
+            group[field] = event.target.value;
+          }, '跨页标题或短文字已更新');
+        }
+        if (field === 'leftBlank' || field === 'rightBlank') {
+          updatePortraitGroup(groupId, (group) => {
+            group[field] = event.target.checked;
+          }, `${field === 'leftBlank' ? '左页' : '右页'} Blank 状态已更新`);
+        }
+        if (event.target.matches('[data-portrait-cover]')) {
+          const photoId = event.target.closest('[data-portrait-photo-id]')?.dataset.portraitPhotoId;
+          updatePortraitGroup(groupId, (group) => {
+            const item = group.items.find((entry) => entry.photoId === photoId);
+            if (item) item.cover = event.target.checked;
+          }, event.target.checked ? '已为这张照片启用 Cover 裁切' : '已恢复完整显示');
+        }
+      });
+
+      $('#add-portrait-group').addEventListener('click', addPortraitGroup);
+      $('#save-portrait-layout').addEventListener('click', savePortraitBooks);
+      $('#save-portrait-books').addEventListener('click', savePortraitBooks);
+      $('#new-portrait-book').addEventListener('click', () => openPortraitBookDialog());
+      $('#edit-portrait-book').addEventListener('click', () => openPortraitBookDialog(activePortraitBookSlug));
+      $('#save-portrait-book-details').addEventListener('click', savePortraitBookDetails);
+      $('#portrait-book-cover-search').addEventListener('input', (event) => {
+        renderPortraitBookCoverPicker($('#portrait-book-form-cover').value, event.target.value);
+      });
+      $('#portrait-book-cover-grid').addEventListener('click', (event) => {
+        const option = event.target.closest('[data-portrait-book-cover]');
+        if (!option) return;
+        updatePortraitBookCoverSelection(option.dataset.portraitBookCover);
+        $('#portrait-book-form-error').textContent = '';
+      });
+      $('#portrait-photo-picker-search').addEventListener('input', (event) => {
+        renderPortraitPhotoPicker(event.target.value);
+      });
+      $('#portrait-photo-picker-grid').addEventListener('click', (event) => {
+        const option = event.target.closest('[data-portrait-photo-picker-option]');
+        if (!option) return;
+        updatePortraitPhotoPickerSelection(option.dataset.portraitPhotoPickerOption);
+      });
+      $('#confirm-portrait-photo').addEventListener('click', addPortraitPhotoFromPicker);
+      portraitPhotoPickerDialog.addEventListener('close', () => {
+        portraitPhotoPickerGroupId = '';
+        portraitPhotoPickerSelectionId = '';
+        $('#portrait-photo-picker-search').value = '';
+        $('#portrait-photo-picker-grid').replaceChildren();
+        $('#portrait-photo-picker-count').textContent = '';
+        $('#portrait-photo-picker-selection').textContent = 'Choose one photograph';
+        $('#confirm-portrait-photo').disabled = true;
+      });
+      $('#portrait-book-form-title').addEventListener('input', (event) => {
+        if (!$('#portrait-book-original-slug').value) $('#portrait-book-form-slug').value = slugify(event.target.value);
+      });
+      $('#portrait-book-back').addEventListener('click', () => {
+        activePortraitBookSlug = '';
+        sessionStorage.removeItem('editorPortraitBookSlug');
+        renderPortraitBooks();
+      });
+      portraitBooksGrid.addEventListener('click', (event) => {
+        const card = event.target.closest('[data-portrait-book-slug]');
+        const actionButton = event.target.closest('[data-portrait-book-action]');
+        if (!card || !actionButton) return;
+        const slug = card.dataset.portraitBookSlug;
+        const action = actionButton.dataset.portraitBookAction;
+        if (action === 'open') {
+          activePortraitBookSlug = slug;
+          sessionStorage.setItem('editorPortraitBookSlug', slug);
+          renderPortraitBooks();
+        }
+        if (action === 'edit') openPortraitBookDialog(slug);
+        if (action === 'delete') deletePortraitBook(slug);
+        if (action === 'up') movePortraitBook(slug, -1);
+        if (action === 'down') movePortraitBook(slug, 1);
+      });
 
       viewFilter.addEventListener('change', () => {
+        if (portraitBooksDirty && viewFilter.value !== 'portrait-layout' && !window.confirm('当前 Portrait Books 尚未保存，确定离开吗？')) {
+          viewFilter.value = 'portrait-layout';
+          return;
+        }
         if (layoutDirty && viewFilter.value !== 'series' && !window.confirm('当前 Series 行布局尚未保存，确定放弃吗？')) {
           viewFilter.value = 'series';
           return;
@@ -2537,13 +3529,16 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       });
       $('#form-image').addEventListener('input', (event) => { $('#form-preview').src = event.target.value; });
       $('#open-file').addEventListener('click', async () => {
+        const openPortraitLayout = viewFilter.value === 'portrait-layout';
         if ('showOpenFilePicker' in window) {
           try {
             const [handle] = await window.showOpenFilePicker({
               types: [{ description: 'JSON 文件', accept: { 'application/json': ['.json'] } }],
               multiple: false,
             });
-            await loadFile(await handle.getFile(), handle);
+            const file = await handle.getFile();
+            if (openPortraitLayout) await loadPortraitBooksFile(file, handle);
+            else await loadFile(file, handle);
           } catch (error) {
             if (error.name !== 'AbortError') window.alert(`打开失败：${error.message}`);
           }
@@ -2553,12 +3548,20 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       });
       $('#file-fallback').addEventListener('change', (event) => {
         const [file] = event.target.files;
-        if (file) loadFile(file);
+        if (file && viewFilter.value === 'portrait-layout') loadPortraitBooksFile(file);
+        else if (file) loadFile(file);
         event.target.value = '';
       });
-      $('#save-file').addEventListener('click', saveJson);
-      $('#download').addEventListener('click', downloadJson);
+      $('#save-file').addEventListener('click', saveCurrentJson);
+      $('#download').addEventListener('click', downloadCurrentJson);
       $('#undo').addEventListener('click', () => {
+        if (viewFilter.value === 'portrait-layout') {
+          if (!portraitBooksHistory.length) return;
+          portraitBooksData = portraitBooksHistory.pop();
+          setPortraitBooksDirty(true, '已撤销 Portrait Books 上一步');
+          renderPortraitBooks();
+          return;
+        }
         if (!history.length) return;
         photoData = history.pop();
         $('#undo').disabled = history.length === 0;
@@ -2566,6 +3569,16 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         render();
       });
       $('#reset').addEventListener('click', () => {
+        if (viewFilter.value === 'portrait-layout') {
+          if (!window.confirm('确定恢复到页面最初载入的 Portrait Books 吗？')) return;
+          snapshotPortraitBooks();
+          portraitBooksData = structuredClone(initialPortraitBooks);
+          activePortraitBookSlug = '';
+          sessionStorage.removeItem('editorPortraitBookSlug');
+          setPortraitBooksDirty(true, '已恢复初始 Portrait Books，尚未保存');
+          renderPortraitBooks();
+          return;
+        }
         if (!window.confirm('确定恢复到页面最初载入的数据吗？当前修改会丢失。')) return;
         snapshot();
         photoData = migratePortfolioPhotos(initialPhotos);
@@ -2575,7 +3588,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         render();
       });
       window.addEventListener('beforeunload', (event) => {
-        if (!dirty && !siteDirty && !layoutDirty) return;
+        if (!dirty && !siteDirty && !layoutDirty && !portraitBooksDirty) return;
         event.preventDefault();
         event.returnValue = '';
       });
@@ -2692,8 +3705,121 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
   .layout-toolbar button:hover:not(:disabled),
   .layout-toolbar button.is-active { border-color: var(--ink); color: #fff; background: var(--ink); }
   .layout-toolbar button:disabled { opacity: .28; cursor: default; }
-  .series-workspace { padding-top: clamp(2.5rem, 5vw, 5rem); }
-  .series-workspace[hidden], #series-list-view[hidden], #series-detail-view[hidden], .series-photo-grid[hidden], .series-photo-empty[hidden] { display: none; }
+  .series-workspace,
+  .portrait-layout-workspace { padding-top: clamp(2.5rem, 5vw, 5rem); }
+  .series-workspace[hidden],
+  .portrait-layout-workspace[hidden],
+  #portrait-books-list-view[hidden],
+  #portrait-book-detail-view[hidden],
+  #series-list-view[hidden],
+  #series-detail-view[hidden],
+  .series-photo-grid[hidden],
+  .series-photo-empty[hidden] { display: none; }
+  .portrait-layout-head { margin-bottom: 3rem; padding-bottom: 2rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; border-bottom: 1px solid var(--line); }
+  .portrait-layout-head h2 { margin: 0; font: 400 clamp(2.8rem, 5vw, 5rem)/.92 var(--serif); letter-spacing: -.045em; }
+  .portrait-layout-head > div:first-child > p:last-child { max-width: 38rem; margin: 1rem 0 0; color: var(--muted); line-height: 1.7; }
+  .portrait-layout-head__actions { display: flex; gap: .7rem; }
+  .portrait-layout-groups { display: grid; gap: clamp(2rem, 4vw, 4rem); }
+  .portrait-layout-group { position: relative; padding: clamp(1.25rem, 2.5vw, 2.5rem); border: 1px solid var(--line); background: rgba(255,255,255,.28); transition: opacity 140ms ease, border-color 140ms ease; }
+  .portrait-layout-group.is-dragging { opacity: .42; }
+  .portrait-layout-group.is-drop-before::before,
+  .portrait-layout-group.is-drop-after::after { content: ''; height: 2px; position: absolute; right: 0; left: 0; background: var(--accent); }
+  .portrait-layout-group.is-drop-before::before { top: -1.1rem; }
+  .portrait-layout-group.is-drop-after::after { bottom: -1.1rem; }
+  .portrait-layout-group__head { display: grid; grid-template-columns: auto minmax(9rem, 1fr) minmax(10rem, 14rem) auto; align-items: center; gap: 1rem; }
+  .portrait-layout-group__drag { width: 2.4rem; height: 2.4rem; padding: 0; border: 1px solid var(--line); color: var(--muted); background: transparent; cursor: grab; touch-action: none; }
+  .portrait-layout-group__drag:active { cursor: grabbing; }
+  .portrait-layout-group__head > div:nth-child(2) { display: flex; flex-direction: column; }
+  .portrait-layout-group__head span,
+  .portrait-layout-group__head label { color: var(--muted); font-size: .56rem; letter-spacing: .1em; text-transform: uppercase; }
+  .portrait-layout-group__head strong { margin-top: .18rem; font: 400 1.35rem var(--serif); }
+  .portrait-layout-group__head select { width: 100%; margin-top: .35rem; padding: .55rem .65rem; border: 1px solid var(--line); background: #faf9f6; }
+  .portrait-layout-group__order { display: flex; }
+  .portrait-layout-group__order button { min-width: 2.1rem; height: 2.1rem; padding: 0 .55rem; border: 1px solid var(--line); color: var(--muted); background: transparent; font-size: .56rem; text-transform: uppercase; }
+  .portrait-layout-group__order button + button { border-left: 0; }
+  .portrait-layout-group__order button:hover:not(:disabled) { color: #fff; background: var(--ink); }
+  .portrait-layout-group__order button.is-danger:hover:not(:disabled) { border-color: var(--accent); background: var(--accent); }
+  .portrait-layout-group__order button:disabled { opacity: .25; cursor: default; }
+  .portrait-layout-group__fields { margin: 1.5rem 0; display: grid; grid-template-columns: minmax(12rem, .75fr) minmax(16rem, 1.25fr); gap: 1rem; }
+  .portrait-layout-group__fields label { color: var(--muted); font-size: .56rem; letter-spacing: .08em; text-transform: uppercase; }
+  .portrait-layout-group__fields input,
+  .portrait-layout-group__fields textarea { width: 100%; margin-top: .4rem; padding: .7rem .75rem; border: 1px solid var(--line); color: var(--ink); background: rgba(255,255,255,.6); resize: vertical; text-transform: none; }
+  .portrait-layout-page-controls { margin: 0 0 1rem; display: flex; justify-content: flex-end; gap: 1.25rem; }
+  .portrait-layout-page-controls label { display: inline-flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .58rem; letter-spacing: .07em; text-transform: uppercase; }
+  .portrait-layout-page-controls input { margin: 0; }
+  .portrait-layout-spread-preview { width: min(100%, 72rem); margin: 0 auto; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) clamp(.55rem, 1vw, .9rem) minmax(0, 1fr); align-items: stretch; filter: drop-shadow(0 .85rem 1.35rem rgba(24,22,18,.08)); }
+  .portrait-layout-page { min-width: 0; aspect-ratio: 3/4; position: relative; z-index: 1; overflow: hidden; display: grid; place-items: stretch; background: #f5f1e8; }
+  .portrait-layout-page--left { box-shadow: inset -1rem 0 1.4rem -1.5rem rgba(18,16,14,.32); }
+  .portrait-layout-page--right { box-shadow: inset 1rem 0 1.4rem -1.5rem rgba(18,16,14,.32); }
+  .portrait-layout-page.is-blank { place-items: center; background: #f8f4ec; }
+  .portrait-layout-page.is-blank > span,
+  .portrait-layout-page__paper { align-self: center; color: rgba(30,28,24,.3); font: 400 clamp(.8rem, 1.5vw, 1.35rem) var(--serif); }
+  .portrait-layout-spine { position: relative; z-index: 3; background: linear-gradient(90deg, rgba(255,255,255,.5), rgba(28,26,22,.2) 48%, rgba(255,255,255,.52)); box-shadow: 0 0 .55rem rgba(20,18,15,.15); }
+  .portrait-layout-spread-preview:has(.portrait-layout-full-spread) .portrait-layout-spine { display: none; }
+  .portrait-layout-page__text { align-self: center; padding: clamp(1rem, 3vw, 3rem); }
+  .portrait-layout-page__text strong { display: block; font: 400 clamp(1.3rem, 2.6vw, 3rem)/.96 var(--serif); }
+  .portrait-layout-page__text p { margin: .75rem 0 0; color: var(--muted); font-size: clamp(.58rem, .8vw, .78rem); line-height: 1.65; }
+  .portrait-layout-page__media { min-height: 0; padding: clamp(.45rem, 1vw, 1rem); display: grid; align-content: center; gap: clamp(.35rem, .7vw, .7rem); }
+  .portrait-layout-page__media.has-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+  .portrait-layout-page__media.has-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
+  .portrait-layout-spread-preview--triptych .portrait-layout-page__media.has-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
+  .portrait-layout-page .portrait-layout-photo,
+  .portrait-layout-full-spread .portrait-layout-photo { min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; overflow: hidden; }
+  .portrait-layout-page .portrait-layout-photo picture,
+  .portrait-layout-full-spread .portrait-layout-photo picture { width: 100%; height: 100%; min-height: 0; }
+  .portrait-layout-page .portrait-layout-photo img,
+  .portrait-layout-full-spread .portrait-layout-photo img { width: 100%; height: 100%; max-height: none; object-fit: contain; }
+  .portrait-layout-page .portrait-layout-photo > div,
+  .portrait-layout-full-spread .portrait-layout-photo > div { padding: .35rem .15rem .05rem; font-size: .46rem; }
+  .portrait-layout-full-spread { position: absolute; inset: 0; z-index: 2; overflow: hidden; display: grid; padding: clamp(.45rem, 1vw, 1rem); background: #eee9df; }
+  .portrait-layout-full-spread .portrait-layout-photo { height: 100%; }
+  .portrait-layout-spread-preview--triptych .portrait-layout-full-spread { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: clamp(.35rem, .7vw, .7rem); }
+  .portrait-layout-spread-preview--triptych .portrait-layout-full-spread .portrait-layout-photo { height: auto; aspect-ratio: 3 / 4; }
+  .portrait-layout-group__photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; align-items: start; }
+  .portrait-layout-group__photos--hero,
+  .portrait-layout-group__photos--full { grid-template-columns: minmax(0, 1fr); }
+  .portrait-layout-group__photos--diptych { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .portrait-layout-group__photos--feature { grid-template-columns: 2fr 1fr 1fr; }
+  .portrait-layout-photo { min-width: 0; }
+  .portrait-layout-photo picture { display: block; }
+  .portrait-layout-photo img { display: block; width: 100%; height: auto; max-height: 32rem; object-fit: contain; object-position: center; background: #e6e3dc; }
+  .portrait-layout-photo > div { padding-top: .6rem; display: flex; align-items: center; justify-content: space-between; gap: .6rem; color: var(--muted); font-size: .54rem; letter-spacing: .06em; text-transform: uppercase; }
+  .portrait-layout-photo > div > span { min-width: 0; display: flex; flex-direction: column; }
+  .portrait-layout-photo strong { overflow: hidden; color: var(--ink); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+  .portrait-layout-photo small { font-size: inherit; }
+  .portrait-layout-photo label { display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
+  .portrait-layout-photo button { padding: 0 0 .18rem; border: 0; border-bottom: 1px solid currentColor; color: var(--muted); background: transparent; font-size: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .portrait-layout-group__add { margin-top: 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .65rem; }
+  .portrait-layout-add-status { margin: 0; padding: .85rem 0; color: var(--muted); font-size: .65rem; }
+  .portrait-layout-group__note { margin: 2rem 0 0; padding: 3rem 1rem; border: 1px dashed var(--line); color: var(--muted); text-align: center; }
+  .portrait-layout-empty { min-height: 18rem; display: grid; place-content: center; text-align: center; border: 1px solid var(--line); color: var(--muted); }
+  .portrait-layout-empty p { margin: 0 0 .5rem; color: var(--ink); font: 400 2rem var(--serif); }
+  .portrait-book-cover-field { min-width: 0; }
+  .portrait-book-cover-field__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .portrait-book-cover-field__head > span { overflow: hidden; color: var(--ink); font-size: .58rem; letter-spacing: .03em; text-overflow: ellipsis; text-transform: none; white-space: nowrap; }
+  .portrait-book-cover-search { width: 100%; margin: .55rem 0 .75rem !important; padding: .68rem .75rem; border: 1px solid var(--line); color: var(--ink); background: rgba(255,255,255,.62); }
+  .portrait-book-cover-grid { max-height: min(42vh, 25rem); padding: .3rem; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: max-content; align-items: start; gap: .65rem; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--line); background: rgba(255,255,255,.26); }
+  .portrait-book-cover-option { width: 100%; min-width: 0; padding: .28rem; position: relative; align-self: start; border: 1px solid transparent; color: var(--ink); background: transparent; text-align: left; cursor: pointer; transition: border-color 140ms ease, background-color 140ms ease; }
+  .portrait-book-cover-option:hover { border-color: rgba(23,23,22,.28); background: rgba(255,255,255,.52); }
+  .portrait-book-cover-option.is-selected { border-color: var(--ink); background: #fff; box-shadow: 0 0 0 1px var(--ink); }
+  .portrait-book-cover-option__image { width: 100%; position: relative; display: block; aspect-ratio: 4/3; overflow: hidden; background: #e6e3dc; }
+  .portrait-book-cover-option picture { width: 100%; height: 100%; display: block; }
+  .portrait-book-cover-option img { width: 100%; height: 100%; display: block; aspect-ratio: auto; object-fit: contain; }
+  .portrait-book-cover-option__check { width: 1.35rem; height: 1.35rem; position: absolute; top: .4rem; right: .4rem; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; color: transparent; background: rgba(20,20,19,.18); font-size: .72rem; }
+  .portrait-book-cover-option.is-selected .portrait-book-cover-option__check { color: #fff; background: var(--ink); }
+  .portrait-book-cover-option small { display: block; overflow: hidden; padding: .48rem .08rem .12rem; font-size: .53rem; letter-spacing: .02em; line-height: 1.35; text-overflow: ellipsis; text-transform: none; white-space: nowrap; }
+  .portrait-book-cover-empty { grid-column: 1/-1; margin: 0; padding: 3rem 1rem; color: var(--muted); text-align: center; font-size: .7rem; }
+  .portrait-photo-picker-dialog { width: min(68rem, calc(100vw - 2rem)); }
+  .portrait-photo-picker__meta { margin: 1.5rem 0 1rem; display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .65rem; line-height: 1.5; }
+  .portrait-photo-picker__meta p { margin: 0; }
+  .portrait-photo-picker__meta span { flex: 0 0 auto; text-transform: uppercase; letter-spacing: .07em; }
+  .portrait-photo-picker__search { width: 100%; margin: 0 0 .75rem; padding: .7rem .75rem; border: 1px solid var(--line); color: var(--ink); background: rgba(255,255,255,.62); }
+  .portrait-photo-picker__grid { max-height: min(56vh, 34rem); padding: .3rem; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: max-content; align-items: start; gap: .65rem; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--line); background: rgba(255,255,255,.26); }
+  .portrait-photo-picker__option small { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+  .portrait-photo-picker__option small span { overflow: hidden; text-overflow: ellipsis; }
+  .portrait-photo-picker__option small em { flex: 0 0 auto; color: var(--muted); font-size: .48rem; font-style: normal; letter-spacing: .06em; text-transform: uppercase; }
+  .portrait-photo-picker__actions { margin-top: 1rem; }
+  .portrait-photo-picker__actions > span { overflow: hidden; max-width: 45%; color: var(--muted); font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
   .series-editor-head { margin-bottom: 3rem; display: grid; grid-template-columns: minmax(14rem, 1fr) minmax(16rem, 1fr); gap: 3rem; align-items: end; }
   .series-editor-head h2, .series-manager__head h2 { margin: 0; font: 400 clamp(2.8rem, 5vw, 5rem)/.92 var(--serif); letter-spacing: -.045em; }
   .series-editor-head > p { max-width: 28rem; margin: 0; color: var(--muted); line-height: 1.7; }
@@ -2703,6 +3829,8 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
   .series-editor-card__cover { position: relative; display: block; background: #e5e3dc; box-shadow: 0 .7rem 1.8rem rgba(25,25,22,.09); transform: translateY(0); transition: transform 240ms ease, box-shadow 240ms ease; }
   .series-editor-card__cover::after { content: ''; height: .34rem; position: absolute; right: .45rem; bottom: -.34rem; left: .45rem; border: 1px solid rgba(23,23,22,.1); border-top: 0; background: #f3f0e8; }
   .series-editor-card__cover img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; transition: transform 240ms ease; }
+  .portrait-books-grid .series-editor-card__cover img,
+  .portrait-books-grid .series-editor-card__cover.is-empty { aspect-ratio: 3/4; }
   .series-editor-card__cover.is-empty { aspect-ratio: 4/3; display: grid; place-items: center; color: var(--muted); font: 400 1.35rem var(--serif); }
   .series-editor-card__open:hover .series-editor-card__cover { box-shadow: 0 1.1rem 2.4rem rgba(25,25,22,.14); transform: translateY(-4px); }
   .series-editor-card__open:hover .series-editor-card__cover img { transform: scale(1.02); }
@@ -3106,6 +4234,11 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     .field-group { display: inline-block; width: calc(50% - .5rem); margin-right: .5rem; vertical-align: top; }
     .stats { max-width: 30rem; }
     .series-editor-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .portrait-layout-head { align-items: flex-start; flex-direction: column; }
+    .portrait-layout-group__head { grid-template-columns: auto minmax(8rem, 1fr) minmax(9rem, 12rem); }
+    .portrait-layout-group__order { grid-column: 2 / -1; justify-self: end; }
+    .portrait-book-cover-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .portrait-photo-picker__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   @media (max-width: 620px) {
     .editor-header { height: 4rem; padding: 0 1rem; }
@@ -3129,6 +4262,29 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     .series-layout-toolbar { align-items: stretch; flex-direction: column; }
     .series-layout-toolbar > div { justify-content: space-between; }
     .series-layout-row__photos { grid-template-columns: 1fr; }
+    .portrait-layout-head__actions { width: 100%; flex-direction: column; }
+    .portrait-layout-head__actions .button { width: 100%; }
+    .portrait-layout-group { padding: 1rem; }
+    .portrait-layout-group__head { grid-template-columns: auto 1fr; }
+    .portrait-layout-group__head > label,
+    .portrait-layout-group__order { grid-column: 1 / -1; }
+    .portrait-layout-group__order { width: 100%; justify-content: flex-end; }
+    .portrait-layout-group__fields { grid-template-columns: 1fr; }
+    .portrait-layout-page-controls { align-items: flex-start; flex-direction: column; gap: .55rem; }
+    .portrait-layout-spread-preview { grid-template-columns: minmax(0, 1fr) .4rem minmax(0, 1fr); }
+    .portrait-layout-page .portrait-layout-photo > div,
+    .portrait-layout-full-spread .portrait-layout-photo > div { display: none; }
+    .portrait-layout-spread-preview--triptych .portrait-layout-full-spread { grid-template-columns: 1fr; grid-auto-rows: minmax(0, 1fr); }
+    .portrait-layout-spread-preview--triptych .portrait-layout-page__media.has-3 { grid-template-columns: 1fr; grid-template-rows: repeat(3, minmax(0, 1fr)); }
+    .portrait-layout-group__photos,
+    .portrait-layout-group__photos--diptych,
+    .portrait-layout-group__photos--feature { grid-template-columns: 1fr; }
+    .portrait-layout-group__add { grid-template-columns: 1fr; align-items: stretch; }
+    .portrait-book-cover-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .portrait-photo-picker__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .portrait-photo-picker__meta { flex-direction: column; }
+    .portrait-photo-picker__actions { align-items: stretch; flex-direction: column; gap: .75rem; }
+    .portrait-photo-picker__actions > span { max-width: 100%; }
     .portfolio-section__head { align-items: flex-start; flex-direction: column; }
     .portfolio-section__actions { width: 100%; align-items: stretch; justify-content: space-between; }
     .portfolio-section__actions .button { flex: 1; }
@@ -3166,6 +4322,10 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     .form-grid .full { grid-column: auto; }
     dialog form { padding: 1.25rem; }
     .dialog-preview { margin-inline: -1.25rem; }
+  }
+  @media (max-width: 420px) {
+    .portrait-book-cover-grid,
+    .portrait-photo-picker__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
 </style>

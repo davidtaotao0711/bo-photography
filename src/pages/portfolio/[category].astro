@@ -13,7 +13,9 @@ import { buildOrientationRows } from '../../utils/photo-layout.js';
 import { normalizeCollageLayout } from '../../utils/collage-layout.js';
 
 export function getStaticPaths() {
-  return photoCategories.map((category) => ({ params: { category: category.slug } }));
+  return photoCategories
+    .filter((category) => category.slug !== 'portrait')
+    .map((category) => ({ params: { category: category.slug } }));
 }
 
 const { category } = Astro.params;

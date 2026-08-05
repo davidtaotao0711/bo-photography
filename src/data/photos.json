@@ -1122,16 +1122,16 @@
     "location": "",
     "date": "2026",
     "image": "/images/nature/nature-001.jpg",
-    "featured": true,
+    "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 1,
     "categoryLayoutWidth": 75,
     "categoryRowSize": 1,
-    "layoutWidth": 157,
-    "layoutOffsetX": 13,
-    "layoutOffsetY": -44,
+    "layoutWidth": 135,
+    "layoutOffsetX": 12,
+    "layoutOffsetY": -57,
     "detailScale": 100,
     "homeTitle": "Embrace Nature",
     "order": 1,
@@ -2098,7 +2098,7 @@
     "location": "",
     "date": "2026",
     "image": "/images/portrait/portrait-019.jpg",
-    "featured": true,
+    "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph: portrait 019",
     "categoryLayoutOffsetX": 0,
@@ -2186,14 +2186,14 @@
     "location": "",
     "date": "2026",
     "image": "/images/portrait/portrait-022.jpg",
-    "featured": true,
+    "featured": false,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
-    "layoutOffsetX": -7,
-    "layoutOffsetY": -42,
-    "layoutWidth": 62,
+    "layoutOffsetX": 11,
+    "layoutOffsetY": -41,
+    "layoutWidth": 76,
     "detailScale": 100,
     "homeTitle": "Cannot slow down",
     "order": 25,
@@ -2243,7 +2243,7 @@
     "location": "",
     "date": "2026",
     "image": "/images/scenes/scenes-059.jpg",
-    "featured": true,
+    "featured": false,
     "orientation": "landscape",
     "alt": "Scenes photograph by Bo David",
     "categoryLayoutWidth": 70,
@@ -2352,7 +2352,7 @@
     "location": "",
     "date": "2026",
     "image": "/images/portrait/portrait-021.jpg",
-    "featured": false,
+    "featured": true,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
     "categoryLayoutWidth": 80,
@@ -2361,7 +2361,8 @@
     "order": 22,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 5
+    "archiveOrder": 5,
+    "layoutWidth": 117
   },
   {
     "id": "portrait-025",
@@ -2378,7 +2379,16 @@
     "order": 21,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 4
+    "archiveOrder": 4,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.47
+    }
   },
   {
     "id": "portrait-023",
@@ -2413,7 +2423,7 @@
     "location": "",
     "date": "2026",
     "image": "/images/nature/nature-010.jpg",
-    "featured": true,
+    "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "order": 4,
@@ -2448,7 +2458,16 @@
     "order": 26,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 6
+    "archiveOrder": 6,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.44
+    }
   },
   {
     "id": "street-054",
@@ -2645,7 +2664,7 @@
     "location": "",
     "date": "2026",
     "image": "/images/nature/nature-005.jpg",
-    "featured": true,
+    "featured": false,
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "categoryRowSize": 1,
@@ -3181,7 +3200,16 @@
     "order": 28,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 7
+    "archiveOrder": 7,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.45
+    }
   },
   {
     "id": "portrait-029",
@@ -3197,7 +3225,16 @@
     "order": 29,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 8
+    "archiveOrder": 8,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.43
+    }
   },
   {
     "id": "scenes-070",
@@ -3584,7 +3621,16 @@
     "order": 19,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 3
+    "archiveOrder": 3,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.43
+    }
   },
   {
     "id": "portrait-033",
@@ -3600,7 +3646,16 @@
     "order": 31,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 9
+    "archiveOrder": 9,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.41
+    }
   },
   {
     "id": "street-065",
@@ -3906,7 +3961,16 @@
     "order": 34,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 11
+    "archiveOrder": 11,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.46
+    }
   },
   {
     "id": "street-071",
@@ -4290,7 +4354,16 @@
     "order": 35,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 12
+    "archiveOrder": 12,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.45
+    }
   },
   {
     "id": "street-078",
@@ -5600,5 +5673,118 @@
       "focalY": 50,
       "ratio": 1.2
     }
+  },
+  {
+    "id": "portrait-053",
+    "title": "No. 39",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-053.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 19,
+    "aspect": 0.5675,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-055",
+    "title": "No. 41",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-055.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 20,
+    "aspect": 0.6061,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-056",
+    "title": "No. 42",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-056.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 21,
+    "aspect": 0.741,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-057",
+    "title": "No. 78",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-057.jpg",
+    "featured": true,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 22,
+    "aspect": 0.5684,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layoutWidth": 83
+  },
+  {
+    "id": "portrait-058",
+    "title": "No. 79",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-058.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 23,
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-059",
+    "title": "No. 80",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-059.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 24,
+    "aspect": 0.6428,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-060",
+    "title": "No. 81",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-060.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 25,
+    "aspect": 0.6384,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
   }
 ]
