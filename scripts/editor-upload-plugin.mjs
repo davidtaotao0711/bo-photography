@@ -19,7 +19,7 @@ const SITE_SAVE_ENDPOINT = '/__editor/site/save';
 const PORTRAIT_BOOKS_SAVE_ENDPOINT = '/__editor/portrait-books/save';
 const PORTFOLIO_CATEGORIES_SAVE_ENDPOINT = '/__editor/portfolio-categories/save';
 const EDITOR_HEALTH_ENDPOINT = '/__editor/health';
-const EDITOR_API_VERSION = 7;
+const EDITOR_API_VERSION = 9;
 const CATEGORIES = new Set(photoCategorySlugs);
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -210,32 +210,48 @@ async function savePortfolioCategoryCovers(request, projectRoot) {
   const body = await webRequestFrom(request, PORTFOLIO_CATEGORIES_SAVE_ENDPOINT).json().catch(() => {
     throw new RequestError(400, 'Portfolio cover settings must be valid JSON.');
   });
-  if (body?.id !== 'portrait') throw new RequestError(400, 'Only the Portrait entrance cover can be changed here.');
+  const id = String(body?.id || '').trim();
+  const allowedIds = new Set(['portrait', 'street', 'scenes', 'nature', 'series']);
+  if (!allowedIds.has(id)) throw new RequestError(400, 'Unknown Portfolio entrance card.');
+  const requiredCount = id === 'portrait' ? 3 : 1;
   const coverImages = Array.isArray(body.coverImages) ? body.coverImages.map((value) => String(value || '').trim()) : [];
-  if (coverImages.length !== 3 || coverImages.some((value) => !value) || new Set(coverImages).size !== 3) {
-    throw new RequestError(400, 'Choose exactly three different Portrait photographs.');
+  if (coverImages.length !== requiredCount || coverImages.some((value) => !value) || new Set(coverImages).size !== requiredCount) {
+    throw new RequestError(400, `Choose exactly ${requiredCount} different ${id} photograph${requiredCount === 1 ? '' : 's'}.`);
   }
   const coverPositions = Array.isArray(body.coverPositions)
     ? body.coverPositions.map(normalizeCoverPosition)
-    : ['50% 50%', '50% 50%', '50% 50%'];
-  if (coverPositions.length !== 3) throw new RequestError(400, 'Three cover positions are required.');
+    : Array.from({ length: requiredCount }, () => '50% 50%');
+  if (coverPositions.length !== requiredCount) throw new RequestError(400, `${requiredCount} cover position${requiredCount === 1 ? '' : 's'} required.`);
 
   const paths = dataPaths(projectRoot);
   const [photos, categories] = await Promise.all([readJson(paths.photos), readJson(paths.portfolioCategories)]);
-  const validPortraitImages = new Set(migratePortfolioPhotos(photos)
-    .filter((photo) => photo.category === 'portrait' && ['selected', 'archive'].includes(getPortfolioStatus(photo, 'portrait')))
+  const index = categories.findIndex((entry) => entry.id === id);
+  if (index < 0) throw new RequestError(404, 'Portfolio entrance card configuration was not found.');
+  const validImages = new Set(migratePortfolioPhotos(photos)
+    .filter((photo) => id === 'series'
+      ? photo.category === 'series' || Boolean(photo.series)
+      : photo.category === id && ['selected', 'archive'].includes(getPortfolioStatus(photo, id)))
     .map((photo) => photo.image));
-  if (coverImages.some((image) => !validPortraitImages.has(image))) {
-    throw new RequestError(400, 'Both covers must come from Portrait Photos.');
+  const existingEntry = categories[index];
+  if (existingEntry.coverImage) validImages.add(existingEntry.coverImage);
+  if (Array.isArray(existingEntry.coverImages)) {
+    existingEntry.coverImages.filter(Boolean).forEach((image) => validImages.add(image));
   }
-  const index = categories.findIndex((entry) => entry.id === 'portrait');
-  if (index < 0) throw new RequestError(404, 'Portrait category configuration was not found.');
+  if (coverImages.some((image) => !validImages.has(image))) {
+    throw new RequestError(400, `Covers must come from ${id} photographs.`);
+  }
   const updatedEntry = {
     ...categories[index],
     coverImage: coverImages[0],
-    coverImages,
-    coverPositions,
   };
+  if (id === 'portrait') {
+    updatedEntry.coverImages = coverImages;
+    updatedEntry.coverPositions = coverPositions;
+  } else {
+    updatedEntry.coverPosition = coverPositions[0];
+    delete updatedEntry.coverImages;
+    delete updatedEntry.coverPositions;
+  }
   const updatedCategories = [...categories];
   updatedCategories[index] = updatedEntry;
   await writeJson(paths.portfolioCategories, updatedCategories);

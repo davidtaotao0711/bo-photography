@@ -4,9 +4,10 @@
     "title": "Street",
     "description": "Unplanned gestures and everyday light.",
     "href": "/portfolio/street",
-    "coverImage": "/images/street/street-041.jpg",
+    "coverImage": "/images/street/street-011.jpg",
     "order": 2,
-    "variant": "standard"
+    "variant": "standard",
+    "coverPosition": "46.4% 69.3%"
   },
   {
     "id": "portrait",
@@ -34,18 +35,20 @@
     "title": "Scenes",
     "description": "Rooms, objects, architecture, and traces of place.",
     "href": "/portfolio/scenes",
-    "coverImage": "/images/scenes/scenes-070.jpg",
+    "coverImage": "/images/scenes/scenes-008.jpg",
     "order": 3,
-    "variant": "standard"
+    "variant": "standard",
+    "coverPosition": "50% 50%"
   },
   {
     "id": "nature",
     "title": "Nature",
     "description": "Sea, mountains, water, weather, and the natural world.",
     "href": "/portfolio/nature",
-    "coverImage": "/images/nature/nature-005.jpg",
+    "coverImage": "/images/nature/nature-013.jpg",
     "order": 4,
-    "variant": "standard"
+    "variant": "standard",
+    "coverPosition": "50% 50%"
   },
   {
     "id": "series",
@@ -55,6 +58,7 @@
     "coverImage": "/images/series/diptychs-and-triptychs/006.jpg",
     "order": 5,
     "variant": "feature",
-    "label": "Series / Small books / Edited stories"
+    "label": "Series / Small books / Edited stories",
+    "coverPosition": "50% 50%"
   }
 ]

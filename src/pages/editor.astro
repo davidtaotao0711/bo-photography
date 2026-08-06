@@ -56,6 +56,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
             <option value="featured">首页精选</option>
             <option value="all">全部照片</option>
             {categoryConfig.map((category) => <option value={category.slug}>{category.slug === 'portrait' ? 'Portrait Photos' : category.title}</option>)}
+            <option value="portfolio-entrance">Portfolio Entrance</option>
             <option value="portrait-layout">Portrait Books</option>
             <option value="series">Series</option>
           </select>
@@ -149,6 +150,17 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
             <div id="photo-grid" class="photo-grid" aria-label="可自由定位的照片版面"></div>
             <div id="category-sections" class="category-sections" aria-label="Portfolio selected and archive" hidden></div>
           </div>
+        </div>
+        <div id="portfolio-entrance-workspace" class="portfolio-entrance-workspace" hidden>
+          <header class="portfolio-entrance-head">
+            <div>
+              <p class="eyebrow">Portfolio opening</p>
+              <h2>Portfolio Entrance</h2>
+              <p>集中调整五个入口卡片的封面与取景位置。拖动预览图片即可微调，松手后自动保存。</p>
+            </div>
+            <a class="button" href="/portfolio" target="_blank" rel="noopener noreferrer">View Portfolio ↗</a>
+          </header>
+          <div id="portfolio-entrance-cards" class="portfolio-entrance-cards"></div>
         </div>
         <div id="portrait-layout-workspace" class="portrait-layout-workspace" hidden>
           <section id="portrait-books-list-view">
@@ -475,13 +487,13 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         <div class="dialog-head">
           <div>
             <p class="eyebrow">Portfolio entrance</p>
-            <h2>Portrait Covers</h2>
+            <h2 id="portfolio-entry-cover-dialog-title">Choose Covers</h2>
           </div>
           <button class="icon-button" value="cancel" aria-label="关闭" type="submit">×</button>
         </div>
         <div class="portrait-photo-picker__meta">
-          <p>依次选择左、中、右三张竖图。Selected 与 Archive 中的 Portrait 均可使用。</p>
-          <span id="portrait-category-cover-count">0 / 3 selected</span>
+          <p id="portfolio-entry-cover-dialog-copy">选择入口卡片使用的照片。</p>
+          <span id="portrait-category-cover-count">0 selected</span>
         </div>
         <input
           id="portrait-category-cover-search"
@@ -495,13 +507,13 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           class="portrait-photo-picker__grid"
           role="listbox"
           aria-multiselectable="true"
-          aria-label="Choose three Portrait entrance covers"
+          aria-label="Choose Portfolio entrance covers"
         ></div>
         <div class="dialog-actions portrait-photo-picker__actions">
           <span id="portrait-category-cover-selection" aria-live="polite">Choose left cover first</span>
           <div>
             <button class="text-button" value="cancel" type="submit">取消</button>
-            <button class="button button--primary" id="save-portrait-category-covers" type="button" disabled>Save three covers</button>
+            <button class="button button--primary" id="save-portrait-category-covers" type="button" disabled>Save cover</button>
           </div>
         </div>
       </form>
@@ -581,6 +593,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       let portraitPhotoPickerGroupId = '';
       let portraitPhotoPickerSelectionId = '';
       let portraitCategoryCoverSelection = [];
+      let portfolioEntrancePickerId = 'portrait';
       let fileHandle = null;
       let dirty = false;
       let activeSeriesSlug = sessionStorage.getItem('editorSeriesSlug') || '';
@@ -606,6 +619,8 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       const canvasViewport = document.querySelector('#canvas-viewport');
       const canvasStage = document.querySelector('#canvas-stage');
       const categorySections = document.querySelector('#category-sections');
+      const portfolioEntranceWorkspace = document.querySelector('#portfolio-entrance-workspace');
+      const portfolioEntranceCards = document.querySelector('#portfolio-entrance-cards');
       const addPhotosButton = document.querySelector('#add-photos');
       const addPhotosLabel = document.querySelector('#add-photos-label');
       const largeFileWarning = document.querySelector('#large-file-warning');
@@ -631,7 +646,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       const savedView = sessionStorage.getItem('editorView');
       const requestedView = new URLSearchParams(window.location.search).get('view');
       const initialView = requestedView || savedView;
-      if (['featured', 'all', ...photoCategories, 'portrait-layout', 'series'].includes(initialView)) viewFilter.value = initialView;
+      if (['featured', 'all', ...photoCategories, 'portfolio-entrance', 'portrait-layout', 'series'].includes(initialView)) viewFilter.value = initialView;
 
       const $ = (selector) => document.querySelector(selector);
       const escapeHtml = (value = '') => String(value)
@@ -1221,7 +1236,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
                   </div>`}
             </section>`;
         }).join('');
-        categorySections.innerHTML = `${category === 'portrait' ? portraitCategoryCoverPanel() : ''}${sections}`;
+        categorySections.innerHTML = sections;
         categorySections.querySelectorAll('.portfolio-photo-grid').forEach((container) => scheduleEditorMasonry(container));
       }
 
@@ -1255,14 +1270,47 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         return [...selected, ...archive];
       }
 
-      function portraitCategoryEntry() {
-        return portfolioCategoriesData.find((entry) => entry.id === 'portrait');
+      function portfolioEntranceEntry(id = portfolioEntrancePickerId) {
+        return portfolioCategoriesData.find((entry) => entry.id === id);
       }
 
-      function portraitCategoryCoverImages() {
-        const entry = portraitCategoryEntry();
-        const images = Array.isArray(entry?.coverImages) ? entry.coverImages.filter(Boolean).slice(0, 3) : [];
-        if (images.length === 3) return images;
+      function portfolioEntranceCoverCount(id) {
+        return id === 'portrait' ? 3 : 1;
+      }
+
+      function portfolioEntrancePhotos(id) {
+        const includeCurrentCovers = (items) => {
+          const includedImages = new Set(items.map((photo) => photo.image));
+          const currentImages = new Set(portfolioEntranceCoverImages(id));
+          const legacyCovers = photoData.filter((photo) => currentImages.has(photo.image) && !includedImages.has(photo.image));
+          return [...legacyCovers, ...items];
+        };
+        if (id === 'series') {
+          const seriesSlugs = new Set(seriesData.map((item) => item.slug));
+          return includeCurrentCovers(sortPhotosByOrder(photoData.filter((photo) => (
+            photo.category === 'series' || (photo.series && seriesSlugs.has(photo.series))
+          ))));
+        }
+        if (!photoCategories.includes(id)) return [];
+        const items = photoData.filter((photo) => photo.category === id);
+        const selected = sortPortfolioPhotos(
+          items.filter((photo) => getPortfolioStatus(photo, id) === 'selected'),
+          'selected',
+        );
+        const archive = sortPortfolioPhotos(
+          items.filter((photo) => getPortfolioStatus(photo, id) === 'archive'),
+          'archive',
+        );
+        return includeCurrentCovers([...selected, ...archive]);
+      }
+
+      function portfolioEntranceCoverImages(id = portfolioEntrancePickerId) {
+        const entry = portfolioEntranceEntry(id);
+        const count = portfolioEntranceCoverCount(id);
+        if (count === 3) {
+          const images = Array.isArray(entry?.coverImages) ? entry.coverImages.filter(Boolean).slice(0, count) : [];
+          if (images.length === count) return images;
+        }
         return entry?.coverImage ? [entry.coverImage] : [];
       }
 
@@ -1279,41 +1327,66 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         return { x, y, value: `${Number(x.toFixed(1))}% ${Number(y.toFixed(1))}%` };
       }
 
-      function portraitCategoryCoverPositions() {
-        const entry = portraitCategoryEntry();
-        const positions = Array.isArray(entry?.coverPositions) ? entry.coverPositions.slice(0, 3) : [];
-        return [0, 1, 2].map((index) => normalizePortraitCategoryCoverPosition(positions[index]).value);
+      function portfolioEntranceCoverPositions(id = portfolioEntrancePickerId) {
+        const entry = portfolioEntranceEntry(id);
+        const count = portfolioEntranceCoverCount(id);
+        const positions = count === 3 && Array.isArray(entry?.coverPositions)
+          ? entry.coverPositions.slice(0, count)
+          : [entry?.coverPosition];
+        return Array.from({ length: count }, (_, index) => normalizePortraitCategoryCoverPosition(positions[index]).value);
       }
 
-      function portraitCategoryCoverPanel() {
-        const images = portraitCategoryCoverImages();
-        const positions = portraitCategoryCoverPositions();
-        const photosByImage = new Map(portraitBookPhotos().map((photo) => [photo.image, photo]));
+      function portfolioEntranceCard(entry) {
+        const images = portfolioEntranceCoverImages(entry.id);
+        const positions = portfolioEntranceCoverPositions(entry.id);
+        const photosByImage = new Map(portfolioEntrancePhotos(entry.id).map((photo) => [photo.image, photo]));
+        const isPortrait = entry.id === 'portrait';
+        const isFeature = entry.variant === 'feature';
+        const labels = isPortrait ? ['Left', 'Center', 'Right'] : ['Cover'];
         return `
-          <section class="portrait-category-cover-panel">
-            <div>
-              <p class="eyebrow">Portfolio entrance</p>
-              <h2>Portrait covers</h2>
-              <p>Choose three vertical photographs, then drag each preview to adjust its visible area.</p>
-            </div>
-            <div class="portrait-category-cover-panel__images">
+          <article class="portfolio-entrance-card portfolio-entrance-card--${escapeHtml(entry.id)} ${isFeature ? 'portfolio-entrance-card--feature' : 'portfolio-entrance-card--standard'}" data-portfolio-entry-id="${escapeHtml(entry.id)}">
+            <header>
+              <p class="eyebrow">${String(Number(entry.order) || 0).padStart(2, '0')} · ${escapeHtml(entry.label || entry.variant || 'Category')}</p>
+              <h3>${escapeHtml(entry.title)}</h3>
+              <p>${escapeHtml(entry.description || '')}</p>
+            </header>
+            <div class="portfolio-entrance-card__media ${isPortrait ? 'portfolio-entrance-card__media--portrait' : ''}">
               ${images.map((image, index) => {
                 const photo = photosByImage.get(image);
-                const label = ['Left', 'Center', 'Right'][index];
-                return photo ? `<span
-                  data-portrait-category-cover-position="${index}"
+                const label = labels[index] || `Cover ${index + 1}`;
+                const imageMarkup = photo
+                  ? editorThumbnailMarkup(photo, `${entry.title} ${label}`)
+                  : `<img src="${escapeHtml(image)}" alt="${escapeHtml(`${entry.title} ${label}`)}" loading="lazy" decoding="async" />`;
+                return `<span
+                  data-portfolio-entry-cover-position="${index}"
                   style="--cover-position: ${positions[index]};"
-                  aria-label="Drag to reposition ${label.toLowerCase()} Portrait cover"
-                ><b>${label}</b>${editorThumbnailMarkup(photo, `${label} Portrait cover`)}<em>Drag to reposition</em></span>` : '';
+                  aria-label="Drag to reposition ${escapeHtml(entry.title)} ${label.toLowerCase()}"
+                ><b>${escapeHtml(label)}</b>${imageMarkup}<em>Drag to reposition</em></span>`;
               }).join('')}
             </div>
-            <button class="button" type="button" data-open-portrait-category-covers>Choose three covers</button>
-          </section>`;
+            <footer>
+              <span>${images.length} ${images.length === 1 ? 'cover' : 'covers'}</span>
+              <button class="button" type="button" data-open-portfolio-entry-covers="${escapeHtml(entry.id)}">Choose ${images.length === 1 ? 'cover' : 'three covers'}</button>
+            </footer>
+          </article>`;
+      }
+
+      function renderPortfolioEntrance() {
+        const orderedEntries = [...portfolioCategoriesData].sort((a, b) => Number(a.order) - Number(b.order));
+        const portrait = orderedEntries.find((entry) => entry.id === 'portrait');
+        const standards = orderedEntries.filter((entry) => ['street', 'scenes', 'nature'].includes(entry.id));
+        const series = orderedEntries.find((entry) => entry.id === 'series');
+        portfolioEntranceCards.innerHTML = `
+          ${portrait ? portfolioEntranceCard(portrait) : ''}
+          <div class="portfolio-entrance-standard-grid">${standards.map(portfolioEntranceCard).join('')}</div>
+          ${series ? portfolioEntranceCard(series) : ''}`;
       }
 
       function renderPortraitCategoryCoverPicker(query = '') {
         const normalizedQuery = query.trim().toLowerCase();
-        const photos = portraitBookPhotos();
+        const photos = portfolioEntrancePhotos(portfolioEntrancePickerId);
+        const entry = portfolioEntranceEntry();
+        const requiredCount = portfolioEntranceCoverCount(portfolioEntrancePickerId);
         const filteredPhotos = photos.filter((photo) => {
           if (!normalizedQuery) return true;
           const filename = (photo.image.split('/').pop() || '').replace(/\.[^.]+$/, '');
@@ -1340,52 +1413,67 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
                   <small>${escapeHtml(portraitBookCoverLabel(photo))}</small>
                 </button>`;
             }).join('')
-          : '<p class="portrait-book-cover-empty">No matching Portrait photographs.</p>';
-        $('#portrait-category-cover-count').textContent = `${portraitCategoryCoverSelection.length} / 3 selected`;
-        $('#portrait-category-cover-selection').textContent = portraitCategoryCoverSelection.length === 0
-          ? 'Choose left cover first'
-          : portraitCategoryCoverSelection.length === 1
-            ? 'Now choose the center cover'
-            : portraitCategoryCoverSelection.length === 2
-              ? 'Now choose the right cover'
-              : 'Left, center, and right covers ready';
-        $('#save-portrait-category-covers').disabled = portraitCategoryCoverSelection.length !== 3;
+          : `<p class="portrait-book-cover-empty">No matching ${escapeHtml(entry?.title || '')} photographs.</p>`;
+        $('#portrait-category-cover-count').textContent = `${portraitCategoryCoverSelection.length} / ${requiredCount} selected`;
+        $('#portrait-category-cover-selection').textContent = requiredCount === 1
+          ? (portraitCategoryCoverSelection.length ? 'Cover ready' : 'Choose one cover')
+          : portraitCategoryCoverSelection.length === 0
+            ? 'Choose left cover first'
+            : portraitCategoryCoverSelection.length === 1
+              ? 'Now choose the center cover'
+              : portraitCategoryCoverSelection.length === 2
+                ? 'Now choose the right cover'
+                : 'Left, center, and right covers ready';
+        $('#save-portrait-category-covers').disabled = portraitCategoryCoverSelection.length !== requiredCount;
       }
 
-      function openPortraitCategoryCoverDialog() {
-        portraitCategoryCoverSelection = portraitCategoryCoverImages();
+      function openPortraitCategoryCoverDialog(id) {
+        portfolioEntrancePickerId = id;
+        const entry = portfolioEntranceEntry();
+        const requiredCount = portfolioEntranceCoverCount(id);
+        portraitCategoryCoverSelection = portfolioEntranceCoverImages(id);
+        $('#portfolio-entry-cover-dialog-title').textContent = `${entry?.title || id} Cover${requiredCount === 1 ? '' : 's'}`;
+        $('#portfolio-entry-cover-dialog-copy').textContent = requiredCount === 1
+          ? `Choose one ${entry?.title || id} photograph.`
+          : 'Choose left, center, and right photographs in order.';
+        $('#save-portrait-category-covers').textContent = requiredCount === 1 ? 'Save cover' : 'Save three covers';
         $('#portrait-category-cover-search').value = '';
         renderPortraitCategoryCoverPicker();
         portraitCategoryCoverDialog.showModal();
       }
 
-      async function persistPortraitCategoryCovers(coverImages, coverPositions) {
+      async function persistPortraitCategoryCovers(id, coverImages, coverPositions) {
         const response = await fetch('/__editor/portfolio-categories/save', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: 'portrait', coverImages, coverPositions }),
+          body: JSON.stringify({ id, coverImages, coverPositions }),
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || 'Portfolio cover save failed.');
-        portfolioCategoriesData = portfolioCategoriesData.map((entry) => entry.id === 'portrait' ? result.entry : entry);
+        portfolioCategoriesData = portfolioCategoriesData.map((entry) => entry.id === id ? result.entry : entry);
         return result.entry;
       }
 
       async function savePortraitCategoryCovers() {
-        if (portraitCategoryCoverSelection.length !== 3) return;
+        const requiredCount = portfolioEntranceCoverCount(portfolioEntrancePickerId);
+        if (portraitCategoryCoverSelection.length !== requiredCount) return;
         const button = $('#save-portrait-category-covers');
         button.disabled = true;
         button.textContent = 'Saving…';
         try {
-          await persistPortraitCategoryCovers(portraitCategoryCoverSelection, ['50% 50%', '50% 50%', '50% 50%']);
+          await persistPortraitCategoryCovers(
+            portfolioEntrancePickerId,
+            portraitCategoryCoverSelection,
+            Array.from({ length: requiredCount }, () => '50% 50%'),
+          );
           portraitCategoryCoverDialog.close('saved');
-          renderPortfolioSections();
-          showToast('Portrait 首页三张封面已保存');
+          renderPortfolioEntrance();
+          showToast(`${portfolioEntranceEntry()?.title || 'Portfolio'} 入口封面已保存`);
         } catch (error) {
           window.alert(`保存失败：${error.message}`);
         } finally {
-          button.textContent = 'Save three covers';
-          button.disabled = portraitCategoryCoverSelection.length !== 3;
+          button.textContent = requiredCount === 1 ? 'Save cover' : 'Save three covers';
+          button.disabled = portraitCategoryCoverSelection.length !== requiredCount;
         }
       }
 
@@ -1849,6 +1937,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       function render() {
         const isSeriesView = viewFilter.value === 'series';
         const isPortraitLayoutView = viewFilter.value === 'portrait-layout';
+        const isPortfolioEntranceView = viewFilter.value === 'portfolio-entrance';
         sessionStorage.setItem('editorView', viewFilter.value);
         const editorUrl = new URL(window.location.href);
         if (editorUrl.searchParams.get('view') !== viewFilter.value) {
@@ -1857,10 +1946,11 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         }
         seriesWorkspace.hidden = !isSeriesView;
         portraitLayoutWorkspace.hidden = !isPortraitLayoutView;
-        canvasViewport.hidden = isSeriesView || isPortraitLayoutView;
+        portfolioEntranceWorkspace.hidden = !isPortfolioEntranceView;
+        canvasViewport.hidden = isSeriesView || isPortraitLayoutView || isPortfolioEntranceView;
         categorySections.hidden = !isPortfolioView();
         $('#empty-state').hidden = true;
-        $('#photo-search-field').hidden = isSeriesView || isPortraitLayoutView;
+        $('#photo-search-field').hidden = isSeriesView || isPortraitLayoutView || isPortfolioEntranceView;
         addPhotosButton.hidden = true;
         newSeriesButton.hidden = !isSeriesView || Boolean(activeSeriesSlug);
         layoutToolbar.hidden = true;
@@ -1868,6 +1958,18 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         if (isPortraitLayoutView) {
           grid.hidden = true;
           renderPortraitBooks();
+          return;
+        }
+        if (isPortfolioEntranceView) {
+          grid.hidden = true;
+          renderPortfolioEntrance();
+          $('#visible-count').textContent = String(portfolioCategoriesData.length);
+          $('#featured-count').textContent = String(portfolioCategoriesData.filter((entry) => entry.variant === 'feature').length);
+          $('#total-count').textContent = String(photoData.length);
+          $('#visible-label').textContent = '入口卡片';
+          $('#featured-label').textContent = '特殊入口';
+          $('#total-label').textContent = '照片总数';
+          $('#view-title').textContent = 'Portfolio Entrance · Covers';
           return;
         }
         $('#undo').disabled = history.length === 0;
@@ -3191,10 +3293,6 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       }
 
       categorySections.addEventListener('click', (event) => {
-        if (event.target.closest('[data-open-portrait-category-covers]')) {
-          openPortraitCategoryCoverDialog();
-          return;
-        }
         const layoutModeButton = event.target.closest('[data-category-layout-mode]');
         if (layoutModeButton) {
           setPortfolioRowsMode(layoutModeButton.dataset.categoryLayoutMode === 'rows');
@@ -3498,17 +3596,25 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         if (action === 'open-photo-picker') openPortraitPhotoPicker(groupId);
       });
 
-      categorySections.addEventListener('pointerdown', (event) => {
-        const frame = event.target.closest('[data-portrait-category-cover-position]');
+      portfolioEntranceWorkspace.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-open-portfolio-entry-covers]');
+        if (button) openPortraitCategoryCoverDialog(button.dataset.openPortfolioEntryCovers);
+      });
+
+      portfolioEntranceWorkspace.addEventListener('pointerdown', (event) => {
+        const frame = event.target.closest('[data-portfolio-entry-cover-position]');
         if (!frame || event.target.closest('button')) return;
+        const card = frame.closest('[data-portfolio-entry-id]');
         const image = frame.querySelector('img');
-        const entry = portraitCategoryEntry();
-        const coverImages = portraitCategoryCoverImages();
-        if (!image || !entry || coverImages.length !== 3) return;
+        const id = card?.dataset.portfolioEntryId;
+        const entry = portfolioEntranceEntry(id);
+        const coverImages = portfolioEntranceCoverImages(id);
+        const requiredCount = portfolioEntranceCoverCount(id);
+        if (!image || !entry || coverImages.length !== requiredCount) return;
 
         event.preventDefault();
-        const index = Number(frame.dataset.portraitCategoryCoverPosition);
-        const positions = portraitCategoryCoverPositions();
+        const index = Number(frame.dataset.portfolioEntryCoverPosition);
+        const positions = portfolioEntranceCoverPositions(id);
         const start = normalizePortraitCategoryCoverPosition(positions[index]);
         const bounds = frame.getBoundingClientRect();
         const startX = event.clientX;
@@ -3534,10 +3640,11 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
           if (!changed) return;
 
           try {
-            await persistPortraitCategoryCovers(coverImages, positions);
-            showToast(`${index === 0 ? '左侧' : '右侧'}封面位置已保存`);
+            await persistPortraitCategoryCovers(id, coverImages, positions);
+            const slot = requiredCount === 1 ? '' : `${['左', '中', '右'][index]}侧`;
+            showToast(`${entry.title} ${slot}封面位置已保存`);
           } catch (error) {
-            renderPortfolioSections();
+            renderPortfolioEntrance();
             window.alert(`封面位置保存失败：${error.message}`);
           }
         };
@@ -3589,10 +3696,11 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         const option = event.target.closest('[data-portrait-category-cover]');
         if (!option) return;
         const image = option.dataset.portraitCategoryCover;
+        const requiredCount = portfolioEntranceCoverCount(portfolioEntrancePickerId);
         const selectedIndex = portraitCategoryCoverSelection.indexOf(image);
         if (selectedIndex >= 0) portraitCategoryCoverSelection.splice(selectedIndex, 1);
-        else if (portraitCategoryCoverSelection.length < 3) portraitCategoryCoverSelection.push(image);
-        else portraitCategoryCoverSelection[2] = image;
+        else if (portraitCategoryCoverSelection.length < requiredCount) portraitCategoryCoverSelection.push(image);
+        else portraitCategoryCoverSelection[requiredCount - 1] = image;
         renderPortraitCategoryCoverPicker($('#portrait-category-cover-search').value);
       });
       $('#save-portrait-category-covers').addEventListener('click', savePortraitCategoryCovers);
@@ -3956,15 +4064,45 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
   .layout-toolbar button.is-active { border-color: var(--ink); color: #fff; background: var(--ink); }
   .layout-toolbar button:disabled { opacity: .28; cursor: default; }
   .series-workspace,
-  .portrait-layout-workspace { padding-top: clamp(2.5rem, 5vw, 5rem); }
+  .portrait-layout-workspace,
+  .portfolio-entrance-workspace { padding-top: clamp(2.5rem, 5vw, 5rem); }
   .series-workspace[hidden],
   .portrait-layout-workspace[hidden],
+  .portfolio-entrance-workspace[hidden],
   #portrait-books-list-view[hidden],
   #portrait-book-detail-view[hidden],
   #series-list-view[hidden],
   #series-detail-view[hidden],
   .series-photo-grid[hidden],
   .series-photo-empty[hidden] { display: none; }
+  .portfolio-entrance-head { margin-bottom: clamp(2rem, 4vw, 4rem); padding-bottom: 2rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; border-bottom: 1px solid var(--line); }
+  .portfolio-entrance-head h2 { margin: .6rem 0 0; font: 400 clamp(3rem, 5vw, 5.5rem)/.9 var(--serif); letter-spacing: -.05em; }
+  .portfolio-entrance-head p:last-child { max-width: 42rem; margin: 1rem 0 0; color: var(--muted); line-height: 1.65; }
+  .portfolio-entrance-cards { display: grid; gap: clamp(2rem, 4vw, 4rem); }
+  .portfolio-entrance-standard-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); }
+  .portfolio-entrance-card { min-width: 0; overflow: hidden; border: 1px solid var(--line); background: rgba(255,255,255,.28); }
+  .portfolio-entrance-card > header { padding: clamp(1rem, 2vw, 1.5rem); }
+  .portfolio-entrance-card > header h3 { margin: .55rem 0 0; font: 400 clamp(2rem, 3vw, 3.5rem)/.92 var(--serif); letter-spacing: -.045em; }
+  .portfolio-entrance-card > header p:last-child { max-width: 30rem; margin: .7rem 0 0; color: var(--muted); font-size: .66rem; line-height: 1.55; }
+  .portfolio-entrance-card__media { min-width: 0; display: grid; gap: .65rem; padding: 0 clamp(1rem, 2vw, 1.5rem); }
+  .portfolio-entrance-card__media > span { min-width: 0; position: relative; display: block; overflow: hidden; aspect-ratio: 1/1; background: #e6e3dc; cursor: grab; touch-action: none; user-select: none; }
+  .portfolio-entrance-card--standard .portfolio-entrance-card__media > span { aspect-ratio: 4/5; }
+  .portfolio-entrance-card__media > span.is-repositioning { cursor: grabbing; }
+  .portfolio-entrance-card__media--portrait { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .portfolio-entrance-card__media--portrait > span { aspect-ratio: 5/8; }
+  .portfolio-entrance-card--series .portfolio-entrance-card__media > span { aspect-ratio: 4/3; }
+  .portfolio-entrance-card__media picture,
+  .portfolio-entrance-card__media img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .portfolio-entrance-card__media img { object-position: var(--cover-position, 50% 50%); pointer-events: none; }
+  .portfolio-entrance-card__media b,
+  .portfolio-entrance-card__media em { position: absolute; z-index: 2; padding: .25rem .4rem; color: #fff; background: rgba(20,20,19,.52); font-size: .48rem; font-style: normal; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; pointer-events: none; }
+  .portfolio-entrance-card__media b { top: .4rem; left: .4rem; }
+  .portfolio-entrance-card__media em { right: .4rem; bottom: .4rem; }
+  .portfolio-entrance-card > footer { padding: 1rem clamp(1rem, 2vw, 1.5rem) clamp(1rem, 2vw, 1.5rem); display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .56rem; letter-spacing: .08em; text-transform: uppercase; }
+  .portfolio-entrance-card--feature { display: grid; grid-template-columns: minmax(14rem, .7fr) minmax(30rem, 1.5fr); grid-template-rows: 1fr auto; }
+  .portfolio-entrance-card--feature > header { grid-column: 1; grid-row: 1; align-self: center; }
+  .portfolio-entrance-card--feature > .portfolio-entrance-card__media { grid-column: 2; grid-row: 1 / 3; padding-block: clamp(1rem, 2vw, 1.5rem); align-items: center; }
+  .portfolio-entrance-card--feature > footer { grid-column: 1; grid-row: 2; }
   .portrait-layout-head { margin-bottom: 3rem; padding-bottom: 2rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; border-bottom: 1px solid var(--line); }
   .portrait-layout-head h2 { margin: 0; font: 400 clamp(2.8rem, 5vw, 5rem)/.92 var(--serif); letter-spacing: -.045em; }
   .portrait-layout-head > div:first-child > p:last-child { max-width: 38rem; margin: 1rem 0 0; color: var(--muted); line-height: 1.7; }
@@ -4500,6 +4638,12 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     .portrait-layout-group__order { grid-column: 2 / -1; justify-self: end; }
     .portrait-book-cover-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .portrait-photo-picker__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .portfolio-entrance-standard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .portfolio-entrance-card--feature { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .portfolio-entrance-card--feature > header,
+    .portfolio-entrance-card--feature > .portfolio-entrance-card__media,
+    .portfolio-entrance-card--feature > footer { grid-column: 1; grid-row: auto; }
+    .portfolio-entrance-card--feature > .portfolio-entrance-card__media { padding-block: 0; }
   }
   @media (max-width: 620px) {
     .editor-header { height: 4rem; padding: 0 1rem; }
@@ -4546,6 +4690,8 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     .portrait-photo-picker__meta { flex-direction: column; }
     .portrait-photo-picker__actions { align-items: stretch; flex-direction: column; gap: .75rem; }
     .portrait-photo-picker__actions > span { max-width: 100%; }
+    .portfolio-entrance-head { align-items: flex-start; flex-direction: column; }
+    .portfolio-entrance-standard-grid { grid-template-columns: 1fr; }
     .portrait-category-cover-panel { grid-template-columns: 1fr; align-items: stretch; }
     .portfolio-section__head { align-items: flex-start; flex-direction: column; }
     .portfolio-section__actions { width: 100%; align-items: stretch; justify-content: space-between; }

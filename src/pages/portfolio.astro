@@ -23,7 +23,6 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
 <BaseLayout title={`Portfolio — ${site.name}`}>
   <section class="archive-opening page-shell" aria-labelledby="archive-title">
     <header class="archive-intro">
-      <p class="eyebrow">{site.name} / Archive</p>
       <h1 id="archive-title">Portfolio</h1>
       <p class="archive-intro__copy">Photographs arranged by subject, then gathered into longer stories.</p>
     </header>
@@ -54,7 +53,8 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
 
 <style>
   .archive-opening {
-    padding-top: clamp(1.5rem, 3vh, 2.25rem);
+    margin-top: -.75rem;
+    padding-top: 0;
     padding-bottom: clamp(2.5rem, 5vh, 4rem);
     display: flex;
     flex-direction: column;
@@ -66,16 +66,12 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
     padding-inline: clamp(1.25rem, 2.5vw, 2.75rem);
   }
 
-  .archive-opening {
-    padding-inline: clamp(1rem, 1.6vw, 1.75rem);
-  }
-
   .archive-intro {
     flex: 0 0 auto;
   }
 
   .archive-intro h1 {
-    margin-top: clamp(.75rem, 1.5vh, 1.1rem);
+    margin-top: 0;
     font: 400 clamp(4.5rem, 7.4vw, 7.25rem)/.84 var(--serif);
     letter-spacing: 0;
   }
@@ -112,7 +108,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
   .archive-cards :global(.category-card) {
     height: auto;
     min-height: 0;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 5 / 8;
     grid-template-rows: clamp(8rem, 9vw, 9.5rem) minmax(0, 1fr);
   }
 
@@ -180,7 +176,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
     }
 
     .archive-cards :global(.category-card) {
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 5 / 8;
       grid-template-rows: clamp(7.5rem, 13vw, 8.5rem) minmax(0, 1fr);
     }
 
@@ -204,6 +200,7 @@ const seriesFeatures = numberedEntries.filter(({ entry }) => entry.id === 'serie
 
   @media (max-width: 620px) {
     .archive-opening {
+      margin-top: 0;
       padding-top: 1.5rem;
       padding-inline: clamp(1rem, 4.5vw, 1.15rem);
       padding-bottom: 2rem;
