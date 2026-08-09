@@ -1,4 +1,4 @@
-import { get, put } from "@vercel/blob";
+import { BlobPreconditionFailedError, get, put } from "@vercel/blob";
 
 const allowedOrigins = new Set([
   "https://bophotography.work",
@@ -112,13 +112,20 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       payload: body.payload,
     };
 
-    await put(syncPath(key), JSON.stringify(stored), {
-      access: "private",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: Boolean(current),
-      ...(current ? { ifMatch: current.etag } : {}),
-    });
+    try {
+      await put(syncPath(key), JSON.stringify(stored), {
+        access: "private",
+        contentType: "application/json",
+        addRandomSuffix: false,
+        allowOverwrite: Boolean(current),
+        ...(current ? { ifMatch: current.etag } : {}),
+      });
+    } catch (error) {
+      if (!(error instanceof BlobPreconditionFailedError)) throw error;
+      const latest = await readStored(key);
+      json(request, response, latest?.data ?? { error: "not_found" }, 409);
+      return;
+    }
 
     json(request, response, stored);
   } catch (error) {
