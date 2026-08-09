@@ -41,7 +41,7 @@ async function readStored(key: string) {
 
 export default async function handler(request: Request) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: responseHeaders(request) });
-  const key = new URL(request.url).searchParams.get("key");
+  const key = new URL(request.url, "https://bophotography.work").searchParams.get("key");
   if (!validKey(key)) return json(request, { error: "invalid_sync_key" }, 400);
 
   try {
