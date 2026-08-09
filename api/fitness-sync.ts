@@ -90,7 +90,15 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       return;
     }
 
-    const body = (typeof request.body === "string" ? JSON.parse(request.body) : request.body) as {
+    let parsedBody: unknown;
+    try {
+      parsedBody = typeof request.body === "string" ? JSON.parse(request.body) : request.body;
+    } catch {
+      json(request, response, { error: "invalid_payload" }, 400);
+      return;
+    }
+
+    const body = parsedBody as {
       expectedRevision?: string;
       updatedAt?: string;
       payload?: unknown;
