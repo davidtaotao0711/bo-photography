@@ -13,6 +13,7 @@
     "compress:images": "node scripts/compress-images.mjs"
   },
   "dependencies": {
+    "@vercel/blob": "^2.7.0",
     "astro": "^5.0.0",
     "sharp": "^0.35.2"
   }
