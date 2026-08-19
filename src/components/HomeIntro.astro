@@ -4,6 +4,7 @@ import ResponsiveImage from './ResponsiveImage.astro';
 interface IntroImage {
   src: string;
   mobileSrc?: string;
+  mobileSrcset?: string;
   alt: string;
 }
 
@@ -28,10 +29,12 @@ const { images, name, tagline } = Astro.props;
         <ResponsiveImage
           src={image.src}
           mobileSrc={image.mobileSrc}
+          mobileSrcset={image.mobileSrcset}
           alt=""
           loading={index === 0 ? 'eager' : 'lazy'}
-          fetchpriority={index === 0 ? 'high' : 'low'}
+          fetchpriority={index === 0 ? 'high' : undefined}
           sizes="100vw"
+          defer={index > 0}
         />
       </div>
     ))}
@@ -178,8 +181,22 @@ const { images, name, tagline } = Astro.props;
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     root.classList.add('home-intro-locked');
 
+    const ensureSlideLoaded = (slide) => {
+      if (!slide || slide.dataset.imageLoaded === 'true') return;
+      slide.querySelectorAll('source[data-srcset]').forEach((source) => {
+        source.setAttribute('srcset', source.dataset.srcset || '');
+        source.removeAttribute('data-srcset');
+      });
+      slide.querySelectorAll('img[data-src]').forEach((image) => {
+        image.setAttribute('src', image.dataset.src || '');
+        image.removeAttribute('data-src');
+      });
+      slide.dataset.imageLoaded = 'true';
+    };
+
     const showSlide = (nextIndex, immediate = false) => {
       if (nextIndex < 0 || nextIndex >= slides.length) return;
+      ensureSlideLoaded(slides[nextIndex]);
 
       if (immediate && nextIndex !== activeIndex) {
         if (manualTransitionId) window.clearTimeout(manualTransitionId);

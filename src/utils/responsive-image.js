@@ -10,5 +10,6 @@ export function getResponsiveImage(src) {
     height: entry.height,
     webpSrcset: variants.map((variant) => `${variant.src} ${variant.width}w`).join(', '),
     fallback: variants.at(-1)?.src || src,
+    placeholder: entry.placeholder || '',
   };
 }

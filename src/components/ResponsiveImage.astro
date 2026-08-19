@@ -4,6 +4,7 @@ import { getResponsiveImage } from '../utils/responsive-image.js';
 interface Props {
   src: string;
   mobileSrc?: string;
+  mobileSrcset?: string;
   alt: string;
   sizes: string;
   loading?: 'eager' | 'lazy';
@@ -12,11 +13,13 @@ interface Props {
   class?: string;
   imgClass?: string;
   style?: string;
+  defer?: boolean;
 }
 
 const {
   src,
   mobileSrc,
+  mobileSrcset,
   alt,
   sizes,
   loading = 'lazy',
@@ -25,22 +28,39 @@ const {
   class: className,
   imgClass,
   style,
+  defer = false,
 } = Astro.props;
 const responsive = getResponsiveImage(src);
+const fallback = responsive?.fallback || src;
+const placeholderStyle = responsive?.placeholder
+  ? `background-image: url(${responsive.placeholder}); background-size: cover; background-position: center;`
+  : '';
+const imageStyle = [placeholderStyle, style].filter(Boolean).join(' ');
 ---
 
 <picture class:list={['responsive-image', className]}>
-  {mobileSrc && <source media="(max-width: 768px)" srcset={mobileSrc} sizes="100vw" />}
-  {responsive?.webpSrcset && <source type="image/webp" srcset={responsive.webpSrcset} sizes={sizes} />}
+  {mobileSrc && <source
+    media="(max-width: 768px)"
+    srcset={defer ? undefined : (mobileSrcset || mobileSrc)}
+    data-srcset={defer ? (mobileSrcset || mobileSrc) : undefined}
+    sizes="100vw"
+  />}
+  {responsive?.webpSrcset && <source
+    type="image/webp"
+    srcset={defer ? undefined : responsive.webpSrcset}
+    data-srcset={defer ? responsive.webpSrcset : undefined}
+    sizes={sizes}
+  />}
   <img
     class={imgClass}
-    src={responsive?.fallback || src}
+    src={defer ? undefined : fallback}
+    data-src={defer ? fallback : undefined}
     alt={alt}
     width={responsive?.width}
     height={responsive?.height}
     loading={loading}
     decoding={decoding}
     fetchpriority={fetchpriority}
-    style={style}
+    style={imageStyle || undefined}
   />
 </picture>

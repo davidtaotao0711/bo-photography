@@ -2,14 +2,14 @@
 import ResponsiveImage from './ResponsiveImage.astro';
 
 interface Series { slug: string; title: string; year?: string; coverImage?: string; description?: string }
-interface Props { item: Series; index: number; coverImage?: string; photoCount?: number }
-const { item, index, coverImage = '', photoCount = 0 } = Astro.props;
+interface Props { item: Series; index: number; coverImage?: string; photoCount?: number; priority?: boolean }
+const { item, index, coverImage = '', photoCount = 0, priority = false } = Astro.props;
 ---
 
 <article class="series-card">
   <a href={`/series/${item.slug}`}>
     <div class:list={["series-card__image", { "is-empty": !coverImage }]}>
-      {coverImage ? <ResponsiveImage src={coverImage} alt={`Cover of ${item.title}`} sizes="(max-width: 720px) 100vw, 42vw" /> : <span>Empty series</span>}
+      {coverImage ? <ResponsiveImage src={coverImage} alt={`Cover of ${item.title}`} sizes="(max-width: 720px) 100vw, 42vw" loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined} /> : <span>Empty series</span>}
     </div>
     <div class="series-card__text">
       <p>{String(index + 1).padStart(2, '0')}</p>
