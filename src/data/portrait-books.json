@@ -2,7 +2,7 @@
   "version": 1,
   "books": [
     {
-      "title": "清冷",
+      "title": "cool and detached",
       "slug": "black-bob",
       "year": "2026",
       "description": "Three close portrait studies arranged as a small editorial book.",
@@ -10,7 +10,7 @@
       "order": 1,
       "layout": {
         "version": 1,
-        "title": "清冷",
+        "title": "cool and detached",
         "introduction": "Direct gaze, quiet gestures and winter light.",
         "groups": [
           {
