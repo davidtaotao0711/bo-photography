@@ -561,6 +561,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     <div id="toast" role="status" aria-live="polite"></div>
 
     <script>
+      import { installSharedPhotoPicker } from '../scripts/shared-photo-picker.js';
       import { buildOrientationRows } from '../utils/photo-layout.js';
       import { collageLayoutPresets, normalizeCollageLayout, sortPhotosByOrder } from '../utils/collage-layout.js';
       import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../utils/portfolio-status.js';
@@ -623,7 +624,34 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       const portfolioEntranceCards = document.querySelector('#portfolio-entrance-cards');
       const addPhotosButton = document.querySelector('#add-photos');
       const addPhotosLabel = document.querySelector('#add-photos-label');
+      const sharedPicker = installSharedPhotoPicker({
+        canImport: () => {
+          if (dirty) { window.alert('请先保存当前修改，再从共享图库添加照片。'); return false; }
+          return !addPhotosButton.disabled;
+        },
+        onImported: (result) => {
+          snapshot();
+          photoData = migratePortfolioPhotos(result.photoData);
+          searchInput.value = '';
+          setDirty(false, `已从共享图库添加 ${result.photos.length} 张照片到 Archive`);
+          render();
+          showToast(`已添加 ${result.photos.length} 张，跳过 ${result.skipped || 0} 张重复照片。`);
+        },
+      });
       const largeFileWarning = document.querySelector('#large-file-warning');
+      const seriesSharedPicker = installSharedPhotoPicker({
+        anchor: '#upload-series-photos',
+        series: true,
+        canImport: () => Boolean(activeSeriesSlug) && ensureSeriesActionReady() && ensureLayoutSaved() && !document.querySelector('#upload-series-photos').disabled,
+        onImported: (result) => {
+          photoData = migratePortfolioPhotos(result.photoData);
+          if (result.series) seriesData = seriesData.map(item => item.slug === result.series.slug ? result.series : item);
+          layoutDraftSlug = '';
+          setDirty(false, `已从共享图库添加 ${result.photos.length} 张照片到当前系列`);
+          renderSeries();
+          showToast(`已添加 ${result.photos.length} 张，跳过 ${result.skipped || 0} 张重复照片。`);
+        },
+      });
       const newSeriesButton = document.querySelector('#new-series');
       const seriesWorkspace = document.querySelector('#series-workspace');
       const portraitLayoutWorkspace = document.querySelector('#portrait-layout-workspace');
@@ -1122,6 +1150,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       function renderSeries() {
         const ordered = orderedSeries();
         const activeItem = ordered.find((item) => item.slug === activeSeriesSlug);
+        seriesSharedPicker.setCategory(activeItem ? `series:${activeItem.slug}` : '');
         if (activeSeriesSlug && !activeItem) {
           activeSeriesSlug = '';
           sessionStorage.removeItem('editorSeriesSlug');
@@ -1935,6 +1964,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       }
 
       function render() {
+        sharedPicker.setCategory(photoCategories.includes(viewFilter.value) ? viewFilter.value : '');
         const isSeriesView = viewFilter.value === 'series';
         const isPortraitLayoutView = viewFilter.value === 'portrait-layout';
         const isPortfolioEntranceView = viewFilter.value === 'portfolio-entrance';

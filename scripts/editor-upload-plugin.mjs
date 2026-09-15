@@ -5,6 +5,7 @@ import { photoCategorySlugs } from '../src/data/categories.js';
 import { getPortfolioStatus, migratePortfolioPhotos } from '../src/utils/portfolio-status.js';
 import { PORTRAIT_LAYOUT_PRESETS, normalizePortraitBooks } from '../src/utils/portrait-layout.js';
 import { updateResponsiveManifest } from './generate-responsive-images.mjs';
+import { handleSharedLibrary } from './shared-photo-library.mjs';
 
 const CATEGORY_ENDPOINT = '/__editor/import-photos';
 const SERIES_CREATE_ENDPOINT = '/__editor/series/create';
@@ -357,8 +358,8 @@ function completeLayoutRows(rows, photos) {
   return normalized;
 }
 
-async function importCategoryPhotos(request, projectRoot) {
-  const formData = await webRequestFrom(request, CATEGORY_ENDPOINT).formData();
+async function importCategoryPhotos(request, projectRoot, sharedForm) {
+  const formData = sharedForm || await webRequestFrom(request, CATEGORY_ENDPOINT).formData();
   const category = String(formData.get('category') || '');
   const uploads = formData.getAll('photos');
 
@@ -427,6 +428,7 @@ async function importCategoryPhotos(request, projectRoot) {
         aspect: details.aspect,
         orientation: details.orientation,
         alt: `${category.charAt(0).toUpperCase() + category.slice(1)} photograph by Bo David`,
+        ...(sharedForm ? { sharedLibraryId: metadata[index].sharedLibraryId } : {}),
       });
       existingIds.add(id);
       nextArchiveOrder += 1;
@@ -475,8 +477,8 @@ async function createSeries(request, projectRoot) {
   return { series: item };
 }
 
-async function uploadSeriesPhotos(request, projectRoot) {
-  const formData = await webRequestFrom(request, SERIES_UPLOAD_ENDPOINT).formData();
+async function uploadSeriesPhotos(request, projectRoot, sharedForm) {
+  const formData = sharedForm || await webRequestFrom(request, SERIES_UPLOAD_ENDPOINT).formData();
   const slug = validateSlug(formData.get('slug'));
   const uploads = formData.getAll('photos');
   if (!uploads.length) throw new RequestError(400, '没有收到照片。');
@@ -530,6 +532,7 @@ async function uploadSeriesPhotos(request, projectRoot) {
         title: `No. ${String(seriesPhotos.length + index + 1).padStart(2, '0')}`,
         category: 'series',
         series: slug,
+        ...(sharedForm ? { sharedLibraryId: metadata[index]?.sharedLibraryId } : {}),
         location: '',
         date: String(series[seriesIndex].year || new Date().getFullYear()),
         image,
@@ -689,6 +692,7 @@ export function editorUploadPlugin() {
     configureServer(server) {
       server.middlewares.use(async (request, response, next) => {
         const pathname = new URL(request.url || '/', 'http://localhost').pathname;
+        if (await handleSharedLibrary(request, response, process.cwd(), importCategoryPhotos, CATEGORIES, uploadSeriesPhotos)) return;
         if (pathname === EDITOR_HEALTH_ENDPOINT) {
           if (request.method !== 'GET') return sendJson(response, 405, { error: 'Only GET is supported.' });
           return sendJson(response, 200, { editorApiVersion: EDITOR_API_VERSION });
