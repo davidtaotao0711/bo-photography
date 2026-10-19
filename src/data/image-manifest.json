@@ -4437,5 +4437,2029 @@
         "src": "/images/generated/portrait__portrait-060-1280.webp"
       }
     ]
+  },
+  "/images/nature/nature-022.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-022-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-022-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-022-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-022-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-023.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-023-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-023-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-023-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-023-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-024.jpg": {
+    "width": 5538,
+    "height": 3295,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-024-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-024-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-024-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-024-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-025.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-025-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-025-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-025-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-025-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-026.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-026-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-026-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-026-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-026-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-027.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-027-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-027-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-027-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-027-1600.webp"
+      }
+    ]
+  },
+  "/images/nature/nature-028.jpg": {
+    "width": 2943,
+    "height": 1502,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/nature__nature-028-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/nature__nature-028-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/nature__nature-028-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/nature__nature-028-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/001.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__001-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__001-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__001-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__001-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/002.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__002-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__002-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__002-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__002-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/003.jpg": {
+    "width": 2646,
+    "height": 1851,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__003-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__003-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__003-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__003-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/004.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__004-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__004-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__004-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__004-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/005.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__005-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__005-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__005-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__005-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/006.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__006-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__006-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__006-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__006-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/007.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__007-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__007-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__007-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__007-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/008.jpg": {
+    "width": 2585,
+    "height": 1750,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__008-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__008-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__008-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__008-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/009.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__009-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__009-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__009-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__009-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/010.jpg": {
+    "width": 2882,
+    "height": 1949,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__010-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__010-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__010-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__010-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/011.jpg": {
+    "width": 2740,
+    "height": 1799,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__011-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__011-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__011-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__011-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/012.jpg": {
+    "width": 5432,
+    "height": 3629,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__012-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__012-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__012-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__012-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/013.jpg": {
+    "width": 3687,
+    "height": 5774,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__013-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__013-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__013-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__013-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/014.jpg": {
+    "width": 4915,
+    "height": 3441,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__014-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__014-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__014-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__014-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/015.jpg": {
+    "width": 4478,
+    "height": 2675,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__015-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__015-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__015-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__015-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/016.jpg": {
+    "width": 5902,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__016-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__016-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__016-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__016-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/017.jpg": {
+    "width": 5306,
+    "height": 3055,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__017-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__017-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__017-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__017-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/018.jpg": {
+    "width": 3770,
+    "height": 5690,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__018-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__018-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__018-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__018-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/019.jpg": {
+    "width": 5724,
+    "height": 3297,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__019-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__019-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__019-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__019-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/020.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__020-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__020-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__020-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__020-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/021.jpg": {
+    "width": 5298,
+    "height": 3511,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__021-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__021-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__021-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__021-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/022.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__022-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__022-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__022-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__022-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/023.jpg": {
+    "width": 5708,
+    "height": 3550,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__023-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__023-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__023-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__023-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/024.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__024-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__024-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__024-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__024-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/025.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__025-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__025-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__025-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__025-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/026.jpg": {
+    "width": 5989,
+    "height": 2956,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__026-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__026-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__026-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__026-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/027.jpg": {
+    "width": 5740,
+    "height": 3813,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__027-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__027-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__027-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__027-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/028.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__028-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__028-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__028-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__028-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/029.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__029-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__029-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__029-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__029-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/030.jpg": {
+    "width": 3404,
+    "height": 5479,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__030-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__030-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__030-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__030-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/031.jpg": {
+    "width": 5953,
+    "height": 3819,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__031-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__031-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__031-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__031-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/032.jpg": {
+    "width": 3227,
+    "height": 5112,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__032-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__032-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__032-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__032-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/033.jpg": {
+    "width": 5546,
+    "height": 3813,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__033-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__033-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__033-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__033-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/034.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__034-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__034-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__034-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__034-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/035.jpg": {
+    "width": 5582,
+    "height": 3242,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__035-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__035-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__035-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__035-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/036.jpg": {
+    "width": 5789,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__036-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__036-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__036-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__036-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/037.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__037-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__037-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__037-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__037-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/038.jpg": {
+    "width": 5352,
+    "height": 3781,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__038-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__038-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__038-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__038-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/039.jpg": {
+    "width": 5764,
+    "height": 3622,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__039-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__039-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__039-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__039-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/040.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__040-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__040-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__040-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__040-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/041.jpg": {
+    "width": 5254,
+    "height": 3773,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__041-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__041-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__041-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__041-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/042.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__042-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__042-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__042-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__042-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/043.jpg": {
+    "width": 5337,
+    "height": 3376,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__043-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__043-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__043-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__043-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/044.jpg": {
+    "width": 5337,
+    "height": 3376,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__044-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__044-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__044-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__044-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/045.jpg": {
+    "width": 5237,
+    "height": 3620,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__045-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__045-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__045-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__045-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/046.jpg": {
+    "width": 3876,
+    "height": 5677,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__046-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__046-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__046-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__046-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/047.jpg": {
+    "width": 3722,
+    "height": 5619,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__047-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__047-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__047-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__047-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/048.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__048-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__048-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__048-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__048-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/049.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__049-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__049-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__049-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__049-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/050.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__050-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__050-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__050-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__050-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/051.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__051-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__051-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__051-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__051-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/052.jpg": {
+    "width": 5499,
+    "height": 3394,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__052-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__052-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__052-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__052-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/053.jpg": {
+    "width": 6048,
+    "height": 3538,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__053-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__053-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__053-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__053-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/054.jpg": {
+    "width": 3428,
+    "height": 5254,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__054-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__054-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__054-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__054-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/055.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__055-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__055-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__055-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__055-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/056.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__056-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__056-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__056-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__056-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/057.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__057-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__057-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__057-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__057-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/058.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__058-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__058-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__058-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__058-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/059.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__059-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__059-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__059-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__059-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/060.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__060-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__060-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__060-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__060-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/061.jpg": {
+    "width": 5861,
+    "height": 3907,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__061-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__061-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__061-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__061-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/062.jpg": {
+    "width": 5222,
+    "height": 3417,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__062-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__062-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__062-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__062-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/063.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__063-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__063-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__063-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__063-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/064.jpg": {
+    "width": 5401,
+    "height": 3669,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__064-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__064-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__064-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__064-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/065.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__065-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__065-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__065-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__065-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/066.jpg": {
+    "width": 4700,
+    "height": 3339,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__066-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__066-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__066-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__066-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/067.jpg": {
+    "width": 6048,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__067-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__067-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__067-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__067-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/068.jpg": {
+    "width": 5465,
+    "height": 3643,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__068-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__068-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__068-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__068-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/069.jpg": {
+    "width": 5627,
+    "height": 3579,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__069-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__069-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__069-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__069-1600.webp"
+      }
+    ]
+  },
+  "/images/series/kashgar-livestock-market/070.jpg": {
+    "width": 5231,
+    "height": 3806,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/series__kashgar-livestock-market__070-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/series__kashgar-livestock-market__070-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/series__kashgar-livestock-market__070-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/series__kashgar-livestock-market__070-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-061.jpg": {
+    "width": 3115,
+    "height": 5178,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-061-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-061-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-061-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-061-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-062.jpg": {
+    "width": 3666,
+    "height": 5701,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-062-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-062-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-062-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-062-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-063.jpg": {
+    "width": 2870,
+    "height": 4032,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-063-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-063-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-063-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-063-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-064.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-064-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-064-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-064-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-064-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-065.jpg": {
+    "width": 4032,
+    "height": 5953,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-065-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-065-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-065-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-065-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-066.jpg": {
+    "width": 3579,
+    "height": 5440,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-066-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-066-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-066-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-066-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-067.jpg": {
+    "width": 3460,
+    "height": 5202,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-067-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-067-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-067-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-067-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-068.jpg": {
+    "width": 2160,
+    "height": 3280,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-068-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-068-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-068-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-068-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-069.jpg": {
+    "width": 3580,
+    "height": 5226,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-069-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-069-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-069-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-069-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-070.jpg": {
+    "width": 4032,
+    "height": 6048,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-070-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-070-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-070-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-070-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-071.jpg": {
+    "width": 2075,
+    "height": 3130,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-071-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-071-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-071-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-071-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-072.jpg": {
+    "width": 1930,
+    "height": 3004,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-072-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-072-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-072-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-072-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-073.jpg": {
+    "width": 2618,
+    "height": 1961,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-073-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-073-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-073-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-073-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-074.jpg": {
+    "width": 3130,
+    "height": 2075,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-074-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-074-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-074-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-074-1600.webp"
+      }
+    ]
+  },
+  "/images/portrait/portrait-075.jpg": {
+    "width": 3329,
+    "height": 5512,
+    "variants": [
+      {
+        "width": 480,
+        "src": "/images/generated/portrait__portrait-075-480.webp"
+      },
+      {
+        "width": 800,
+        "src": "/images/generated/portrait__portrait-075-800.webp"
+      },
+      {
+        "width": 1200,
+        "src": "/images/generated/portrait__portrait-075-1200.webp"
+      },
+      {
+        "width": 1600,
+        "src": "/images/generated/portrait__portrait-075-1600.webp"
+      }
+    ]
   }
 }

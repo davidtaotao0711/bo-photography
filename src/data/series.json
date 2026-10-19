@@ -38,5 +38,13 @@
     "description": "Just excuses of losing focus",
     "coverImage": "/images/series/motion-and-blur/001.jpg",
     "order": 5
+  },
+  {
+    "slug": "kashgar-livestock-market",
+    "title": "KASHGAR Livestock Market",
+    "year": "",
+    "description": "",
+    "coverImage": "/images/series/kashgar-livestock-market/001.jpg",
+    "order": 6
   }
 ]

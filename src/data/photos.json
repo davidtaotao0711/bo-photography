@@ -95,7 +95,7 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.63
+      "ratio": 0.62
     }
   },
   {
@@ -122,13 +122,13 @@
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
     "layout": {
-      "colSpan": 6,
+      "colSpan": 4,
       "rowSpan": 4,
       "crop": false,
       "fit": "contain",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.08
+      "ratio": 1.26
     }
   },
   {
@@ -266,13 +266,13 @@
     "order": 10,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 48,
+    "archiveOrder": 46,
     "detailScale": 100,
     "categoryLayoutWidth": 100,
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 8,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
@@ -325,18 +325,18 @@
     "order": 12,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 46,
+    "archiveOrder": 47,
     "detailScale": 100,
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 12,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.61
+      "ratio": 0.55
     }
   },
   {
@@ -378,20 +378,20 @@
     "alt": "Street photograph: street 013",
     "order": 14,
     "portfolioStatus": "selected",
-    "selectedOrder": 16,
+    "selectedOrder": 17,
     "archiveOrder": null,
     "detailScale": 100,
     "categoryLayoutWidth": 100,
     "categoryLayoutOffsetX": 0,
     "categoryLayoutOffsetY": 0,
     "layout": {
-      "colSpan": 6,
+      "colSpan": 4,
       "rowSpan": 4,
       "crop": false,
       "fit": "contain",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.08
+      "ratio": 1.23
     }
   },
   {
@@ -416,7 +416,7 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.34
+      "ratio": 1.19
     },
     "detailScale": 100,
     "categoryLayoutWidth": 100,
@@ -748,7 +748,7 @@
     "alt": "Street photograph: street 033",
     "order": 28,
     "portfolioStatus": "selected",
-    "selectedOrder": 14,
+    "selectedOrder": 16,
     "archiveOrder": null,
     "layout": {
       "colSpan": 4,
@@ -876,7 +876,7 @@
     },
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 13
+    "archiveOrder": 12
   },
   {
     "id": "portrait-002",
@@ -947,7 +947,7 @@
     "order": 14,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 14
+    "archiveOrder": 13
   },
   {
     "id": "portrait-008",
@@ -1166,35 +1166,7 @@
     "order": 20,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 16
-  },
-  {
-    "id": "portrait-017",
-    "title": "No. 75",
-    "category": "portrait",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/portrait/portrait-017.jpg",
-    "featured": false,
-    "orientation": "portrait",
-    "alt": "Portrait photograph: portrait 017",
-    "categoryLayoutOffsetX": -10,
-    "categoryLayoutOffsetY": 1,
-    "categoryLayoutWidth": 62,
-    "order": 16,
-    "portfolioStatus": "archive",
-    "selectedOrder": null,
-    "archiveOrder": 2,
-    "layout": {
-      "colSpan": 4,
-      "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
-      "focalX": 50,
-      "focalY": 50,
-      "ratio": 1.43
-    }
+    "archiveOrder": 15
   },
   {
     "id": "scenes-005",
@@ -1346,7 +1318,7 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.67
+      "ratio": 0.59
     }
   },
   {
@@ -1469,10 +1441,10 @@
     "selectedOrder": null,
     "archiveOrder": 43,
     "layout": {
-      "colSpan": 6,
+      "colSpan": 8,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.69
@@ -1528,7 +1500,7 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.55
+      "ratio": 0.59
     },
     "portfolioStatus": "archive",
     "selectedOrder": null,
@@ -1557,7 +1529,7 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.4
+      "ratio": 1.41
     }
   },
   {
@@ -1576,13 +1548,13 @@
     "selectedOrder": null,
     "archiveOrder": 38,
     "layout": {
-      "colSpan": 6,
+      "colSpan": 4,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.23
+      "ratio": 1.22
     }
   },
   {
@@ -1600,7 +1572,16 @@
     "order": 20,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 1
+    "archiveOrder": 1,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.66
+    }
   },
   {
     "id": "scenes-004",
@@ -1617,7 +1598,16 @@
     "order": 21,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 2
+    "archiveOrder": 2,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.42
+    }
   },
   {
     "id": "scenes-024",
@@ -1633,7 +1623,16 @@
     "order": 23,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 3
+    "archiveOrder": 3,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.42
+    }
   },
   {
     "id": "scenes-036",
@@ -1649,7 +1648,15 @@
     "order": 26,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 4
+    "archiveOrder": 4,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
   },
   {
     "id": "scenes-053",
@@ -1766,7 +1773,16 @@
     "order": 28,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 5
+    "archiveOrder": 5,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.68
+    }
   },
   {
     "id": "scenes-047",
@@ -1839,7 +1855,16 @@
     "order": 31,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 6
+    "archiveOrder": 6,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
   },
   {
     "id": "scenes-046",
@@ -2144,8 +2169,8 @@
     "layout": {
       "colSpan": 6,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
       "focalY": 50,
       "ratio": 0.61
@@ -2314,7 +2339,8 @@
       "crop": false,
       "fit": "contain",
       "focalX": 50,
-      "focalY": 50
+      "focalY": 50,
+      "ratio": 0.64
     },
     "portfolioStatus": "selected",
     "selectedOrder": 7,
@@ -2364,7 +2390,7 @@
     "order": 22,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 5,
+    "archiveOrder": 4,
     "layoutWidth": 117
   },
   {
@@ -2382,7 +2408,7 @@
     "order": 21,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 4,
+    "archiveOrder": 3,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -2432,7 +2458,7 @@
     "order": 33,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 10,
+    "archiveOrder": 9,
     "layoutWidth": 67,
     "layoutOffsetX": -11,
     "layoutOffsetY": -22
@@ -2453,7 +2479,7 @@
     "order": 26,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 6,
+    "archiveOrder": 5,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -2721,16 +2747,16 @@
     "alt": "Scenes photograph by Bo David",
     "order": 38,
     "portfolioStatus": "selected",
-    "selectedOrder": 18,
+    "selectedOrder": 14,
     "archiveOrder": null,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
       "crop": true,
-      "fit": "cover",
+      "fit": "contain",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.23
+      "ratio": 1.26
     },
     "detailScale": 100,
     "categoryLayoutWidth": 100,
@@ -2811,7 +2837,7 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.4
+      "ratio": 1.41
     }
   },
   {
@@ -3179,7 +3205,7 @@
     },
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 15
+    "archiveOrder": 14
   },
   {
     "id": "portrait-028",
@@ -3195,7 +3221,7 @@
     "order": 28,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 7,
+    "archiveOrder": 6,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -3220,7 +3246,7 @@
     "order": 29,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 8,
+    "archiveOrder": 7,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -3322,31 +3348,6 @@
     "archiveOrder": 35
   },
   {
-    "id": "scenes-074",
-    "title": "No. 46",
-    "category": "scenes",
-    "series": "",
-    "location": "",
-    "date": "2026",
-    "image": "/images/scenes/scenes-074.jpg",
-    "featured": false,
-    "orientation": "landscape",
-    "alt": "Scenes photograph by Bo David",
-    "order": 45,
-    "portfolioStatus": "archive",
-    "selectedOrder": null,
-    "archiveOrder": 44,
-    "layout": {
-      "colSpan": 12,
-      "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
-      "focalX": 50,
-      "focalY": 50,
-      "ratio": 0.55
-    }
-  },
-  {
     "id": "scenes-075",
     "title": "No. 47",
     "category": "scenes",
@@ -3401,7 +3402,16 @@
     "order": 49,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 12
+    "archiveOrder": 12,
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.34
+    }
   },
   {
     "id": "scenes-079",
@@ -3442,15 +3452,15 @@
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
-      "crop": true,
-      "fit": "cover",
+      "crop": false,
+      "fit": "contain",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.32
+      "ratio": 1.5
     },
     "order": 11,
     "portfolioStatus": "selected",
-    "selectedOrder": 11,
+    "selectedOrder": 13,
     "archiveOrder": null
   },
   {
@@ -3468,10 +3478,11 @@
     "layout": {
       "colSpan": 6,
       "rowSpan": 4,
-      "crop": false,
-      "fit": "contain",
+      "crop": true,
+      "fit": "cover",
       "focalX": 50,
-      "focalY": 50
+      "focalY": 50,
+      "ratio": 0.66
     },
     "portfolioStatus": "selected",
     "selectedOrder": 10,
@@ -3490,7 +3501,7 @@
     "alt": "Nature photograph by Bo David",
     "order": 12,
     "layout": {
-      "colSpan": 4,
+      "colSpan": 8,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
@@ -3514,7 +3525,7 @@
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "layout": {
-      "colSpan": 4,
+      "colSpan": 6,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
@@ -3524,7 +3535,7 @@
     },
     "order": 14,
     "portfolioStatus": "selected",
-    "selectedOrder": 14,
+    "selectedOrder": 15,
     "archiveOrder": null
   },
   {
@@ -3545,11 +3556,11 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.64
+      "ratio": 0.55
     },
     "order": 15,
     "portfolioStatus": "selected",
-    "selectedOrder": 15,
+    "selectedOrder": 16,
     "archiveOrder": null
   },
   {
@@ -3571,10 +3582,10 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.32
+      "ratio": 1.27
     },
     "portfolioStatus": "selected",
-    "selectedOrder": 13,
+    "selectedOrder": 14,
     "archiveOrder": null
   },
   {
@@ -3616,7 +3627,7 @@
     "order": 19,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 3,
+    "archiveOrder": 2,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -3641,7 +3652,7 @@
     "order": 31,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 9,
+    "archiveOrder": 8,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -3770,7 +3781,7 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.72
+      "ratio": 0.6
     },
     "order": 52,
     "portfolioStatus": "archive",
@@ -3846,7 +3857,7 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.65
+      "ratio": 0.58
     },
     "portfolioStatus": "archive",
     "selectedOrder": null,
@@ -3891,7 +3902,7 @@
     "order": 24,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 18
+    "archiveOrder": 17
   },
   {
     "id": "portrait-035",
@@ -3930,16 +3941,16 @@
     "orientation": "landscape",
     "alt": "Nature photograph by Bo David",
     "layout": {
-      "colSpan": 6,
+      "colSpan": 8,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.64
+      "ratio": 0.74
     },
     "portfolioStatus": "selected",
-    "selectedOrder": 16,
+    "selectedOrder": 11,
     "archiveOrder": null
   },
   {
@@ -3956,7 +3967,7 @@
     "order": 34,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 11,
+    "archiveOrder": 10,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -3985,12 +3996,12 @@
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 1.33
+      "ratio": 1.39
     },
     "order": 42,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 47,
+    "archiveOrder": 44,
     "detailScale": 100,
     "categoryLayoutWidth": 100,
     "categoryLayoutOffsetX": 0,
@@ -4209,13 +4220,13 @@
     "alt": "Scenes photograph by Bo David",
     "order": 67,
     "layout": {
-      "colSpan": 6,
+      "colSpan": 8,
       "rowSpan": 4,
       "crop": true,
       "fit": "cover",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.59
+      "ratio": 0.6
     },
     "portfolioStatus": "archive",
     "selectedOrder": null,
@@ -4263,11 +4274,11 @@
       "fit": "contain",
       "focalX": 50,
       "focalY": 50,
-      "ratio": 0.61
+      "ratio": 0.55
     },
     "order": 56,
     "portfolioStatus": "selected",
-    "selectedOrder": 17,
+    "selectedOrder": 18,
     "archiveOrder": null
   },
   {
@@ -4317,7 +4328,7 @@
     },
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 17,
+    "archiveOrder": 16,
     "layoutOffsetX": -27,
     "layoutOffsetY": -51,
     "layoutWidth": 132
@@ -4363,7 +4374,7 @@
     "order": 35,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 12,
+    "archiveOrder": 11,
     "layout": {
       "colSpan": 4,
       "rowSpan": 4,
@@ -5694,7 +5705,7 @@
     "featured": false,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 19,
+    "archiveOrder": 18,
     "aspect": 0.5675,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David"
@@ -5710,7 +5721,7 @@
     "featured": false,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 20,
+    "archiveOrder": 19,
     "aspect": 0.6061,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David"
@@ -5726,7 +5737,7 @@
     "featured": false,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 21,
+    "archiveOrder": 20,
     "aspect": 0.741,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David"
@@ -5742,7 +5753,7 @@
     "featured": false,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 22,
+    "archiveOrder": 21,
     "aspect": 0.5684,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
@@ -5761,7 +5772,7 @@
     "featured": false,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 23,
+    "archiveOrder": 22,
     "aspect": 0.6667,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David",
@@ -5779,7 +5790,7 @@
     "featured": false,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 24,
+    "archiveOrder": 23,
     "aspect": 0.6428,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David"
@@ -5795,9 +5806,1748 @@
     "featured": false,
     "portfolioStatus": "archive",
     "selectedOrder": null,
-    "archiveOrder": 25,
+    "archiveOrder": 24,
     "aspect": 0.6384,
     "orientation": "portrait",
     "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "nature-022",
+    "title": "No. 18",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-022.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 18,
+    "archiveOrder": null,
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "nature-023",
+    "title": "No. 19",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-023.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 19,
+    "archiveOrder": null,
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "nature-024",
+    "title": "No. 20",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-024.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 20,
+    "archiveOrder": null,
+    "aspect": 1.6807,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.59
+    }
+  },
+  {
+    "id": "nature-025",
+    "title": "No. 21",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-025.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 22,
+    "archiveOrder": null,
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "nature-026",
+    "title": "No. 22",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-026.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 23,
+    "archiveOrder": null,
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "nature-028",
+    "title": "No. 24",
+    "category": "nature",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/nature/nature-028.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 21,
+    "archiveOrder": null,
+    "aspect": 1.9594,
+    "orientation": "landscape",
+    "alt": "Nature photograph by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.59
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-001",
+    "title": "No. 01",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/001.jpg",
+    "featured": false,
+    "order": 5,
+    "size": "standard",
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 1 by Bo David",
+    "layout": {
+      "colSpan": 12,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-002",
+    "title": "No. 02",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/002.jpg",
+    "featured": false,
+    "order": 3,
+    "size": "standard",
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 2 by Bo David",
+    "layout": {
+      "colSpan": 8,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-003",
+    "title": "No. 03",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/003.jpg",
+    "featured": false,
+    "order": 1,
+    "size": "standard",
+    "aspect": 1.4295,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 3 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.66
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-004",
+    "title": "No. 04",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/004.jpg",
+    "featured": false,
+    "order": 2,
+    "size": "standard",
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 4 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.66
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-005",
+    "title": "No. 05",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/005.jpg",
+    "featured": false,
+    "order": 6,
+    "size": "standard",
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 5 by Bo David",
+    "layout": {
+      "colSpan": 8,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.71
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-006",
+    "title": "No. 06",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/006.jpg",
+    "featured": false,
+    "order": 11,
+    "size": "standard",
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 6 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-009",
+    "title": "No. 09",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/009.jpg",
+    "featured": false,
+    "order": 8,
+    "size": "standard",
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 9 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.6
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-010",
+    "title": "No. 10",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/010.jpg",
+    "featured": false,
+    "order": 7,
+    "size": "standard",
+    "aspect": 1.4787,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 10 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-011",
+    "title": "No. 11",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/011.jpg",
+    "featured": false,
+    "order": 9,
+    "size": "standard",
+    "aspect": 1.5231,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 11 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.68
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-012",
+    "title": "No. 12",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/012.jpg",
+    "featured": false,
+    "order": 10,
+    "size": "standard",
+    "aspect": 1.4968,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 12 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.68
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-013",
+    "title": "No. 13",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/013.jpg",
+    "featured": false,
+    "order": 4,
+    "size": "standard",
+    "aspect": 0.6386,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 13 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.34
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-014",
+    "title": "No. 14",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/014.jpg",
+    "featured": false,
+    "order": 13,
+    "size": "standard",
+    "aspect": 1.4284,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 14 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.6
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-015",
+    "title": "No. 15",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/015.jpg",
+    "featured": false,
+    "order": 12,
+    "size": "standard",
+    "aspect": 1.674,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 15 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-017",
+    "title": "No. 17",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/017.jpg",
+    "featured": false,
+    "order": 19,
+    "size": "standard",
+    "aspect": 1.7368,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 17 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.61
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-018",
+    "title": "No. 18",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/018.jpg",
+    "featured": false,
+    "order": 15,
+    "size": "standard",
+    "aspect": 0.6626,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 18 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.42
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-019",
+    "title": "No. 19",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/019.jpg",
+    "featured": false,
+    "order": 18,
+    "size": "standard",
+    "aspect": 1.7361,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 19 by Bo David",
+    "layout": {
+      "colSpan": 12,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.55
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-020",
+    "title": "No. 20",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/020.jpg",
+    "featured": false,
+    "order": 23,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 20 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.51
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-022",
+    "title": "No. 22",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/022.jpg",
+    "featured": false,
+    "order": 16,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 22 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.66
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-023",
+    "title": "No. 23",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/023.jpg",
+    "featured": false,
+    "order": 14,
+    "size": "standard",
+    "aspect": 1.6079,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 23 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.6
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-024",
+    "title": "No. 24",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/024.jpg",
+    "featured": false,
+    "order": 17,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 24 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.65
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-025",
+    "title": "No. 25",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/025.jpg",
+    "featured": false,
+    "order": 20,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 25 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.46
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-026",
+    "title": "No. 26",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/026.jpg",
+    "featured": false,
+    "order": 25,
+    "size": "standard",
+    "aspect": 2.026,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 26 by Bo David",
+    "layout": {
+      "colSpan": 8,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.55
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-027",
+    "title": "No. 27",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/027.jpg",
+    "featured": false,
+    "order": 21,
+    "size": "standard",
+    "aspect": 1.5054,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 27 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-028",
+    "title": "No. 28",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/028.jpg",
+    "featured": false,
+    "order": 24,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 28 by Bo David",
+    "layout": {
+      "colSpan": 8,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.55
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-029",
+    "title": "No. 29",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/029.jpg",
+    "featured": false,
+    "order": 27,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 29 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-030",
+    "title": "No. 30",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/030.jpg",
+    "featured": false,
+    "order": 26,
+    "size": "standard",
+    "aspect": 0.6213,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 30 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.51
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-031",
+    "title": "No. 31",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/031.jpg",
+    "featured": false,
+    "order": 28,
+    "size": "standard",
+    "aspect": 1.5588,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 31 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-032",
+    "title": "No. 32",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/032.jpg",
+    "featured": false,
+    "order": 29,
+    "size": "standard",
+    "aspect": 0.6313,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 32 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.46
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-033",
+    "title": "No. 33",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/033.jpg",
+    "featured": false,
+    "order": 22,
+    "size": "standard",
+    "aspect": 1.4545,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 33 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-034",
+    "title": "No. 34",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/034.jpg",
+    "featured": false,
+    "order": 30,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 34 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-035",
+    "title": "No. 35",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/035.jpg",
+    "featured": false,
+    "order": 31,
+    "size": "standard",
+    "aspect": 1.7218,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 35 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-036",
+    "title": "No. 36",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/036.jpg",
+    "featured": false,
+    "order": 34,
+    "size": "standard",
+    "aspect": 1.4358,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 36 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-037",
+    "title": "No. 37",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/037.jpg",
+    "featured": false,
+    "order": 33,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 37 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.49
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-038",
+    "title": "No. 38",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/038.jpg",
+    "featured": false,
+    "order": 35,
+    "size": "standard",
+    "aspect": 1.4155,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 38 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.63
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-039",
+    "title": "No. 39",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/039.jpg",
+    "featured": false,
+    "order": 32,
+    "size": "standard",
+    "aspect": 1.5914,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 39 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-040",
+    "title": "No. 40",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/040.jpg",
+    "featured": false,
+    "order": 36,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 40 by Bo David",
+    "layout": {
+      "colSpan": 12,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.6
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-042",
+    "title": "No. 42",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/042.jpg",
+    "featured": false,
+    "order": 37,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 42 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-045",
+    "title": "No. 45",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/045.jpg",
+    "featured": false,
+    "order": 38,
+    "size": "standard",
+    "aspect": 1.4467,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 45 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-046",
+    "title": "No. 46",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/046.jpg",
+    "featured": false,
+    "order": 39,
+    "size": "standard",
+    "aspect": 0.6828,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 46 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-047",
+    "title": "No. 47",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/047.jpg",
+    "featured": false,
+    "order": 40,
+    "size": "standard",
+    "aspect": 0.6624,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 47 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-048",
+    "title": "No. 48",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/048.jpg",
+    "featured": false,
+    "order": 41,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 48 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-049",
+    "title": "No. 49",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/049.jpg",
+    "featured": false,
+    "order": 42,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 49 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.71
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-050",
+    "title": "No. 50",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/050.jpg",
+    "featured": false,
+    "order": 43,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 50 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-051",
+    "title": "No. 51",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/051.jpg",
+    "featured": false,
+    "order": 44,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 51 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-052",
+    "title": "No. 52",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/052.jpg",
+    "featured": false,
+    "order": 45,
+    "size": "standard",
+    "aspect": 1.6202,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 52 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-053",
+    "title": "No. 53",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/053.jpg",
+    "featured": false,
+    "order": 46,
+    "size": "standard",
+    "aspect": 1.7094,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 53 by Bo David",
+    "layout": {
+      "colSpan": 12,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-054",
+    "title": "No. 54",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/054.jpg",
+    "featured": false,
+    "order": 48,
+    "size": "standard",
+    "aspect": 0.6525,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 54 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.5
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-055",
+    "title": "No. 55",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/055.jpg",
+    "featured": false,
+    "order": 47,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 55 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-056",
+    "title": "No. 56",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/056.jpg",
+    "featured": false,
+    "order": 51,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 56 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.47
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-057",
+    "title": "No. 57",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/057.jpg",
+    "featured": false,
+    "order": 53,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 57 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.47
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-058",
+    "title": "No. 58",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/058.jpg",
+    "featured": false,
+    "order": 49,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 58 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-059",
+    "title": "No. 59",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/059.jpg",
+    "featured": false,
+    "order": 52,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 59 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.47
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-060",
+    "title": "No. 60",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/060.jpg",
+    "featured": false,
+    "order": 50,
+    "size": "standard",
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "KASHGAR Livestock Market photograph 60 by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.5
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-061",
+    "title": "No. 61",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/061.jpg",
+    "featured": false,
+    "order": 54,
+    "size": "standard",
+    "aspect": 1.5001,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 61 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-062",
+    "title": "No. 62",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/062.jpg",
+    "featured": false,
+    "order": 55,
+    "size": "standard",
+    "aspect": 1.5282,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 62 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": true,
+      "fit": "cover",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-063",
+    "title": "No. 63",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/063.jpg",
+    "featured": false,
+    "order": 56,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 63 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-064",
+    "title": "No. 64",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/064.jpg",
+    "featured": false,
+    "order": 57,
+    "size": "standard",
+    "aspect": 1.4721,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 64 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-065",
+    "title": "No. 65",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/065.jpg",
+    "featured": false,
+    "order": 58,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 65 by Bo David"
+  },
+  {
+    "id": "kashgar-livestock-market-066",
+    "title": "No. 66",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/066.jpg",
+    "featured": false,
+    "order": 59,
+    "size": "standard",
+    "aspect": 1.4076,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 66 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-067",
+    "title": "No. 67",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/067.jpg",
+    "featured": false,
+    "order": 60,
+    "size": "standard",
+    "aspect": 1.5,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 67 by Bo David",
+    "layout": {
+      "colSpan": 6,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "kashgar-livestock-market-068",
+    "title": "No. 68",
+    "category": "series",
+    "series": "kashgar-livestock-market",
+    "location": "",
+    "date": "2026",
+    "image": "/images/series/kashgar-livestock-market/068.jpg",
+    "featured": false,
+    "order": 61,
+    "size": "standard",
+    "aspect": 1.5001,
+    "orientation": "landscape",
+    "alt": "KASHGAR Livestock Market photograph 68 by Bo David",
+    "layout": {
+      "colSpan": 12,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50
+    }
+  },
+  {
+    "id": "portrait-061",
+    "title": "No. 82",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-061.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 23,
+    "archiveOrder": null,
+    "aspect": 0.6016,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.49
+    }
+  },
+  {
+    "id": "portrait-062",
+    "title": "No. 83",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-062.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 21,
+    "archiveOrder": null,
+    "aspect": 0.643,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.36
+    }
+  },
+  {
+    "id": "portrait-063",
+    "title": "No. 84",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-063.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 25,
+    "aspect": 0.7118,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-064",
+    "title": "No. 85",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-064.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 26,
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-065",
+    "title": "No. 86",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-065.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 18,
+    "archiveOrder": null,
+    "aspect": 0.6773,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David"
+  },
+  {
+    "id": "portrait-066",
+    "title": "No. 87",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-066.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 25,
+    "archiveOrder": null,
+    "aspect": 0.6579,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.48
+    }
+  },
+  {
+    "id": "portrait-067",
+    "title": "No. 88",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-067.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 19,
+    "archiveOrder": null,
+    "aspect": 0.6651,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.48
+    }
+  },
+  {
+    "id": "portrait-068",
+    "title": "No. 89",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-068.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 24,
+    "archiveOrder": null,
+    "aspect": 0.6585,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.48
+    }
+  },
+  {
+    "id": "portrait-069",
+    "title": "No. 90",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-069.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 29,
+    "aspect": 0.685,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.33
+    }
+  },
+  {
+    "id": "portrait-070",
+    "title": "No. 91",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-070.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 27,
+    "aspect": 0.6667,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.4
+    }
+  },
+  {
+    "id": "portrait-072",
+    "title": "No. 93",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-072.jpg",
+    "featured": false,
+    "portfolioStatus": "archive",
+    "selectedOrder": null,
+    "archiveOrder": 28,
+    "aspect": 0.6425,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.51
+    }
+  },
+  {
+    "id": "portrait-074",
+    "title": "No. 95",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-074.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 22,
+    "archiveOrder": null,
+    "aspect": 1.5084,
+    "orientation": "landscape",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 8,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 0.67
+    }
+  },
+  {
+    "id": "portrait-075",
+    "title": "No. 96",
+    "category": "portrait",
+    "series": "",
+    "location": "",
+    "date": "2026",
+    "image": "/images/portrait/portrait-075.jpg",
+    "featured": false,
+    "portfolioStatus": "selected",
+    "selectedOrder": 20,
+    "archiveOrder": null,
+    "aspect": 0.604,
+    "orientation": "portrait",
+    "alt": "Portrait photograph by Bo David",
+    "layout": {
+      "colSpan": 4,
+      "rowSpan": 4,
+      "crop": false,
+      "fit": "contain",
+      "focalX": 50,
+      "focalY": 50,
+      "ratio": 1.48
+    }
   }
 ]
