@@ -77,6 +77,12 @@ export async function generateResponsiveVariants(sourcePath, { projectRoot = pro
   if (!usableWidths.includes(largestGeneratedWidth)) usableWidths.push(largestGeneratedWidth);
 
   const sourceStat = await fs.stat(sourcePath);
+  const placeholder = `data:image/webp;base64,${(await sharp(sourcePath)
+    .rotate()
+    .resize({ width: 24, height: 24, fit: 'inside', withoutEnlargement: true })
+    .blur(8)
+    .webp({ quality: 36, effort: 2 })
+    .toBuffer()).toString('base64')}`;
   const variants = [];
   let generated = 0;
   for (const targetWidth of [...new Set(usableWidths)].sort((a, b) => a - b)) {
@@ -93,7 +99,7 @@ export async function generateResponsiveVariants(sourcePath, { projectRoot = pro
     variants.push({ width: targetWidth, src: toPublicPath(projectRoot, outputPath) });
   }
 
-  return { publicPath, entry: { width, height, variants }, generated };
+  return { publicPath, entry: { width, height, variants, placeholder }, generated };
 }
 
 /** Update one manifest entry without scanning or rewriting the photo library. */
@@ -117,10 +123,17 @@ export async function generateResponsiveImages({ projectRoot = process.cwd() } =
   await fs.mkdir(outputRoot, { recursive: true });
   const files = await walk(sourceRoot, outputRoot);
   const manifest = {};
-  for (const file of files) {
-    const result = await generateResponsiveVariants(file, { projectRoot });
-    manifest[result.publicPath] = result.entry;
-  }
+  const results = new Array(files.length);
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < files.length) {
+      const index = cursor;
+      cursor += 1;
+      results[index] = await generateResponsiveVariants(files[index], { projectRoot });
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(4, files.length) }, () => worker()));
+  results.forEach((result) => { manifest[result.publicPath] = result.entry; });
   await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
   console.log(`Generated ${Object.keys(manifest).length} responsive image entries.`);
   return manifest;

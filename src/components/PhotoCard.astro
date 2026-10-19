@@ -32,6 +32,7 @@ interface CollageLayout {
 interface Props {
   photo: Photo;
   eager?: boolean;
+  priority?: boolean;
   layoutScope?: 'home' | 'category' | 'none';
   reveal?: boolean;
   homeCaptionMode?: boolean;
@@ -41,6 +42,7 @@ interface Props {
 const {
   photo,
   eager = false,
+  priority = false,
   layoutScope = 'home',
   reveal = false,
   homeCaptionMode = false,
@@ -107,7 +109,7 @@ const isRatioAdjusted = collage && Boolean(layout?.ratio);
     <>
       <button class="photo-card__trigger" type="button" aria-expanded="false" aria-label={hasHomeCaption ? (accessibleTitle ? `Show caption for ${accessibleTitle}` : 'Show caption') : 'View photograph'}>
         <div class="photo-card__image">
-          <ResponsiveImage src={photo.image} alt={photo.alt} loading="lazy" sizes={imageSizes} />
+          <ResponsiveImage src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined} sizes={imageSizes} />
         </div>
       </button>
       {hasHomeCaption && <div class="photo-card__home-caption" aria-hidden="true" aria-live="polite">
@@ -118,7 +120,7 @@ const isRatioAdjusted = collage && Boolean(layout?.ratio);
   ) : (
     <a href={`/photo/${photo.id}`} aria-label={photoTitle ? `View ${photoTitle}` : 'View photograph'}>
       <div class="photo-card__image">
-        <ResponsiveImage src={photo.image} alt={photo.alt} loading="lazy" sizes={imageSizes} />
+        <ResponsiveImage src={photo.image} alt={photo.alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined} sizes={imageSizes} />
       </div>
     </a>
   )}

@@ -19,14 +19,15 @@ const { books } = Astro.props;
 
 <section class="portrait-shelf page-shell" aria-label="Portrait books">
   <div class="portrait-shelf__grid">
-    {books.map((book) => (
+    {books.map((book, index) => (
       <article class="portrait-shelf__book" data-portrait-book-card>
         <a href={`/portfolio/portrait/${book.slug}`} data-portrait-book-link>
           <span class="portrait-shelf__cover">
             <ResponsiveImage
               src={book.coverImage}
               alt={book.coverAlt || `${book.title} cover`}
-              loading="eager"
+              loading={index < 2 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : undefined}
               sizes="(max-width: 540px) 88vw, (max-width: 900px) 44vw, 340px"
             />
           </span>
