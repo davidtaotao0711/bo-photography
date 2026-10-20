@@ -7,6 +7,8 @@ import photos from '../../../data/photos.json';
 import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
 import site from '../../../data/site.json';
 import { getPhotoMeta } from '../../../utils/photo-metadata.js';
+import galleryLayouts from '../../../data/gallery-layouts.json';
+import { visibleCanvasPhotos } from '../../../utils/gallery-canvas.js';
 
 export function getStaticPaths() {
   return photoCategories
@@ -18,10 +20,10 @@ const { category } = Astro.params;
 const categoryConfig = getPhotoCategory(category);
 const title = categoryConfig?.title || '';
 const normalizedPhotos = migratePortfolioPhotos(photos);
-const archiveItems = sortPortfolioPhotos(
+const archiveItems = visibleCanvasPhotos(galleryLayouts.galleries[`category:${category}:archive`], sortPortfolioPhotos(
   normalizedPhotos.filter((photo) => photo.category === category && getPortfolioStatus(photo, category) === 'archive'),
   'archive',
-);
+));
 const lightboxData = archiveItems.map((photo) => ({
   id: photo.id,
   image: photo.image,
@@ -43,7 +45,7 @@ const lightboxData = archiveItems.map((photo) => ({
 
   {archiveItems.length ? (
     <section class="gallery gallery--archive page-shell">
-      <GalleryGrid photos={archiveItems} reveal={false} />
+      <GalleryGrid photos={archiveItems} galleryKey={`category:${category}:archive`} reveal={false} />
     </section>
   ) : (
     <section class="archive-empty page-shell">

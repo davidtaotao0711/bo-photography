@@ -7,7 +7,7 @@ $ErrorActionPreference = 'SilentlyContinue'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $url = 'http://127.0.0.1:4326/'
 $healthUrl = 'http://127.0.0.1:4326/__editor/health'
-$requiredEditorApiVersion = 9
+$requiredEditorApiVersion = 11
 $nodePath = 'C:\Program Files\nodejs\node.exe'
 $astroPath = Join-Path $projectRoot 'node_modules\astro\astro.js'
 

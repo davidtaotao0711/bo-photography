@@ -1,16 +1,21 @@
 ---
 import PhotoCard from './PhotoCard.astro';
+import CanvasGallery from './CanvasGallery.astro';
+import galleryLayouts from '../data/gallery-layouts.json';
 import { normalizeCollageLayout } from '../utils/collage-layout.js';
 
 interface Props {
   photos: any[];
   class?: string;
   reveal?: boolean;
+  galleryKey?: string;
 }
 
-const { photos, class: className, reveal = true } = Astro.props;
+const { photos, class: className, reveal = true, galleryKey } = Astro.props;
+const canvasLayout = galleryKey ? galleryLayouts.galleries[galleryKey] : null;
 ---
 
+{canvasLayout ? <CanvasGallery photos={photos} layout={canvasLayout} galleryKey={galleryKey} reveal={reveal} /> : (
 <div class:list={['collage-gallery', className]} data-masonry-gallery>
   {photos.map((photo, index) => (
     <PhotoCard
@@ -23,6 +28,7 @@ const { photos, class: className, reveal = true } = Astro.props;
     />
   ))}
 </div>
+)}
 
 <script>
   const mobileLayout = window.matchMedia('(max-width: 720px)');

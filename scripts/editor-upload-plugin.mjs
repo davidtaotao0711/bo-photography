@@ -6,6 +6,7 @@ import { getPortfolioStatus, migratePortfolioPhotos } from '../src/utils/portfol
 import { PORTRAIT_LAYOUT_PRESETS, normalizePortraitBooks } from '../src/utils/portrait-layout.js';
 import { updateResponsiveManifest } from './generate-responsive-images.mjs';
 import { handleSharedLibrary } from './shared-photo-library.mjs';
+import { isGalleryKey, validateCanvasLayout } from '../src/utils/gallery-canvas.js';
 
 const CATEGORY_ENDPOINT = '/__editor/import-photos';
 const SERIES_CREATE_ENDPOINT = '/__editor/series/create';
@@ -16,11 +17,12 @@ const SERIES_UPDATE_ENDPOINT = '/__editor/series/update';
 const SERIES_DELETE_ENDPOINT = '/__editor/series/delete';
 const SERIES_LAYOUT_ENDPOINT = '/__editor/series/layout';
 const PHOTOS_SAVE_ENDPOINT = '/__editor/photos/save';
+const GALLERY_SAVE_ENDPOINT = '/__editor/gallery-layouts/save';
 const SITE_SAVE_ENDPOINT = '/__editor/site/save';
 const PORTRAIT_BOOKS_SAVE_ENDPOINT = '/__editor/portrait-books/save';
 const PORTFOLIO_CATEGORIES_SAVE_ENDPOINT = '/__editor/portfolio-categories/save';
 const EDITOR_HEALTH_ENDPOINT = '/__editor/health';
-const EDITOR_API_VERSION = 9;
+const EDITOR_API_VERSION = 11;
 const CATEGORIES = new Set(photoCategorySlugs);
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -53,6 +55,32 @@ async function readJson(filePath) {
 
 async function writeJson(filePath, value) {
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
+}
+
+async function saveGalleryLayout(request, projectRoot) {
+  const body = await webRequestFrom(request, GALLERY_SAVE_ENDPOINT).json().catch(() => {
+    throw new RequestError(400, '画布内容不是有效 JSON。');
+  });
+  if (!isGalleryKey(body?.key)) throw new RequestError(400, '无效的普通页面。');
+  let layout;
+  try { layout = validateCanvasLayout(body.layout); }
+  catch (error) { throw new RequestError(400, error.message); }
+  const paths = dataPaths(projectRoot);
+  const photos = migratePortfolioPhotos(await readJson(paths.photos));
+  const [, categoryOrSlug, status] = body.key.split(':');
+  const validIds = new Set(photos.filter((photo) => body.key.startsWith('series:')
+    ? photo.series === categoryOrSlug
+    : photo.category === categoryOrSlug && (status === 'all'
+      ? ['selected', 'archive'].includes(getPortfolioStatus(photo, categoryOrSlug))
+      : getPortfolioStatus(photo, categoryOrSlug) === status)).map((photo) => photo.id));
+  if (layout.items.some((item) => !validIds.has(item.photoId)) || (layout.hiddenPhotoIds || []).some((id) => !validIds.has(id))) {
+    throw new RequestError(400, '照片尚未保存或已不在此页面，请先保存照片管理中的修改。');
+  }
+  const data = await readJson(paths.galleryLayouts);
+  data.galleries[body.key] = layout;
+  // Only this page changes. Never rewrite photos or any of the excluded layouts.
+  await writeJson(paths.galleryLayouts, data);
+  return { key: body.key, layout };
 }
 
 async function savePhotos(request, projectRoot) {
@@ -126,6 +154,7 @@ async function saveSiteIntro(request, projectRoot) {
 
 function dataPaths(projectRoot) {
   return {
+    galleryLayouts: path.join(projectRoot, 'src', 'data', 'gallery-layouts.json'),
     photos: path.join(projectRoot, 'src', 'data', 'photos.json'),
     portraitBooks: path.join(projectRoot, 'src', 'data', 'portrait-books.json'),
     portfolioCategories: path.join(projectRoot, 'src', 'data', 'portfolio-categories.json'),
@@ -707,6 +736,7 @@ export function editorUploadPlugin() {
           [SERIES_DELETE_ENDPOINT, deleteSeries],
           [SERIES_LAYOUT_ENDPOINT, saveSeriesLayout],
           [PHOTOS_SAVE_ENDPOINT, savePhotos],
+          [GALLERY_SAVE_ENDPOINT, saveGalleryLayout],
           [SITE_SAVE_ENDPOINT, saveSiteIntro],
           [PORTRAIT_BOOKS_SAVE_ENDPOINT, savePortraitBooks],
           [PORTFOLIO_CATEGORIES_SAVE_ENDPOINT, savePortfolioCategoryCovers],

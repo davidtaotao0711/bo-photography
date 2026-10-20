@@ -1,0 +1,449 @@
+{
+  "version": 1,
+  "galleries": {
+    "series:kashgar-livestock-market": {
+      "version": 1,
+      "items": [
+        {
+          "photoId": "kashgar-livestock-market-003",
+          "x": 0,
+          "y": 0,
+          "width": 493.53,
+          "height": 325.72
+        },
+        {
+          "photoId": "kashgar-livestock-market-004",
+          "x": 506.47,
+          "y": 0,
+          "width": 493.53,
+          "height": 325.72
+        },
+        {
+          "photoId": "kashgar-livestock-market-002",
+          "x": 0,
+          "y": 414.2,
+          "width": 656.86,
+          "height": 435.44
+        },
+        {
+          "photoId": "kashgar-livestock-market-013",
+          "x": 675.3,
+          "y": 414.2,
+          "width": 324.7,
+          "height": 435.1
+        },
+        {
+          "photoId": "kashgar-livestock-market-001",
+          "x": 0,
+          "y": 940.57,
+          "width": 1000,
+          "height": 662.93
+        },
+        {
+          "photoId": "kashgar-livestock-market-005",
+          "x": 0,
+          "y": 1691.31,
+          "width": 615.89,
+          "height": 437.28
+        },
+        {
+          "photoId": "kashgar-livestock-market-010",
+          "x": 656.86,
+          "y": 1691.31,
+          "width": 324.7,
+          "height": 219.57
+        },
+        {
+          "photoId": "kashgar-livestock-market-009",
+          "x": 656.86,
+          "y": 1933.78,
+          "width": 324.7,
+          "height": 194.81
+        },
+        {
+          "photoId": "kashgar-livestock-market-011",
+          "x": 0,
+          "y": 2252.2,
+          "width": 324.7,
+          "height": 220.78
+        },
+        {
+          "photoId": "kashgar-livestock-market-012",
+          "x": 337.65,
+          "y": 2252.2,
+          "width": 324.7,
+          "height": 220.78
+        },
+        {
+          "photoId": "kashgar-livestock-market-006",
+          "x": 675.3,
+          "y": 2253.82,
+          "width": 324.7,
+          "height": 217.55
+        },
+        {
+          "photoId": "kashgar-livestock-market-015",
+          "x": 0,
+          "y": 2562.85,
+          "width": 493.53,
+          "height": 294.81
+        },
+        {
+          "photoId": "kashgar-livestock-market-014",
+          "x": 506.47,
+          "y": 2562.85,
+          "width": 493.53,
+          "height": 296.1
+        },
+        {
+          "photoId": "kashgar-livestock-market-023",
+          "x": 0,
+          "y": 2977.05,
+          "width": 324.7,
+          "height": 194.81
+        },
+        {
+          "photoId": "kashgar-livestock-market-018",
+          "x": 337.65,
+          "y": 2977.05,
+          "width": 324.7,
+          "height": 461.07
+        },
+        {
+          "photoId": "kashgar-livestock-market-022",
+          "x": 675.3,
+          "y": 2977.05,
+          "width": 324.7,
+          "height": 214.3
+        },
+        {
+          "photoId": "kashgar-livestock-market-024",
+          "x": 0,
+          "y": 3231.6,
+          "width": 324.7,
+          "height": 211.04
+        },
+        {
+          "photoId": "kashgar-livestock-market-019",
+          "x": 0,
+          "y": 3533.62,
+          "width": 1000,
+          "height": 549.99
+        },
+        {
+          "photoId": "kashgar-livestock-market-017",
+          "x": 0,
+          "y": 4172.18,
+          "width": 324.7,
+          "height": 198.07
+        },
+        {
+          "photoId": "kashgar-livestock-market-025",
+          "x": 337.65,
+          "y": 4172.18,
+          "width": 312.93,
+          "height": 456.88
+        },
+        {
+          "photoId": "kashgar-livestock-market-027",
+          "x": 675.3,
+          "y": 4172.18,
+          "width": 324.7,
+          "height": 215.69
+        },
+        {
+          "photoId": "kashgar-livestock-market-033",
+          "x": 0,
+          "y": 4405.83,
+          "width": 324.7,
+          "height": 223.23
+        },
+        {
+          "photoId": "kashgar-livestock-market-020",
+          "x": 675.3,
+          "y": 4409.21,
+          "width": 324.7,
+          "height": 490.29
+        },
+        {
+          "photoId": "kashgar-livestock-market-028",
+          "x": 54.53,
+          "y": 4708.67,
+          "width": 529.89,
+          "height": 291.44
+        },
+        {
+          "photoId": "kashgar-livestock-market-026",
+          "x": 0,
+          "y": 5070.97,
+          "width": 662.35,
+          "height": 364.29
+        },
+        {
+          "photoId": "kashgar-livestock-market-030",
+          "x": 675.3,
+          "y": 4944.97,
+          "width": 324.7,
+          "height": 490.29
+        },
+        {
+          "photoId": "kashgar-livestock-market-029",
+          "x": 675.3,
+          "y": 5506.53,
+          "width": 306.26,
+          "height": 204.18
+        },
+        {
+          "photoId": "kashgar-livestock-market-031",
+          "x": 0,
+          "y": 5505.45,
+          "width": 324.7,
+          "height": 217.55
+        },
+        {
+          "photoId": "kashgar-livestock-market-032",
+          "x": 337.65,
+          "y": 5505.45,
+          "width": 324.7,
+          "height": 474.06
+        },
+        {
+          "photoId": "kashgar-livestock-market-034",
+          "x": 675.3,
+          "y": 5740.2,
+          "width": 306.26,
+          "height": 459.4
+        },
+        {
+          "photoId": "kashgar-livestock-market-035",
+          "x": 0,
+          "y": 5752.57,
+          "width": 324.7,
+          "height": 188.58
+        },
+        {
+          "photoId": "kashgar-livestock-market-039",
+          "x": 354.6,
+          "y": 6013.62,
+          "width": 295.98,
+          "height": 185.98
+        },
+        {
+          "photoId": "kashgar-livestock-market-037",
+          "x": 0,
+          "y": 5963.4,
+          "width": 324.7,
+          "height": 483.8
+        },
+        {
+          "photoId": "kashgar-livestock-market-036",
+          "x": 668.83,
+          "y": 6228.84,
+          "width": 306.94,
+          "height": 213.77
+        },
+        {
+          "photoId": "kashgar-livestock-market-038",
+          "x": 330.96,
+          "y": 6225.69,
+          "width": 344.34,
+          "height": 216.92
+        },
+        {
+          "photoId": "kashgar-livestock-market-040",
+          "x": 0,
+          "y": 6492.68,
+          "width": 1000,
+          "height": 599.99
+        },
+        {
+          "photoId": "kashgar-livestock-market-042",
+          "x": 3.35,
+          "y": 7182.73,
+          "width": 321.35,
+          "height": 214.23
+        },
+        {
+          "photoId": "kashgar-livestock-market-045",
+          "x": 334.51,
+          "y": 7182.73,
+          "width": 319.21,
+          "height": 213.86
+        },
+        {
+          "photoId": "kashgar-livestock-market-046",
+          "x": 675.3,
+          "y": 7184.81,
+          "width": 324.7,
+          "height": 475.58
+        },
+        {
+          "photoId": "kashgar-livestock-market-047",
+          "x": 0,
+          "y": 7429.54,
+          "width": 324.7,
+          "height": 490.19
+        },
+        {
+          "photoId": "kashgar-livestock-market-048",
+          "x": 340.78,
+          "y": 7431.11,
+          "width": 324.7,
+          "height": 487.06
+        },
+        {
+          "photoId": "kashgar-livestock-market-049",
+          "x": 675.3,
+          "y": 7687.64,
+          "width": 324.7,
+          "height": 230.53
+        },
+        {
+          "photoId": "kashgar-livestock-market-050",
+          "x": 0,
+          "y": 7944.15,
+          "width": 324.7,
+          "height": 477.31,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "kashgar-livestock-market-051",
+          "x": 340.24,
+          "y": 7944.15,
+          "width": 324.7,
+          "height": 477.31,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "kashgar-livestock-market-052",
+          "x": 328.43,
+          "y": 10168.5,
+          "width": 340.89,
+          "height": 210.41
+        },
+        {
+          "photoId": "kashgar-livestock-market-053",
+          "x": 0,
+          "y": 8515.74,
+          "width": 1000,
+          "height": 584.98
+        },
+        {
+          "photoId": "kashgar-livestock-market-055",
+          "x": 0,
+          "y": 9159.45,
+          "width": 324.7,
+          "height": 487.06
+        },
+        {
+          "photoId": "kashgar-livestock-market-054",
+          "x": 340.24,
+          "y": 9159.45,
+          "width": 324.7,
+          "height": 487.06
+        },
+        {
+          "photoId": "kashgar-livestock-market-058",
+          "x": 675.3,
+          "y": 9159.45,
+          "width": 324.7,
+          "height": 487.06
+        },
+        {
+          "photoId": "kashgar-livestock-market-060",
+          "x": 0,
+          "y": 9663.45,
+          "width": 312.33,
+          "height": 468.5
+        },
+        {
+          "photoId": "kashgar-livestock-market-056",
+          "x": 339.76,
+          "y": 9664.15,
+          "width": 318.23,
+          "height": 467.8
+        },
+        {
+          "photoId": "kashgar-livestock-market-059",
+          "x": 677.15,
+          "y": 9664.15,
+          "width": 322.85,
+          "height": 468.5,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "kashgar-livestock-market-057",
+          "x": 675.3,
+          "y": 7944.15,
+          "width": 324.7,
+          "height": 477.31
+        },
+        {
+          "photoId": "kashgar-livestock-market-061",
+          "x": 0,
+          "y": 10409.92,
+          "width": 493.53,
+          "height": 330.65
+        },
+        {
+          "photoId": "kashgar-livestock-market-062",
+          "x": 506.47,
+          "y": 10409.92,
+          "width": 493.53,
+          "height": 330.65
+        },
+        {
+          "photoId": "kashgar-livestock-market-063",
+          "x": 688.7,
+          "y": 10168.5,
+          "width": 311.3,
+          "height": 207.54
+        },
+        {
+          "photoId": "kashgar-livestock-market-064",
+          "x": 0,
+          "y": 10165.31,
+          "width": 312.33,
+          "height": 212.16
+        },
+        {
+          "photoId": "kashgar-livestock-market-065",
+          "x": 0,
+          "y": 10772.78,
+          "width": 493.53,
+          "height": 329.03
+        },
+        {
+          "photoId": "kashgar-livestock-market-066",
+          "x": 506.47,
+          "y": 10772.78,
+          "width": 493.53,
+          "height": 329.03,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "kashgar-livestock-market-067",
+          "x": 0,
+          "y": 11120.49,
+          "width": 493.53,
+          "height": 329.02
+        },
+        {
+          "photoId": "kashgar-livestock-market-068",
+          "x": 508.32,
+          "y": 11122.96,
+          "width": 489.83,
+          "height": 326.55
+        }
+      ]
+    }
+  }
+}

@@ -11,6 +11,8 @@ import site from '../../data/site.json';
 import { getPhotoMeta } from '../../utils/photo-metadata.js';
 import { buildOrientationRows } from '../../utils/photo-layout.js';
 import { normalizeCollageLayout } from '../../utils/collage-layout.js';
+import galleryLayouts from '../../data/gallery-layouts.json';
+import { visibleCanvasPhotos } from '../../utils/gallery-canvas.js';
 
 export function getStaticPaths() {
   return photoCategories
@@ -23,9 +25,10 @@ const categoryConfig = getPhotoCategory(category);
 const title = categoryConfig?.title || '';
 const normalizedPhotos = migratePortfolioPhotos(photos);
 const allItems = normalizedPhotos.filter((photo) => photo.category === category);
-const items = sortPortfolioPhotos(allItems.filter((photo) => getPortfolioStatus(photo, category) === 'selected'), 'selected');
+const galleryKey = `category:${category}:selected`;
+const items = visibleCanvasPhotos(galleryLayouts.galleries[galleryKey], sortPortfolioPhotos(allItems.filter((photo) => getPortfolioStatus(photo, category) === 'selected'), 'selected'));
 const archiveItems = sortPortfolioPhotos(allItems.filter((photo) => getPortfolioStatus(photo, category) === 'archive'), 'archive');
-const useRows = items.some((photo) => photo.layoutMode === 'rows');
+const useRows = !galleryLayouts.galleries[galleryKey] && items.some((photo) => photo.layoutMode === 'rows');
 const rows = useRows ? buildOrientationRows(items) : [];
 const lightboxData = items.map((photo) => ({
   id: photo.id,
@@ -52,7 +55,7 @@ const lightboxData = items.map((photo) => ({
           {row.items.map((photo, index) => <PhotoCard photo={photo} eager={index < 3} layoutScope="category" layout={normalizeCollageLayout(photo)} collage reveal />)}
         </div>
       ))
-      : <GalleryGrid photos={items} />}
+      : <GalleryGrid photos={items} galleryKey={galleryKey} />}
   </section>
   <section class="category-archive-entry page-shell" aria-labelledby="archive-entry-title">
     <div>

@@ -1,0 +1,19 @@
+---
+import PhotoCard from './PhotoCard.astro';
+import imageManifest from '../data/image-manifest.json';
+import { resolveCanvasLayout, canvasRectStyle, canvasImageLayout } from '../utils/gallery-canvas.js';
+import '../styles/gallery-canvas.css';
+
+const { photos, layout, galleryKey, reveal = true } = Astro.props;
+const resolved = resolveCanvasLayout(layout, photos, imageManifest);
+const byId = new Map(photos.map((photo) => [photo.id, photo]));
+// On small screens, read the composition from top to bottom, left to right.
+const readingOrder = [...resolved.items].sort((a, b) => a.y - b.y || a.x - b.x);
+---
+<div class="gallery-canvas" data-gallery-canvas={galleryKey} style={`--canvas-height:${resolved.height}`}>
+  {readingOrder.map((rect, index) => (
+    <div class="canvas-photo" data-canvas-photo={rect.photoId} style={`${canvasRectStyle(rect, resolved.height)};--canvas-photo-aspect:${rect.width} / ${rect.height}`}>
+      <PhotoCard photo={byId.get(rect.photoId)} layoutScope="none" layout={canvasImageLayout(rect, byId.get(rect.photoId))} collage eager={index < 3} reveal={reveal} />
+    </div>
+  ))}
+</div>

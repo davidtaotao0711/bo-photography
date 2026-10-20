@@ -8,13 +8,16 @@ import series from '../../data/series.json';
 import site from '../../data/site.json';
 import { normalizeCollageLayout, sortPhotosByOrder } from '../../utils/collage-layout.js';
 import { buildOrientationRows } from '../../utils/photo-layout.js';
+import galleryLayouts from '../../data/gallery-layouts.json';
+import { visibleCanvasPhotos } from '../../utils/gallery-canvas.js';
 
 export function getStaticPaths() {
   return series.map((item) => ({ params: { slug: item.slug }, props: { item } }));
 }
 
 const { item } = Astro.props;
-const items = sortPhotosByOrder(photos.filter((photo) => photo.series === item.slug));
+const galleryKey = `series:${item.slug}`;
+const items = visibleCanvasPhotos(galleryLayouts.galleries[galleryKey], sortPhotosByOrder(photos.filter((photo) => photo.series === item.slug)));
 const photosById = new Map(items.map((photo) => [photo.id, photo]));
 const usedRowIds = new Set();
 const savedRows = Array.isArray(item.layoutRows)
@@ -32,7 +35,7 @@ const savedRows = Array.isArray(item.layoutRows)
 savedRows.forEach((row) => row.items.forEach((photo) => usedRowIds.add(photo.id)));
 const missingRows = buildOrientationRows(items.filter((photo) => !usedRowIds.has(photo.id)));
 const rows = [...savedRows, ...missingRows];
-const useRows = savedRows.length > 0;
+const useRows = !galleryLayouts.galleries[galleryKey] && savedRows.length > 0;
 ---
 
 <BaseLayout title={`${item.title} ${item.year} — ${site.name}`} description={item.description}>
@@ -53,7 +56,7 @@ const useRows = savedRows.length > 0;
                 </div>
               ))}
             </section>
-          : <GalleryGrid photos={items} class="series-collage" />
+          : <GalleryGrid photos={items} galleryKey={galleryKey} class="series-collage" />
         : <div class="series-detail__empty"><p>This series is waiting for its first photograph.</p></div>}
     </div>
     <footer class="series-detail__end page-shell">

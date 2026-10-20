@@ -5,6 +5,7 @@ import site from '../data/site.json';
 import portraitBooks from '../data/portrait-books.json';
 import portfolioCategories from '../data/portfolio-categories.json';
 import imageManifest from '../data/image-manifest.json';
+import galleryLayouts from '../data/gallery-layouts.json';
 import { photoCategories as categoryConfig } from '../data/categories.js';
 
 const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
@@ -14,6 +15,7 @@ const serializedPortraitBooks = JSON.stringify(portraitBooks).replace(/</g, '\\u
 const serializedPortfolioCategories = JSON.stringify(portfolioCategories).replace(/</g, '\\u003c');
 const serializedCategories = JSON.stringify(categoryConfig).replace(/</g, '\\u003c');
 const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u003c');
+const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -33,6 +35,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
     <script id="initial-portfolio-categories" type="application/json" set:html={serializedPortfolioCategories}></script>
     <script id="initial-categories" type="application/json" set:html={serializedCategories}></script>
     <script id="initial-image-manifest" type="application/json" set:html={serializedImageManifest}></script>
+    <script id="initial-gallery-layouts" type="application/json" set:html={serializedGalleryLayouts}></script>
 
     <header class="editor-header">
       <a class="wordmark" href="/">BO DAVID</a>
@@ -47,7 +50,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         <div class="sidebar-heading">
           <p class="eyebrow">Layout studio</p>
           <h1>排版<br />编辑器</h1>
-          <p>首页保持原有排版；作品页使用稳定的 12 列隐形网格调整顺序、尺寸和裁切。所有操作只发生在你的电脑上。</p>
+          <p>首页保持原有排版。普通作品页在「页面排版」中自由移动、缩放和按行安排照片；上传与属性在「照片管理」中编辑。所有操作只发生在你的电脑上。</p>
         </div>
 
         <div class="field-group">
@@ -76,10 +79,10 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         <div class="help">
           <p class="eyebrow">使用方法</p>
           <ol>
-            <li>在作品页拖动照片即可调整顺序</li>
-            <li>选择照片后使用 S / M / L / W / T / Full</li>
-            <li>所有尺寸都会吸附到隐形 12 列网格</li>
-            <li>点击照片编辑属性</li>
+            <li>普通页拖动照片自由定位，右下角等比例缩放</li>
+            <li>点击照片旁的图标可删除、裁剪或替换</li>
+            <li>粉色辅助线表示中心或边缘吸附；Alt 暂停吸附</li>
+            <li>长按方向键逐渐加速；保存画布后正式页同步</li>
             <li>Street / Scenes / Nature 使用拼贴规则；Portrait Books 先管理书架，再进入单书排版</li>
             <li>进入分类页后可一次添加单张或多张照片</li>
             <li>Series 先新建影集，再进入影集上传与选择封面</li>
@@ -562,6 +565,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
 
     <script>
       import { installSharedPhotoPicker } from '../scripts/shared-photo-picker.js';
+      import { createGalleryCanvasEditor } from '../scripts/gallery-canvas-editor.js';
       import { buildOrientationRows } from '../utils/photo-layout.js';
       import { collageLayoutPresets, normalizeCollageLayout, sortPhotosByOrder } from '../utils/collage-layout.js';
       import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../utils/portfolio-status.js';
@@ -601,6 +605,19 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       let layoutDraftSlug = '';
       let layoutDraftRows = [];
       let layoutDirty = false;
+      let ordinaryPhotoManagement = false;
+      const galleryCanvas = createGalleryCanvasEditor({
+        initial: JSON.parse(document.querySelector('#initial-gallery-layouts')?.textContent || '{"galleries":{}}'),
+        manifest: imageManifest,
+        onInspect: (id) => openInspector(id),
+        onManage: () => { ordinaryPhotoManagement = true; render(); },
+        beforeSave: async () => {
+          if (dirty || siteDirty) await saveJson();
+          if (dirty || siteDirty) throw new Error('照片管理尚未成功保存，请先完成照片保存。');
+        },
+        notify: (message) => showToast(message),
+        onStateChange: () => setDirty(dirty),
+      });
       let selectedLayoutPhotoId = '';
       let draggedLayoutPhotoId = '';
       const history = [];
@@ -690,8 +707,9 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       function setDirty(value, message) {
         dirty = value;
         const status = $('#save-status');
-        status.dataset.state = value ? 'dirty' : 'clean';
-        status.textContent = message || (value ? '有未保存修改' : '所有修改已保存');
+        const canvasDirty = galleryCanvas.hasDirty();
+        status.dataset.state = value || canvasDirty ? 'dirty' : 'clean';
+        status.textContent = message || (value ? '有未保存修改' : canvasDirty ? '页面画布有未保存修改' : '所有修改已保存');
       }
 
       function showToast(message) {
@@ -1059,6 +1077,12 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
 
       function syncCanvasScale() {
         if (!canvasViewport || !canvasStage) return;
+        if (isPortfolioView() && !ordinaryPhotoManagement) {
+          canvasStage.style.zoom = '1';
+          canvasStage.style.width = '100%';
+          $('#canvas-scale').textContent = ' · 同比例自由画布';
+          return;
+        }
         canvasStage.style.zoom = '1';
         if (window.innerWidth <= 620) {
           canvasStage.style.width = '100%';
@@ -1142,7 +1166,21 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       }
 
       function renderSeriesRows(items, cover) {
+        if (!ordinaryPhotoManagement) {
+          layoutToolbar.hidden = true;
+          seriesPhotoGrid.innerHTML = '<div data-ordinary-canvas-host></div>';
+          seriesPhotoGrid.classList.add('series-photo-grid--canvas');
+          const item = seriesData.find((entry) => entry.slug === activeSeriesSlug);
+          galleryCanvas.mount(seriesPhotoGrid.firstElementChild, [{
+            key: `series:${activeSeriesSlug}`, label: item?.title || activeSeriesSlug,
+            url: `/series/${activeSeriesSlug}`, photos: items,
+          }]);
+          return;
+        }
+        seriesPhotoGrid.classList.remove('series-photo-grid--canvas');
+        seriesPhotoGrid.parentElement.querySelectorAll('.canvas-return').forEach((button) => button.remove());
         seriesPhotoGrid.innerHTML = items.map((photo, index) => collageEditorCard(photo, index, cover)).join('');
+        seriesPhotoGrid.insertAdjacentHTML('beforebegin', '<button class="button canvas-return" type="button" data-ordinary-canvas-open>返回页面排版</button>');
         scheduleEditorMasonry(seriesPhotoGrid);
         updateLayoutToolbar();
       }
@@ -1232,6 +1270,18 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       function renderPortfolioSections() {
         const category = viewFilter.value;
         const title = viewFilter.options[viewFilter.selectedIndex]?.textContent || category;
+        if (!ordinaryPhotoManagement) {
+          categorySections.innerHTML = '<div data-ordinary-canvas-host></div>';
+          const pages = category === 'portrait' ? [{
+            key: 'category:portrait:all', label: 'Portrait Archive（全部）', url: '/portfolio/portrait/archive',
+            photos: [...portfolioItems('selected', category), ...portfolioItems('archive', category)],
+          }] : ['selected', 'archive'].map((status) => ({
+            key: `category:${category}:${status}`, label: `${title} · ${status === 'selected' ? 'Selected' : 'Archive'}`,
+            url: `/portfolio/${category}${status === 'archive' ? '/archive' : ''}`, photos: portfolioItems(status, category),
+          }));
+          galleryCanvas.mount(categorySections.firstElementChild, pages);
+          return;
+        }
         const usesRows = portfolioUsesRows(category);
         const sections = ['selected', 'archive'].map((status) => {
           const items = portfolioItems(status, category, true);
@@ -1265,7 +1315,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
                   </div>`}
             </section>`;
         }).join('');
-        categorySections.innerHTML = sections;
+        categorySections.innerHTML = '<button class="button canvas-return" type="button" data-ordinary-canvas-open>返回页面排版</button>' + sections;
         categorySections.querySelectorAll('.portfolio-photo-grid').forEach((container) => scheduleEditorMasonry(container));
       }
 
@@ -1980,7 +2030,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         canvasViewport.hidden = isSeriesView || isPortraitLayoutView || isPortfolioEntranceView;
         categorySections.hidden = !isPortfolioView();
         $('#empty-state').hidden = true;
-        $('#photo-search-field').hidden = isSeriesView || isPortraitLayoutView || isPortfolioEntranceView;
+        $('#photo-search-field').hidden = isSeriesView || isPortraitLayoutView || isPortfolioEntranceView || (isPortfolioView() && !ordinaryPhotoManagement);
         addPhotosButton.hidden = true;
         newSeriesButton.hidden = !isSeriesView || Boolean(activeSeriesSlug);
         layoutToolbar.hidden = true;
@@ -2014,7 +2064,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         if (isPortfolioView()) {
           grid.hidden = true;
           renderPortfolioSections();
-          layoutToolbar.hidden = false;
+          layoutToolbar.hidden = !ordinaryPhotoManagement;
           updateLayoutToolbar();
           $('#visible-count').textContent = String(photoData.filter((photo) => photo.category === viewFilter.value).length);
           $('#featured-count').textContent = String(photoData.filter((photo) => photo.featured).length);
@@ -3013,11 +3063,17 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         }
       }
 
-      function saveCurrentJson() {
-        return viewFilter.value === 'portrait-layout' ? savePortraitBooks() : saveJson();
+      async function saveCurrentJson() {
+        if (viewFilter.value === 'portrait-layout') return savePortraitBooks();
+        try {
+          if (!ordinaryPhotoManagement && (isPortfolioView() || (viewFilter.value === 'series' && activeSeriesSlug))) galleryCanvas.applyCurrent();
+          if (dirty || siteDirty || !galleryCanvas.hasDirty()) await saveJson();
+          if (galleryCanvas.hasDirty()) { await galleryCanvas.save(); showToast('普通页面画布已保存'); }
+        } catch (error) { window.alert(`保存失败：${error.message}`); }
       }
 
       function downloadCurrentJson() {
+        if (!ordinaryPhotoManagement && (isPortfolioView() || (viewFilter.value === 'series' && activeSeriesSlug))) return galleryCanvas.download();
         return viewFilter.value === 'portrait-layout' ? downloadPortraitBooks() : downloadJson();
       }
 
@@ -3792,6 +3848,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
       });
 
       viewFilter.addEventListener('change', () => {
+        ordinaryPhotoManagement = false;
         if (portraitBooksDirty && viewFilter.value !== 'portrait-layout' && !window.confirm('当前 Portrait Books 尚未保存，确定离开吗？')) {
           viewFilter.value = 'portrait-layout';
           return;
@@ -3941,6 +3998,12 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         event.target.value = '';
       });
       $('#save-file').addEventListener('click', saveCurrentJson);
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('[data-ordinary-canvas-open]')) return;
+        ordinaryPhotoManagement = false;
+        document.querySelectorAll('.canvas-return').forEach((button) => button.remove());
+        render();
+      });
       $('#download').addEventListener('click', downloadCurrentJson);
       $('#undo').addEventListener('click', () => {
         if (viewFilter.value === 'portrait-layout') {
@@ -3976,7 +4039,7 @@ const serializedImageManifest = JSON.stringify(imageManifest).replace(/</g, '\\u
         render();
       });
       window.addEventListener('beforeunload', (event) => {
-        if (!dirty && !siteDirty && !layoutDirty && !portraitBooksDirty) return;
+        if (!dirty && !siteDirty && !layoutDirty && !portraitBooksDirty && !galleryCanvas.hasDirty()) return;
         event.preventDefault();
         event.returnValue = '';
       });

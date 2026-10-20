@@ -1,0 +1,52 @@
+.canvas-studio { width: 100%; color: #20201e; font: 13px/1.5 Arial, sans-serif; }
+.canvas-studio__head { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
+.canvas-studio__head h2 { font: 32px/1.2 Georgia, serif; margin: 6px 20px 0 0; }
+.canvas-studio__head select { flex: 1; min-width: 180px; }
+.canvas-studio .canvas-studio__hint { font-size: 12px; color: #686862; margin-bottom: 16px; }
+.canvas-essential-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0; padding: 8px 0; position: sticky; top: 80px; z-index: 6; background: #faf9f6; }
+.canvas-studio button, .canvas-studio select, .canvas-studio input[type="number"] { background: #faf9f6; border: 1px solid #c9c8c2; padding: 8px; color: inherit; font: inherit; border-radius: 0; }
+.canvas-studio button { cursor: pointer; }
+.canvas-studio button:hover { border-color: #20201e; }
+.canvas-studio button:disabled { opacity: .4; cursor: default; }
+.canvas-studio [data-canvas-action="save"] { background: #20201e; color: #fff; margin-left: auto; }
+.canvas-studio__status { min-height: 24px; padding: 8px 0; font-size: 12px; color: #686862; }
+.canvas-studio__surface { border: 1px solid #d6d5ce; padding: 0; background: #f9f8f5; }
+.canvas-studio__surface.is-mobile { width: min(100%, 390px); margin: auto; }
+.canvas-studio .canvas-editor-photo { cursor: grab; touch-action: none; user-select: none; outline: 1px solid transparent; }
+.canvas-studio .canvas-editor-photo:active { cursor: grabbing; }
+.canvas-studio .canvas-editor-photo.is-selected { outline: 1px solid #2480d7; z-index: 2; }
+.canvas-studio .canvas-editor-photo:focus-visible { outline: 3px solid #2480d7; }
+.canvas-editor-photo__label { position: absolute; left: 5px; top: 5px; padding: 2px 5px; max-width: calc(100% - 10px); background: #161616bd; color: white; font-size: 10px; pointer-events: none; }
+.canvas-editor-photo__resize { position: absolute; bottom: -5px; right: -5px; width: 15px; height: 15px; background: white; border: 2px solid #2480d7; cursor: nwse-resize; display: none; }
+.is-selected .canvas-editor-photo__resize { display: block; }
+.canvas-guide { position: absolute; pointer-events: none; z-index: 5; background: #e7249a; }
+.canvas-guide--x { width: 1px; top: 0; bottom: 0; }
+.canvas-guide--y { height: 1px; left: 0; right: 0; }
+.canvas-studio__surface.is-mobile .canvas-editor-photo { cursor: default; }
+.canvas-studio__surface.is-mobile .canvas-editor-photo__resize { display: none; }
+/* Mobile preview uses the exact same fallback as the public canvas at any
+   editor viewport width (not the editor's old 620px masonry breakpoint). */
+.canvas-studio__surface.is-mobile .gallery-canvas { display: flex; flex-direction: column; gap: 24px; aspect-ratio: auto; }
+.canvas-studio__surface.is-mobile .canvas-photo { position: relative; inset: auto !important; width: 100% !important; height: auto !important; aspect-ratio: var(--canvas-photo-aspect); }
+.canvas-return { margin-bottom: 24px; }
+#series-photo-grid.series-photo-grid--canvas { display: block; }
+.canvas-photo-tools { position: fixed; box-sizing: border-box; display: flex; align-items: center; gap: 4px; padding: 3px; border: 0; border-radius: 3px; background: #181818b8; backdrop-filter: blur(6px); z-index: 1100; }
+.canvas-studio .canvas-photo-tools button { display: inline-flex; flex: 1; justify-content: center; align-items: center; min-width: 24px; height: 28px; padding: 4px; border: 0; background: transparent; color: #fff; font-size: 12px; }
+.canvas-studio .canvas-photo-tools button:hover, .canvas-studio .canvas-photo-tools button.is-active { background: #ffffff30; color: #fff; }
+.canvas-studio .canvas-photo-tools [data-canvas-action="delete"]:hover { background: #a82917cc; color: #fff; }
+.canvas-photo-tools__crop { display: inline-flex; flex: 2; gap: 4px; border-left: 1px solid #ffffff40; padding-left: 4px; }
+.canvas-photo-tools[hidden], .canvas-photo-tools__crop[hidden] { display: none !important; }
+.canvas-crop-grid { display: none; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to right, transparent calc(33.333% - .5px), #fff9 33.333%, transparent calc(33.333% + .5px), transparent calc(66.666% - .5px), #fff9 66.666%, transparent calc(66.666% + .5px)), linear-gradient(to bottom, transparent calc(33.333% - .5px), #fff9 33.333%, transparent calc(33.333% + .5px), transparent calc(66.666% - .5px), #fff9 66.666%, transparent calc(66.666% + .5px)); }
+.canvas-studio .canvas-editor-photo.is-cropping { cursor: move; outline: 1px dashed #2480d7; }
+.is-cropping .canvas-crop-grid { display: block; }
+.canvas-studio .canvas-replace-dialog { width: min(900px, 94vw); max-height: 88vh; overflow: auto; padding: 24px; border: 1px solid #d6d5ce; background: #faf9f6; }
+.canvas-replace-dialog::backdrop { background: #0008; }
+.canvas-replace-dialog header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.canvas-replace-dialog h3 { font: 28px/1.2 Georgia, serif; }
+.canvas-replace-dialog p { margin: 14px 0; color: #686862; font-size: 12px; }
+.canvas-replace-dialog input[type="search"] { width: 100%; padding: 10px; margin-bottom: 14px; }
+.canvas-replace-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; max-height: 58vh; overflow: auto; overscroll-behavior: contain; }
+.canvas-replace-grid button { min-width: 0; text-align: left; }
+.canvas-replace-grid img { display: block; width: 100%; height: 135px; object-fit: contain; }
+.canvas-replace-grid span, .canvas-replace-grid small { display: block; margin-top: 6px; font-size: 10px; overflow-wrap: anywhere; }
+@media (max-width: 720px) { .canvas-replace-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .canvas-essential-controls { top: 78px; } }
