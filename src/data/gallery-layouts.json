@@ -644,6 +644,953 @@
       "hiddenPhotoIds": [
         "street-076"
       ]
+    },
+    "series:b-and-w": {
+      "version": 1,
+      "items": [
+        {
+          "photoId": "b-and-w-004",
+          "x": 671.25,
+          "y": 515.87,
+          "width": 328.75,
+          "height": 433.82,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "b-and-w-005",
+          "x": 0,
+          "y": 1554.27,
+          "width": 462.28,
+          "height": 323.59
+        },
+        {
+          "photoId": "b-and-w-006",
+          "x": 335.62,
+          "y": 0,
+          "width": 328.75,
+          "height": 493.22
+        },
+        {
+          "photoId": "b-and-w-007",
+          "x": 0,
+          "y": 1021.98,
+          "width": 328.75,
+          "height": 512.85
+        },
+        {
+          "photoId": "b-and-w-008",
+          "x": 0,
+          "y": 517.87,
+          "width": 664.37,
+          "height": 431.82,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "b-and-w-009",
+          "x": 0,
+          "y": 0,
+          "width": 328.75,
+          "height": 493.22,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "b-and-w-010",
+          "x": 491.41,
+          "y": 1562.35,
+          "width": 508.59,
+          "height": 307.42,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "b-and-w-011",
+          "x": 335.62,
+          "y": 1025.3,
+          "width": 328.75,
+          "height": 509.53,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "b-and-w-012",
+          "x": 671.25,
+          "y": 0,
+          "width": 328.75,
+          "height": 493.2
+        },
+        {
+          "photoId": "b-and-w-013",
+          "x": 671.25,
+          "y": 1026.64,
+          "width": 328.75,
+          "height": 508.19,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        }
+      ],
+      "hiddenPhotoIds": [
+        "b-and-w-003",
+        "b-and-w-001",
+        "b-and-w-002"
+      ]
+    },
+    "category:scenes:selected": {
+      "version": 1,
+      "items": [
+        {
+          "photoId": "scenes-039",
+          "x": 0,
+          "y": 0,
+          "width": 496.56,
+          "height": 690.22
+        },
+        {
+          "photoId": "scenes-008",
+          "x": 503.44,
+          "y": 0,
+          "width": 496.56,
+          "height": 690.22
+        },
+        {
+          "photoId": "scenes-059",
+          "x": 0,
+          "y": 737.69,
+          "width": 1000,
+          "height": 412.89
+        },
+        {
+          "photoId": "scenes-072",
+          "x": 0,
+          "y": 1198.17,
+          "width": 328.75,
+          "height": 486.55
+        },
+        {
+          "photoId": "scenes-079",
+          "x": 335.62,
+          "y": 1198.17,
+          "width": 328.75,
+          "height": 486.55
+        },
+        {
+          "photoId": "scenes-067",
+          "x": 671.25,
+          "y": 1198.17,
+          "width": 328.75,
+          "height": 486.55
+        },
+        {
+          "photoId": "scenes-016",
+          "x": 0,
+          "y": 1731.96,
+          "width": 328.75,
+          "height": 463.53
+        },
+        {
+          "photoId": "scenes-069",
+          "x": 335.62,
+          "y": 1731.96,
+          "width": 328.75,
+          "height": 463.53
+        },
+        {
+          "photoId": "scenes-019",
+          "x": 671.25,
+          "y": 1731.96,
+          "width": 328.75,
+          "height": 463.53
+        },
+        {
+          "photoId": "scenes-063",
+          "x": 15.46,
+          "y": 2259.41,
+          "width": 297.82,
+          "height": 430.4,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 35.89
+        },
+        {
+          "photoId": "scenes-083",
+          "x": 354.75,
+          "y": 2260.92,
+          "width": 297.38,
+          "height": 430.4,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 0
+        },
+        {
+          "photoId": "street-002",
+          "x": 688.78,
+          "y": 2259.41,
+          "width": 293.7,
+          "height": 431.91,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 100
+        },
+        {
+          "photoId": "street-049",
+          "x": 0,
+          "y": 2756.01,
+          "width": 664.38,
+          "height": 411.91
+        },
+        {
+          "photoId": "scenes-064",
+          "x": 671.25,
+          "y": 2753.72,
+          "width": 328.75,
+          "height": 414.22
+        },
+        {
+          "photoId": "street-050",
+          "x": 0,
+          "y": 3214.2,
+          "width": 328.75,
+          "height": 414.22
+        },
+        {
+          "photoId": "street-033",
+          "x": 335.62,
+          "y": 3214.2,
+          "width": 328.75,
+          "height": 414.22
+        },
+        {
+          "photoId": "street-013",
+          "x": 671.25,
+          "y": 3214.2,
+          "width": 328.75,
+          "height": 404.36
+        },
+        {
+          "photoId": "scenes-097",
+          "x": 0,
+          "y": 3674.68,
+          "width": 664.38,
+          "height": 365.41
+        }
+      ]
+    },
+    "category:scenes:archive": {
+      "version": 1,
+      "items": [
+        {
+          "photoId": "scenes-045",
+          "x": 0,
+          "y": 0,
+          "width": 328.75,
+          "height": 216.97
+        },
+        {
+          "photoId": "scenes-004",
+          "x": 335.62,
+          "y": 0,
+          "width": 328.75,
+          "height": 466.83
+        },
+        {
+          "photoId": "scenes-024",
+          "x": 664.38,
+          "y": 0,
+          "width": 328.75,
+          "height": 466.83
+        },
+        {
+          "photoId": "scenes-036",
+          "x": 0,
+          "y": 233.42,
+          "width": 328.75,
+          "height": 470.09
+        },
+        {
+          "photoId": "scenes-044",
+          "x": 335.62,
+          "y": 479.96,
+          "width": 328.75,
+          "height": 223.55
+        },
+        {
+          "photoId": "scenes-049",
+          "x": 671.25,
+          "y": 483.25,
+          "width": 328.75,
+          "height": 220.26
+        },
+        {
+          "photoId": "scenes-046",
+          "x": 0,
+          "y": 781.21,
+          "width": 328.75,
+          "height": 537.46
+        },
+        {
+          "photoId": "scenes-054",
+          "x": 671.25,
+          "y": 781.21,
+          "width": 328.75,
+          "height": 532.57
+        },
+        {
+          "photoId": "scenes-062",
+          "x": 335.62,
+          "y": 832.97,
+          "width": 328.75,
+          "height": 216.97
+        },
+        {
+          "photoId": "scenes-076",
+          "x": 335.62,
+          "y": 1056.12,
+          "width": 328.75,
+          "height": 211.69
+        },
+        {
+          "photoId": "scenes-068",
+          "x": 348,
+          "y": 1365.41,
+          "width": 323.25,
+          "height": 439,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 14.37
+        },
+        {
+          "photoId": "scenes-077",
+          "x": 671.25,
+          "y": 1360.82,
+          "width": 328.75,
+          "height": 440.52
+        },
+        {
+          "photoId": "scenes-080",
+          "x": 0,
+          "y": 1365.41,
+          "width": 328.75,
+          "height": 197.25
+        },
+        {
+          "photoId": "scenes-084",
+          "x": 0,
+          "y": 1610.54,
+          "width": 328.75,
+          "height": 190.67
+        },
+        {
+          "photoId": "scenes-090",
+          "x": 0,
+          "y": 1848.8,
+          "width": 1000,
+          "height": 550
+        },
+        {
+          "photoId": "scenes-089",
+          "x": 0,
+          "y": 2446.74,
+          "width": 493.25,
+          "height": 739.88,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "scenes-092",
+          "x": 0,
+          "y": 3239.4,
+          "width": 1000,
+          "height": 499.83,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 36.69
+        },
+        {
+          "photoId": "scenes-091",
+          "x": 503.44,
+          "y": 2446.74,
+          "width": 496.56,
+          "height": 739.88
+        },
+        {
+          "photoId": "scenes-012",
+          "x": 0,
+          "y": 3799.34,
+          "width": 1000,
+          "height": 525.26,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "scenes-009",
+          "x": 0,
+          "y": 4386.28,
+          "width": 496.56,
+          "height": 331.04
+        },
+        {
+          "photoId": "scenes-010",
+          "x": 503.44,
+          "y": 4387.28,
+          "width": 496.56,
+          "height": 330.97
+        },
+        {
+          "photoId": "scenes-053",
+          "x": 0,
+          "y": 4813.29,
+          "width": 496.56,
+          "height": 511.45
+        },
+        {
+          "photoId": "scenes-040",
+          "x": 503.44,
+          "y": 4813.29,
+          "width": 496.56,
+          "height": 511.45
+        },
+        {
+          "photoId": "home-007",
+          "x": 0,
+          "y": 5372.28,
+          "width": 496.56,
+          "height": 327.73
+        },
+        {
+          "photoId": "scenes-050",
+          "x": 0,
+          "y": 5748,
+          "width": 1000,
+          "height": 550
+        },
+        {
+          "photoId": "scenes-047",
+          "x": 503.44,
+          "y": 5372.28,
+          "width": 496.56,
+          "height": 327.73
+        },
+        {
+          "photoId": "scenes-048",
+          "x": 0,
+          "y": 6345.93,
+          "width": 496.56,
+          "height": 312.83
+        },
+        {
+          "photoId": "scenes-031",
+          "x": 503.44,
+          "y": 6345.93,
+          "width": 496.56,
+          "height": 312.83,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "scenes-087",
+          "x": 0,
+          "y": 6705.61,
+          "width": 664.38,
+          "height": 438.48
+        },
+        {
+          "photoId": "scenes-013",
+          "x": 671.25,
+          "y": 6701.03,
+          "width": 328.75,
+          "height": 443.81
+        },
+        {
+          "photoId": "scenes-043",
+          "x": 0,
+          "y": 7191.29,
+          "width": 328.75,
+          "height": 486.55
+        },
+        {
+          "photoId": "scenes-075",
+          "x": 332.19,
+          "y": 7191.29,
+          "width": 310.88,
+          "height": 483.26,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "scenes-082",
+          "x": 651.32,
+          "y": 7191.29,
+          "width": 348.68,
+          "height": 219.67
+        },
+        {
+          "photoId": "scenes-071",
+          "x": 651.32,
+          "y": 7426.99,
+          "width": 348.68,
+          "height": 247.56
+        },
+        {
+          "photoId": "scenes-073",
+          "x": 335.62,
+          "y": 7725.57,
+          "width": 326.79,
+          "height": 472.91,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "scenes-015",
+          "x": 0,
+          "y": 7725.09,
+          "width": 326.47,
+          "height": 473.39
+        },
+        {
+          "photoId": "scenes-005",
+          "x": 671.25,
+          "y": 7725.09,
+          "width": 328.75,
+          "height": 473.39
+        },
+        {
+          "photoId": "scenes-035",
+          "x": 0,
+          "y": 8242.49,
+          "width": 328.75,
+          "height": 401.07
+        },
+        {
+          "photoId": "scenes-070",
+          "x": 0,
+          "y": 8705.16,
+          "width": 462.39,
+          "height": 329.88,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 100
+        },
+        {
+          "photoId": "scenes-094",
+          "x": 478.8,
+          "y": 8705.16,
+          "width": 506.07,
+          "height": 329.88,
+          "crop": true,
+          "focalX": 0,
+          "focalY": 50
+        },
+        {
+          "photoId": "scenes-051",
+          "x": 0,
+          "y": 9085.67,
+          "width": 462.39,
+          "height": 272.8
+        },
+        {
+          "photoId": "scenes-017",
+          "x": 478.8,
+          "y": 9083.67,
+          "width": 506.07,
+          "height": 274.8,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 65.89
+        },
+        {
+          "photoId": "scenes-055",
+          "x": 0,
+          "y": 9387.02,
+          "width": 664.38,
+          "height": 458.41
+        },
+        {
+          "photoId": "street-071",
+          "x": 671.25,
+          "y": 9388.02,
+          "width": 328.75,
+          "height": 456.96
+        },
+        {
+          "photoId": "street-019",
+          "x": 671.25,
+          "y": 8242.49,
+          "width": 328.75,
+          "height": 401.07,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "street-006",
+          "x": 0,
+          "y": 10450.32,
+          "width": 664.38,
+          "height": 391.98
+        },
+        {
+          "photoId": "street-041",
+          "x": 0,
+          "y": 9870.18,
+          "width": 1000,
+          "height": 550
+        }
+      ]
+    },
+    "series:tokyo-2026": {
+      "version": 1,
+      "items": [
+        {
+          "photoId": "tokyo-2026-002",
+          "x": 0,
+          "y": 0,
+          "width": 328.75,
+          "height": 493.13
+        },
+        {
+          "photoId": "tokyo-2026-004",
+          "x": 335.62,
+          "y": 0,
+          "width": 328.75,
+          "height": 493.13
+        },
+        {
+          "photoId": "tokyo-2026-005",
+          "x": 671.25,
+          "y": 0,
+          "width": 328.75,
+          "height": 493.13
+        },
+        {
+          "photoId": "tokyo-2026-006",
+          "x": 0,
+          "y": 540.66,
+          "width": 328.75,
+          "height": 460.25,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "tokyo-2026-003",
+          "x": 335.62,
+          "y": 540.66,
+          "width": 328.75,
+          "height": 460.25
+        },
+        {
+          "photoId": "tokyo-2026-008",
+          "x": 671.25,
+          "y": 540.66,
+          "width": 328.75,
+          "height": 460.25
+        },
+        {
+          "photoId": "tokyo-2026-009",
+          "x": 342.5,
+          "y": 1049.26,
+          "width": 315,
+          "height": 489.83,
+          "crop": true,
+          "focalX": 60.07,
+          "focalY": 50
+        },
+        {
+          "photoId": "tokyo-2026-013",
+          "x": 671.25,
+          "y": 1049.26,
+          "width": 328.75,
+          "height": 489.83,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "tokyo-2026-012",
+          "x": 0,
+          "y": 1049.26,
+          "width": 328.75,
+          "height": 489.83
+        },
+        {
+          "photoId": "tokyo-2026-022",
+          "x": 69.83,
+          "y": 1580.52,
+          "width": 370.57,
+          "height": 529.9
+        },
+        {
+          "photoId": "tokyo-2026-011",
+          "x": 610.77,
+          "y": 1743.56,
+          "width": 328.75,
+          "height": 203.82
+        },
+        {
+          "photoId": "tokyo-2026-014",
+          "x": 0,
+          "y": 2116.84,
+          "width": 1000,
+          "height": 550
+        },
+        {
+          "photoId": "tokyo-2026-015",
+          "x": 0,
+          "y": 2714.78,
+          "width": 496.56,
+          "height": 551.18
+        },
+        {
+          "photoId": "tokyo-2026-016",
+          "x": 503.44,
+          "y": 2714.78,
+          "width": 408.6,
+          "height": 551.18,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "tokyo-2026-017",
+          "x": 0,
+          "y": 3312.71,
+          "width": 664.38,
+          "height": 374.34,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "tokyo-2026-018",
+          "x": 0,
+          "y": 3725.09,
+          "width": 664.38,
+          "height": 391.98
+        },
+        {
+          "photoId": "tokyo-2026-025",
+          "x": 0,
+          "y": 4158.32,
+          "width": 664.38,
+          "height": 365.41
+        },
+        {
+          "photoId": "tokyo-2026-027",
+          "x": 305.64,
+          "y": 4558.07,
+          "width": 664.38,
+          "height": 365.41
+        },
+        {
+          "photoId": "tokyo-2026-030",
+          "x": 707.25,
+          "y": 3313.12,
+          "width": 262.77,
+          "height": 373.93,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 0
+        },
+        {
+          "photoId": "tokyo-2026-031",
+          "x": 707.25,
+          "y": 3726.19,
+          "width": 262.77,
+          "height": 390.88,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "tokyo-2026-028",
+          "x": 707.25,
+          "y": 4158.32,
+          "width": 262.77,
+          "height": 365.41,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 0
+        },
+        {
+          "photoId": "tokyo-2026-023",
+          "x": 28.87,
+          "y": 4560.06,
+          "width": 242.25,
+          "height": 363.42
+        }
+      ],
+      "hiddenPhotoIds": [
+        "tokyo-2026-020",
+        "tokyo-2026-019",
+        "tokyo-2026-021",
+        "tokyo-2026-024"
+      ]
+    },
+    "series:motion-and-blur": {
+      "version": 1,
+      "items": [
+        {
+          "photoId": "motion-and-blur-005",
+          "x": 0,
+          "y": 0,
+          "width": 496.56,
+          "height": 273.11
+        },
+        {
+          "photoId": "motion-and-blur-006",
+          "x": 503.44,
+          "y": 0,
+          "width": 496.56,
+          "height": 273.11
+        },
+        {
+          "photoId": "motion-and-blur-008",
+          "x": 0,
+          "y": 320.73,
+          "width": 328.75,
+          "height": 397.78
+        },
+        {
+          "photoId": "motion-and-blur-020",
+          "x": 335.62,
+          "y": 320.73,
+          "width": 328.75,
+          "height": 397.78
+        },
+        {
+          "photoId": "motion-and-blur-022",
+          "x": 671.25,
+          "y": 320.73,
+          "width": 328.75,
+          "height": 397.78
+        },
+        {
+          "photoId": "motion-and-blur-007",
+          "x": 0,
+          "y": 765.18,
+          "width": 496.56,
+          "height": 273.11
+        },
+        {
+          "photoId": "motion-and-blur-026",
+          "x": 0,
+          "y": 1085.91,
+          "width": 664.38,
+          "height": 391.98
+        },
+        {
+          "photoId": "motion-and-blur-021",
+          "x": 503.44,
+          "y": 765.18,
+          "width": 496.56,
+          "height": 273.11
+        },
+        {
+          "photoId": "motion-and-blur-023",
+          "x": 671.25,
+          "y": 1085.91,
+          "width": 326.65,
+          "height": 391.98
+        },
+        {
+          "photoId": "motion-and-blur-012",
+          "x": 0,
+          "y": 1526.02,
+          "width": 328.75,
+          "height": 440.52,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "motion-and-blur-013",
+          "x": 335.62,
+          "y": 1528.06,
+          "width": 664.38,
+          "height": 438.48
+        },
+        {
+          "photoId": "motion-and-blur-001",
+          "x": 0,
+          "y": 2013.75,
+          "width": 664.38,
+          "height": 385.34
+        },
+        {
+          "photoId": "motion-and-blur-016",
+          "x": 671.25,
+          "y": 2013.75,
+          "width": 328.75,
+          "height": 384.64
+        },
+        {
+          "photoId": "motion-and-blur-017",
+          "x": 3,
+          "y": 2446.74,
+          "width": 328.75,
+          "height": 401.07
+        },
+        {
+          "photoId": "motion-and-blur-032",
+          "x": 324.62,
+          "y": 2446.74,
+          "width": 328.75,
+          "height": 397.78
+        },
+        {
+          "photoId": "motion-and-blur-033",
+          "x": 671.25,
+          "y": 2446.74,
+          "width": 275.83,
+          "height": 397.78,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "motion-and-blur-024",
+          "x": 413.16,
+          "y": 2914.93,
+          "width": 151.68,
+          "height": 366.19,
+          "crop": false,
+          "focalX": 50,
+          "focalY": 50
+        },
+        {
+          "photoId": "motion-and-blur-025",
+          "x": 32.99,
+          "y": 2916.21,
+          "width": 266.91,
+          "height": 364.91,
+          "crop": true,
+          "focalX": 50,
+          "focalY": 100
+        },
+        {
+          "photoId": "motion-and-blur-011",
+          "x": 676.15,
+          "y": 2916.21,
+          "width": 278.29,
+          "height": 364.91,
+          "crop": false,
+          "focalX": 50,
+          "focalY": 50
+        }
+      ]
     }
   }
 }
