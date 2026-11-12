@@ -7,6 +7,7 @@ import { parseArgs } from 'node:util';
 import { publicImageBaseUrl } from './image-origin.mjs';
 import { isObsoleteResponsiveAsset, responsiveVariantPaths } from './responsive-build-assets.mjs';
 import { createR2Client } from './r2-client.mjs';
+import { legacyDisplayImage } from './legacy-display-image.mjs';
 
 const publicDirectory = fileURLToPath(new URL('../public/', import.meta.url));
 const mediaTypes = {
@@ -60,8 +61,9 @@ async function remoteMatches(client, object, size, digest, contentType) {
 
 export async function syncImage(client, bucket, file, { upload = false, publicBase = '' } = {}) {
   const object = { Bucket: bucket, Key: file.key };
-  const body = await readFile(file.path);
-  if (body.length !== file.size) throw new Error('Local image size changed during the run.');
+  const input = await readFile(file.path);
+  if (input.length !== file.size) throw new Error('Local image size changed during the run.');
+  const body = await legacyDisplayImage(input, file.key);
   const digest = sha256(body);
   let status = upload ? 'skipped' : 'verified';
   if (!await remoteMatches(client, object, body.length, digest, file.contentType)) {

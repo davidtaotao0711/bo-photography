@@ -9,7 +9,7 @@ import portfolioCategories from '../data/portfolio-categories.json' with { type:
 import imageManifest from '../data/image-manifest.json' with { type: 'json' };
 import galleryLayouts from '../data/gallery-layouts.json' with { type: 'json' };
 
-const baseline = { photos, series, site, portraitBooks, portfolioCategories, imageManifest, galleryLayouts };
+const baseline = { photos, series, site, portraitBooks, portfolioCategories, imageManifest, galleryLayouts, publicImagePolicy: 2 };
 const stateKey = () => `editor-state/${process.env.BO_EDITOR_STATE_KEY || (process.env.VERCEL_ENV === 'preview' ? 'preview' : 'production')}.json.enc`;
 let connection;
 
@@ -39,6 +39,10 @@ export async function readEditorData() {
   decipher.setAuthTag(bytes.subarray(12, 28));
   decipher.setAAD(Buffer.from(stateKey()));
   const data = JSON.parse(Buffer.concat([decipher.update(bytes.subarray(28)), decipher.final()]).toString('utf8'));
+  if (data.publicImagePolicy !== 2) {
+    data.imageManifest = { ...data.imageManifest, ...imageManifest };
+    data.publicImagePolicy = 2;
+  }
   return { data: { ...structuredClone(baseline), ...data }, revision: result.ETag };
 }
 

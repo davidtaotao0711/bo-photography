@@ -8,7 +8,8 @@ import { signEditorValue, verifyEditorValue } from './editor-auth.mjs';
 
 export const chunkSize = 4 * 1024 * 1024;
 const maxFileSize = 128 * 1024 * 1024;
-const formats = { jpeg: ['jpg', 'image/jpeg'], png: ['png', 'image/png'], webp: ['webp', 'image/webp'] };
+const formats = new Set(['jpeg', 'png', 'webp']);
+const displayEdge = 2000;
 const isHash = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const digest = (value, algorithm = 'sha256', encoding = 'hex') => createHash(algorithm).update(value).digest(encoding);
 const fail = (message, status = 400) => Object.assign(new Error(message), { status });
@@ -62,24 +63,23 @@ export async function storeImage(bytes, knownHash = digest(bytes)) {
   const source = sharp(bytes, { limitInputPixels: 100_000_000 });
   let metadata;
   try { metadata = await source.metadata(); } catch { throw fail('图片无法解码。'); }
-  const format = formats[metadata.format];
-  if (!format || !metadata.width || !metadata.height || (metadata.pages ?? 1) > 1) {
+  if (!formats.has(metadata.format) || !metadata.width || !metadata.height || (metadata.pages ?? 1) > 1) {
     throw fail('请选择单帧 JPG、PNG 或 WebP 图片。');
   }
-  const rotated = [5, 6, 7, 8].includes(metadata.orientation);
-  const width = rotated ? metadata.height : metadata.width;
-  const height = rotated ? metadata.width : metadata.height;
-  const [extension, mimeType] = format;
-  const key = `${prefix(knownHash)}/original.${extension}`;
+  const pipeline = () => source.clone().rotate().keepIccProfile();
+  const display = await pipeline().resize({ width: displayEdge, height: displayEdge, fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: 90, effort: 5 }).toBuffer({ resolveWithObject: true });
+  const { width, height } = display.info;
+  const key = `${prefix(knownHash)}/display.webp`;
   const asset = { hash: knownHash, image: `/${key}`, entry: { width, height, variants: [], placeholder: '' } };
-  const pipeline = () => source.clone().rotate();
   const maxWidth = Math.min(width, 1600);
   const widths = [...new Set([480, 800, 1200].filter(size => size < maxWidth).concat(maxWidth))];
   const placeholder = await pipeline().resize({ width: 24, height: 24, fit: 'inside', withoutEnlargement: true }).blur(8).webp({ quality: 36 }).toBuffer();
   asset.entry.placeholder = `data:image/webp;base64,${placeholder.toString('base64')}`;
-  await putImmutable(key, bytes, mimeType, knownHash);
+  await archiveOriginal(bytes, knownHash);
+  await putImmutable(key, display.data, 'image/webp');
   for (const size of widths) {
-    if (metadata.format === 'webp' && size === width && !rotated) {
+    if (size === width) {
       asset.entry.variants.push({ width: size, src: asset.image });
       continue;
     }
@@ -92,24 +92,32 @@ export async function storeImage(bytes, knownHash = digest(bytes)) {
   return asset;
 }
 
+async function archiveOriginal(bytes, hash) {
+  const secret = process.env.BO_EDITOR_DATA_KEY;
+  if (!/^[a-f0-9]{64}$/i.test(secret ?? '')) throw fail('原片加密存储尚未配置。', 503);
+  const key = `editor-originals/${hash}.enc`;
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', Buffer.from(secret, 'hex'), iv);
+  cipher.setAAD(Buffer.from(key));
+  const encrypted = Buffer.concat([cipher.update(bytes), cipher.final()]);
+  await putImmutable(key, Buffer.concat([iv, cipher.getAuthTag(), encrypted]), 'application/octet-stream', hash, true);
+}
+
 export async function addHeroVariants(image, entry) {
   if (!entry || !image.startsWith('/images/')) return entry;
-  const maxWidth = Math.min(entry.width, 3840);
+  const maxWidth = Math.min(entry.width, Math.floor(entry.width * displayEdge / Math.max(entry.width, entry.height)));
   const currentWidth = Math.max(0, ...entry.variants.map(variant => variant.width));
   if (maxWidth <= currentWidth) return entry;
+  if (image.endsWith('.webp')) return { ...entry, variants: [...entry.variants, { width: maxWidth, src: image }] };
   const bytes = await readObject(image.slice(1));
   if (!bytes) throw fail('首页封面原图不在 R2。', 409);
-  const widths = [...new Set([2400, 3200, maxWidth])].filter(width => width > currentWidth && width <= maxWidth);
   const hash = digest(bytes);
-  const variants = [...entry.variants];
-  for (const width of widths) {
-    const key = `${prefix(hash)}/hero-${width}.webp`;
-    const variant = await sharp(bytes, { limitInputPixels: 100_000_000 }).rotate()
-      .resize({ width, withoutEnlargement: true }).webp({ quality: 90, effort: 5 }).toBuffer();
-    await putImmutable(key, variant, 'image/webp');
-    variants.push({ width, src: `/${key}` });
-  }
-  return { ...entry, variants };
+  const key = `${prefix(hash)}/hero-${maxWidth}.webp`;
+  const variant = await sharp(bytes, { limitInputPixels: 100_000_000 }).rotate().keepIccProfile()
+    .resize({ width: maxWidth, height: displayEdge, fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: 90, effort: 5 }).toBuffer({ resolveWithObject: true });
+  await putImmutable(key, variant.data, 'image/webp');
+  return { ...entry, variants: [...entry.variants, { width: variant.info.width, src: `/${key}` }] };
 }
 
 function stagingCipherKey(upload, index) {
