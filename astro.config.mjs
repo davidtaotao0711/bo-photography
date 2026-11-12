@@ -1,4 +1,5 @@
 import { editorUploadPlugin } from './scripts/editor-upload-plugin.mjs';
+import { r2PublicDirectory } from './scripts/r2-public-directory.mjs';
 
 function stabilizeBuildOptimizeDeps() {
   const isBuildRun = process.argv.includes('build') || process.env.npm_lifecycle_event === 'build';
@@ -25,6 +26,7 @@ function stabilizeBuildOptimizeDeps() {
 
 export default {
   output: 'static',
+  integrations: [r2PublicDirectory()],
   devToolbar: {
     enabled: false,
   },

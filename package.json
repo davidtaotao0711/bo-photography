@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "astro dev",
     "editor": "astro dev --open /editor",
-    "build": "astro build",
+    "build": "astro build && node scripts/prune-responsive-build.mjs",
     "preview": "astro preview",
     "images:generate": "node scripts/generate-responsive-images.mjs",
+    "images:r2": "node scripts/upload-r2-images.mjs",
     "import:photos": "node scripts/import-photos.mjs",
     "compress:images": "node scripts/compress-images.mjs"
   },
@@ -16,5 +17,8 @@
     "@vercel/blob": "^2.7.0",
     "astro": "^5.0.0",
     "sharp": "^0.35.2"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1167.0"
   }
 }
