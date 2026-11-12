@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const targetWidths = [480, 800, 1200, 1600];
-const heroTargetWidths = [960, 1600, 2400, 3200, 3840];
+const heroTargetWidths = [960, 1600, 2000];
+const displayEdge = 2000;
 const sourceExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 
 const pathsFor = (projectRoot) => {
@@ -54,9 +55,11 @@ export async function generateResponsiveVariants(sourcePath, { projectRoot = pro
   const { sourceRoot, outputRoot, sitePath } = pathsFor(projectRoot);
   await fs.mkdir(outputRoot, { recursive: true });
   const metadata = await sharp(sourcePath).metadata();
-  const width = metadata.width;
-  const height = metadata.height;
-  if (!width || !height) throw new Error(`Unable to read dimensions for ${sourcePath}`);
+  const { width: sourceWidth, height: sourceHeight } = metadata.autoOrient ?? metadata;
+  if (!sourceWidth || !sourceHeight) throw new Error(`Unable to read dimensions for ${sourcePath}`);
+  const scale = Math.min(1, displayEdge / Math.max(sourceWidth, sourceHeight));
+  const width = Math.max(1, Math.round(sourceWidth * scale));
+  const height = Math.max(1, Math.round(sourceHeight * scale));
 
   let site = {};
   try {
@@ -70,7 +73,7 @@ export async function generateResponsiveVariants(sourcePath, { projectRoot = pro
   const introImages = new Set(Array.isArray(site.homeIntroImages) ? site.homeIntroImages : []);
   const isHeroImage = normalizedRelative === 'home/cover.jpg' || introImages.has(publicPath);
   const widthsForImage = isHeroImage ? heroTargetWidths : targetWidths;
-  const maxGeneratedWidth = isHeroImage ? 3840 : 1600;
+  const maxGeneratedWidth = isHeroImage ? displayEdge : 1600;
   const webpQuality = isHeroImage ? 90 : 76;
   const usableWidths = widthsForImage.filter((targetWidth) => targetWidth < width);
   const largestGeneratedWidth = Math.min(width, maxGeneratedWidth);
@@ -88,15 +91,17 @@ export async function generateResponsiveVariants(sourcePath, { projectRoot = pro
   for (const targetWidth of [...new Set(usableWidths)].sort((a, b) => a - b)) {
     const outputName = toOutputName(relative, targetWidth);
     const outputPath = path.join(outputRoot, outputName);
-    if (await isStale(outputPath, sourceStat)) {
-      await sharp(sourcePath)
+    let output = await isStale(outputPath, sourceStat) ? null : await sharp(outputPath).metadata();
+    if (!output || output.width > displayEdge || output.height > displayEdge) {
+      output = await sharp(sourcePath)
         .rotate()
-        .resize({ width: targetWidth, withoutEnlargement: true })
+        .resize({ width: targetWidth, height: displayEdge, fit: 'inside', withoutEnlargement: true })
+        .keepIccProfile()
         .webp({ quality: webpQuality, effort: isHeroImage ? 5 : 3 })
         .toFile(outputPath);
       generated += 1;
     }
-    variants.push({ width: targetWidth, src: toPublicPath(projectRoot, outputPath) });
+    variants.push({ width: output.width, src: toPublicPath(projectRoot, outputPath) });
   }
 
   return { publicPath, entry: { width, height, variants, placeholder }, generated };
