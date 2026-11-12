@@ -1,6 +1,5 @@
 ---
 Astro.response.headers.set('Cache-Control', 'private, no-store');
-const invalid = Astro.url.searchParams.has('invalid');
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -8,15 +7,42 @@ const invalid = Astro.url.searchParams.has('invalid');
   <body>
     <main>
       <h1>Editor 登录</h1>
-      <form method="post" action="/__editor/session">
+      <form id="editor-login" method="post" action="/__editor/session">
         <label for="key">编辑口令</label>
         <input id="key" name="key" type="password" required autocomplete="current-password" />
-        {invalid && <p role="alert">编辑口令不正确。</p>}
+        <p role="alert" id="login-error" hidden></p>
         <button type="submit">登录</button>
       </form>
     </main>
   </body>
 </html>
+<script>
+  const form = document.querySelector<HTMLFormElement>('#editor-login');
+  const feedback = document.querySelector<HTMLElement>('#login-error');
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button');
+    if (!button || !feedback) return;
+    button.disabled = true;
+    feedback.hidden = true;
+    try {
+      const response = await fetch('/__editor/session', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: new FormData(form).get('key') }),
+      });
+      if (response.ok) {
+        window.location.assign('/editor/');
+        return;
+      }
+      const result = await response.json().catch(() => ({}));
+      feedback.textContent = result.error || '登录失败，请重试。';
+    } catch {
+      feedback.textContent = '无法连接编辑器，请重试。';
+    }
+    feedback.hidden = false;
+    button.disabled = false;
+  });
+</script>
 <style>
   body { background: #f4f2ee; color: #171717; font-family: system-ui, sans-serif; margin: 0; }
   main { max-width: 24rem; margin: 12vh auto; padding: 1.5rem; }

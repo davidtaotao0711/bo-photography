@@ -10,6 +10,16 @@ const json = (body, status = 200, revision) => Response.json(body, { status, hea
 } });
 const uploadActions = new Set(['begin', 'part', 'complete', 'abort']);
 
+function sameOrigin(request, url) {
+  if (request.headers.get('sec-fetch-site') === 'cross-site') return false;
+  const origin = URL.parse(request.headers.get('origin') || '');
+  if (!origin) return false;
+  if (import.meta.env.DEV) return origin.origin === url.origin;
+  if (origin.protocol !== 'https:') return false;
+  return [url.host, request.headers.get('host'), request.headers.get('x-forwarded-host'),
+    process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL].includes(origin.host);
+}
+
 async function sharedLibrary(context, route) {
   if (!import.meta.env.DEV) return json({ error: '共享图库仅在本地 Editor 可用。' }, 404);
   const library = await readSharedLibrary();
@@ -54,16 +64,13 @@ export async function ALL(context) {
   const route = context.params.route || '';
   const post = request.method === 'POST';
   if (!post && request.method !== 'GET') return json({ error: '请求方式无效。' }, 405);
-  if (post && (request.headers.get('origin') !== url.origin || request.headers.get('sec-fetch-site') === 'cross-site')) {
+  if (post && !sameOrigin(request, url)) {
     return json({ error: '只允许从本站编辑器提交。' }, 403);
   }
   try {
     if (route === 'session' && post) {
-      const form = await request.formData();
-      return new Response(null, { status: 303, headers: {
-        Location: signInEditor(context, form.get('key')) ? '/editor/' : '/editor/sign-in?invalid=1',
-        'Cache-Control': 'private, no-store',
-      } });
+      const { key } = await request.json();
+      return signInEditor(context, key) ? json({ authenticated: true }) : json({ error: '编辑口令不正确。' }, 401);
     }
     if (!editorAuthorized(context)) return json({ error: '请重新登录编辑器。' }, 401);
     if (route === 'health' && !post) return json({ editorApiVersion: 11 });
