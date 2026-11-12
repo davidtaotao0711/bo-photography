@@ -1,12 +1,12 @@
 ﻿---
-import photos from '../data/photos.json';
-import series from '../data/series.json';
-import site from '../data/site.json';
-import portraitBooks from '../data/portrait-books.json';
-import portfolioCategories from '../data/portfolio-categories.json';
-import imageManifest from '../data/image-manifest.json';
-import galleryLayouts from '../data/gallery-layouts.json';
 import { photoCategories as categoryConfig } from '../data/categories.js';
+import { editorAuthorized } from '../server/editor-auth.mjs';
+
+if (!editorAuthorized(Astro)) return Astro.redirect('/editor/sign-in');
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+
+const { photos, series, site, portraitBooks, portfolioCategories, imageManifest, galleryLayouts } = Astro.locals.editor.data;
+const editorRevision = Astro.locals.editor.revision;
 
 const serializedPhotos = JSON.stringify(photos).replace(/</g, '\\u003c');
 const serializedSeries = JSON.stringify(series).replace(/</g, '\\u003c');
@@ -24,8 +24,9 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="robots" content="noindex, nofollow" />
+    <meta name="bo-editor-revision" content={editorRevision} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>本地排版编辑器 · Bo David</title>
+    <title>排版编辑器 · Bo David</title>
   </head>
   <body>
     <script id="initial-photos" type="application/json" set:html={serializedPhotos}></script>
@@ -87,7 +88,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
             <li>进入分类页后可一次添加单张或多张照片</li>
             <li>Series 先新建影集，再进入影集上传与选择封面</li>
             <li>删除只移除网站记录，不删除磁盘原图</li>
-            <li>保存并覆盖 photos.json</li>
+            <li>保存修改并同步到网站</li>
           </ol>
           <p class="note">首页只展示排在最前面的 12 张精选照片。</p>
         </div>
@@ -564,6 +565,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
     <div id="toast" role="status" aria-live="polite"></div>
 
     <script>
+      import { editorFetch, editorPost, syncEditorImages } from '../scripts/editor-requests.js';
       import { installSharedPhotoPicker } from '../scripts/shared-photo-picker.js';
       import { createGalleryCanvasEditor } from '../scripts/gallery-canvas-editor.js';
       import { buildOrientationRows } from '../utils/photo-layout.js';
@@ -647,6 +649,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
           return !addPhotosButton.disabled;
         },
         onImported: (result) => {
+          Object.assign(imageManifest, result.manifestPatch);
           snapshot();
           photoData = migratePortfolioPhotos(result.photoData);
           searchInput.value = '';
@@ -661,6 +664,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
         series: true,
         canImport: () => Boolean(activeSeriesSlug) && ensureSeriesActionReady() && ensureLayoutSaved() && !document.querySelector('#upload-series-photos').disabled,
         onImported: (result) => {
+          Object.assign(imageManifest, result.manifestPatch);
           photoData = migratePortfolioPhotos(result.photoData);
           if (result.series) seriesData = seriesData.map(item => item.slug === result.series.slug ? result.series : item);
           layoutDraftSlug = '';
@@ -1522,7 +1526,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
       }
 
       async function persistPortraitCategoryCovers(id, coverImages, coverPositions) {
-        const response = await fetch('/__editor/portfolio-categories/save', {
+        const response = await editorFetch('/__editor/portfolio-categories/save', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id, coverImages, coverPositions }),
@@ -2511,75 +2515,32 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
         });
       }
 
+      let categoryRetry = null;
       async function importPhotos(files) {
         const category = viewFilter.value;
         if (!photoCategories.includes(category) || !files.length) return;
-        if (dirty) {
-          window.alert('请先保存当前照片修改，再上传新照片。');
-          return;
-        }
-
+        if (dirty) { window.alert('请先保存当前照片修改，再上传新照片。'); return; }
         addPhotosButton.disabled = true;
-        addPhotosLabel.textContent = 'Optimizing image…';
+        categoryRetry = null;
         try {
-          const metadata = await Promise.all(files.map(getImageDetails));
-          const formData = new FormData();
-          formData.append('category', category);
-          formData.append('metadata', JSON.stringify(metadata));
-          files.forEach((file) => formData.append('photos', file, file.name));
-
-          const response = await fetch('/__editor/import-photos', { method: 'POST', body: formData });
-          const result = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(result.error || '本地导入接口没有响应，请通过 npm run editor 打开编辑器。');
-
-          const archiveCount = portfolioItems('archive', category).length;
-          const nextPhotoNumber = photoData
-            .filter((photo) => photo.category === category)
-            .reduce((highest, photo) => {
-              const match = String(photo.title || '').match(/^No\.\s*(\d+)$/i);
-              return Math.max(highest, match ? Number(match[1]) : 0);
-            }, 0) + 1;
-          const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
-          const year = String(new Date().getFullYear());
-          const fallbackAdditions = result.files.map((savedFile, index) => ({
-            id: savedFile.id,
-            title: `No. ${String(nextPhotoNumber + index).padStart(2, '0')}`,
-            category,
-            series: '',
-            location: '',
-            date: year,
-            image: savedFile.image,
-            featured: false,
-            portfolioStatus: 'archive',
-            selectedOrder: null,
-            archiveOrder: archiveCount + index + 1,
-            aspect: metadata[savedFile.index ?? index]?.aspect,
-            orientation: metadata[savedFile.index ?? index]?.orientation,
-            alt: `${categoryLabel} photograph by Bo David`,
-          }));
-          const additions = Array.isArray(result.photos) ? result.photos : fallbackAdditions;
-
-          const duplicate = additions.find((photo) => photoData.some((existing) => existing.id === photo.id));
-          if (duplicate) throw new Error(`照片 ID ${duplicate.id} 已存在，请检查对应图片目录。`);
+          const images = await syncEditorImages(files, status => { addPhotosLabel.textContent = status; });
+          const result = await editorPost('/__editor/import-photos', { category, images });
           snapshot();
-          if (Array.isArray(result.photoData)) photoData = migratePortfolioPhotos(result.photoData);
-          else photoData.push(...additions);
+          photoData = migratePortfolioPhotos(result.photoData);
+          Object.assign(imageManifest, result.manifestPatch);
           searchInput.value = '';
-          setDirty(!Array.isArray(result.photoData), Array.isArray(result.photoData)
-            ? `已添加 ${additions.length} 张照片到 ${categoryLabel} Archive`
-            : `已添加 ${additions.length} 张照片，请保存 photos.json`);
+          setDirty(false);
           render();
-          showToast(result.optimization?.failed?.length
-            ? `${additions.length} 张照片已添加，部分图片优化失败，已保留原图`
-            : `${additions.length} 张照片已添加到 Archive · Image ready`);
+          showToast(`已同步 R2 并保存 ${result.photos.length} 张照片，复用 ${result.skipped} 张。`);
         } catch (error) {
-          window.alert(`添加照片失败：${error.message}`);
+          categoryRetry = { category, files };
+          window.alert(`上传失败，点击重试：${error.message}`);
         } finally {
           addPhotosButton.disabled = false;
-          const label = viewFilter.options[viewFilter.selectedIndex]?.textContent || '';
-          addPhotosLabel.textContent = `添加到 ${label}`;
+          addPhotosLabel.textContent = categoryRetry ? '重试上传' : `添加到 ${viewFilter.options[viewFilter.selectedIndex]?.textContent || ''}`;
         }
       }
+
 
       function ensureSeriesActionReady() {
         if (!dirty) return true;
@@ -2605,7 +2566,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
       }
 
       async function postJson(url, body) {
-        const response = await fetch(url, {
+        const response = await editorFetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
@@ -2829,37 +2790,30 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
         }
       }
 
+      let seriesRetry = null;
       async function importSeriesPhotos(files) {
-        if (!activeSeriesSlug || !files.length || !ensureSeriesActionReady() || !ensureLayoutSaved()) return;
+        const slug = activeSeriesSlug;
+        if (!slug || !files.length || !ensureSeriesActionReady() || !ensureLayoutSaved()) return;
         const button = $('#upload-series-photos');
-        button.disabled = true;
         const label = button.querySelector('span:last-child');
-        label.textContent = 'Optimizing image…';
-        sessionStorage.setItem('editorView', 'series');
-        sessionStorage.setItem('editorSeriesSlug', activeSeriesSlug);
-
+        button.disabled = true;
+        seriesRetry = null;
         try {
-          const metadata = await Promise.all(files.map(getImageDetails));
-          const formData = new FormData();
-          formData.append('slug', activeSeriesSlug);
-          formData.append('metadata', JSON.stringify(metadata));
-          files.forEach((file) => formData.append('photos', file, file.name));
-          const response = await fetch('/__editor/series/upload', { method: 'POST', body: formData });
-          const result = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(result.error || 'Series 照片上传失败。');
-          photoData.push(...result.photos);
-          seriesData = seriesData.map((item) => item.slug === activeSeriesSlug ? result.series : item);
+          const images = await syncEditorImages(files, status => { label.textContent = status; });
+          const result = await editorPost('/__editor/series/upload', { slug, images });
+          photoData = migratePortfolioPhotos(result.photoData);
+          Object.assign(imageManifest, result.manifestPatch);
+          seriesData = seriesData.map(item => item.slug === slug ? result.series : item);
           layoutDraftSlug = '';
-          setDirty(false, `${result.photos.length} 张 Series 照片已写入 photos.json`);
+          setDirty(false);
           renderSeries();
-          showToast(result.optimization?.failed?.length
-            ? `${result.photos.length} 张照片已上传，部分图片优化失败，已保留原图`
-            : `${result.photos.length} 张照片已上传 · Image ready`);
+          showToast(`已同步 R2 并保存 ${result.photos.length} 张照片，复用 ${result.skipped} 张。`);
         } catch (error) {
-          window.alert(`上传 Series 照片失败：${error.message}`);
+          seriesRetry = { slug, files };
+          window.alert(`上传失败，点击重试：${error.message}`);
         } finally {
           button.disabled = false;
-          label.textContent = 'Upload Photos';
+          label.textContent = seriesRetry ? '重试上传' : 'Upload Photos';
         }
       }
 
@@ -3022,7 +2976,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
       async function savePortraitBooks() {
         try {
           portraitBooksData = validatePortraitBooks(portraitBooksData);
-          const response = await fetch('/__editor/portrait-books/save', {
+          const response = await editorFetch('/__editor/portrait-books/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ books: portraitBooksData }),
@@ -3079,7 +3033,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
 
       async function saveJson() {
         try {
-          const response = await fetch('/__editor/photos/save', {
+          const response = await editorFetch('/__editor/photos/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ photos: photoData }),
@@ -3089,7 +3043,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
             photoData = validatePhotos(result.photos || photoData);
             const savedSite = siteDirty;
             if (siteDirty) {
-              const siteResponse = await fetch('/__editor/site/save', {
+              const siteResponse = await editorFetch('/__editor/site/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ homeIntroImages: siteData.homeIntroImages }),
@@ -3950,14 +3904,20 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
         });
       });
       $('#confirm-delete-series').addEventListener('click', deleteSeries);
-      $('#upload-series-photos').addEventListener('click', () => $('#series-photo-input').click());
+      $('#upload-series-photos').addEventListener('click', () => {
+        if (seriesRetry?.slug === activeSeriesSlug) void importSeriesPhotos(seriesRetry.files);
+        else $('#series-photo-input').click();
+      });
       $('#series-photo-input').addEventListener('change', async (event) => {
         const files = Array.from(event.target.files || []);
         event.target.value = '';
         if (!files.length || !await confirmLargeFiles(files)) return;
         await importSeriesPhotos(files);
       });
-      addPhotosButton.addEventListener('click', () => $('#photo-file-input').click());
+      addPhotosButton.addEventListener('click', () => {
+        if (categoryRetry?.category === viewFilter.value) void importPhotos(categoryRetry.files);
+        else $('#photo-file-input').click();
+      });
       $('#photo-file-input').addEventListener('change', async (event) => {
         const files = Array.from(event.target.files || []);
         event.target.value = '';

@@ -30,7 +30,7 @@ const {
   style,
   defer = false,
 } = Astro.props;
-const responsive = getResponsiveImage(src);
+const responsive = getResponsiveImage(src, Astro.locals.editor.data.imageManifest);
 const fallback = responsive?.fallback || src;
 const placeholderStyle = responsive?.placeholder
   ? `background-image: url(${responsive.placeholder}); background-size: cover; background-position: center;`

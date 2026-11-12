@@ -1,4 +1,4 @@
-import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { createHash } from 'node:crypto';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { relative, resolve, sep } from 'node:path';
@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { publicImageBaseUrl } from './image-origin.mjs';
 import { isObsoleteResponsiveAsset, responsiveVariantPaths } from './responsive-build-assets.mjs';
+import { createR2Client } from './r2-client.mjs';
 
 const publicDirectory = fileURLToPath(new URL('../public/', import.meta.url));
 const mediaTypes = {
@@ -140,26 +141,16 @@ async function main() {
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
-  const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME } = process.env;
-  if (!/^[a-f0-9]{32}$/i.test(R2_ACCOUNT_ID ?? '') || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !R2_BUCKET_NAME) {
-    throw new Error('Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY and R2_BUCKET_NAME in .env.local.');
-  }
   const publicBase = values['verify-public'] ? publicImageBaseUrl() : '';
   if (values['verify-public'] && !publicBase) throw new Error('Set PUBLIC_IMAGE_BASE_URL for public verification.');
-  const client = new S3Client({
-    endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    region: 'auto', forcePathStyle: true, retryMode: 'standard', maxAttempts: 4,
-    requestChecksumCalculation: 'WHEN_REQUIRED', responseChecksumValidation: 'WHEN_REQUIRED',
-    credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY },
-    requestHandler: { connectionTimeout: 10_000, requestTimeout: 120_000, throwOnRequestTimeout: true },
-  });
+  const { client, bucket } = createR2Client();
   const totals = { uploaded: 0, skipped: 0, verified: 0, failed: 0 };
   let cursor = 0;
   async function worker() {
     while (cursor < files.length) {
       const file = files[cursor++];
       try {
-        const status = await syncImage(client, R2_BUCKET_NAME, file, { upload: values.upload, publicBase });
+        const status = await syncImage(client, bucket, file, { upload: values.upload, publicBase });
         totals[status]++;
         if (values.key) console.log(`${status}: ${file.key}`);
       } catch (error) {

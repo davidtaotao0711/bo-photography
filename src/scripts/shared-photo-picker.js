@@ -1,3 +1,4 @@
+import { editorFetch } from './editor-requests.js';
 export function installSharedPhotoPicker({ canImport, onImported, anchor = '#add-photos', series = false }) {
   const button = document.createElement('button');
   button.type = 'button'; button.className = 'add-photos'; button.hidden = true;
@@ -72,7 +73,7 @@ export function installSharedPhotoPicker({ canImport, onImported, anchor = '#add
     if (selected.size > 100) { status.textContent = '每次最多添加 100 张，请减少选择后重试。'; return; }
     busy = true; controls(); status.dataset.error = 'false'; status.textContent = '正在复制所选原图、生成网站图片并保存，请保持页面打开。';
     try {
-      const response = await fetch('/__editor/shared-library', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:target,ids:[...selected]})});
+      const response = await editorFetch('/__editor/shared-library', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:target,ids:[...selected]})});
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !Array.isArray(result.photoData)) throw new Error(result.error || '添加失败，请重新打开图库确认状态。');
       onImported(result); dialog.close();

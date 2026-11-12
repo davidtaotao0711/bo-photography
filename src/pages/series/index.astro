@@ -1,9 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SeriesCard from '../../components/SeriesCard.astro';
-import photos from '../../data/photos.json';
-import series from '../../data/series.json';
-import site from '../../data/site.json';
+
+const { photos, series, site } = Astro.locals.editor.data;
 
 const orderedSeries = series
   .map((item, index) => ({ item, index, order: Number.isFinite(Number(item.order)) ? Number(item.order) : index + 1 }))

@@ -4,29 +4,24 @@ import CanvasGrain from '../components/CanvasGrain.astro';
 import HomeIntro from '../components/HomeIntro.astro';
 import PhotoCard from '../components/PhotoCard.astro';
 import ScrollReveal from '../components/ScrollReveal.astro';
-import photos from '../data/photos.json';
-import site from '../data/site.json';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { getResponsiveImage } from '../utils/responsive-image.js';
+import originalSite from '../data/site.json';
+
+const { photos, site } = Astro.locals.editor.data;
 
 const featured = photos.filter((photo) => photo.featured).slice(0, 12);
-const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
 const introImages = site.homeIntroImages
   .map((src, index) => {
     const photo = photos.find((item) => item.image === src);
     const mobileFilename = `mobile-${String(index + 1).padStart(2, '0')}.jpg`;
     const mobileSrc = `/images/home-mobile/${mobileFilename}`;
-    const mobileResponsive = existsSync(join(publicDir, 'images', 'home-mobile', mobileFilename))
-      ? getResponsiveImage(mobileSrc)
+    const mobileResponsive = src === originalSite.homeIntroImages[index]
+      ? getResponsiveImage(mobileSrc, Astro.locals.editor.data.imageManifest)
       : null;
 
     return {
       src,
-      mobileSrc: existsSync(join(publicDir, 'images', 'home-mobile', mobileFilename))
-        ? mobileSrc
-        : undefined,
+      mobileSrc: mobileResponsive ? mobileSrc : undefined,
       mobileSrcset: mobileResponsive?.webpSrcset || undefined,
       alt: photo?.alt || `Nature photograph by ${site.name}`,
     };

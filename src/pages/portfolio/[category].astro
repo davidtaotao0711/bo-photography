@@ -4,24 +4,18 @@ import GalleryGrid from '../../components/GalleryGrid.astro';
 import PhotoCard from '../../components/PhotoCard.astro';
 import PhotoLightbox from '../../components/PhotoLightbox.astro';
 import ScrollReveal from '../../components/ScrollReveal.astro';
-import { getPhotoCategory, photoCategories } from '../../data/categories.js';
-import photos from '../../data/photos.json';
+import { getPhotoCategory } from '../../data/categories.js';
 import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../utils/portfolio-status.js';
-import site from '../../data/site.json';
 import { getPhotoMeta } from '../../utils/photo-metadata.js';
 import { buildOrientationRows } from '../../utils/photo-layout.js';
 import { normalizeCollageLayout } from '../../utils/collage-layout.js';
-import galleryLayouts from '../../data/gallery-layouts.json';
 import { visibleCanvasPhotos } from '../../utils/gallery-canvas.js';
 
-export function getStaticPaths() {
-  return photoCategories
-    .filter((category) => category.slug !== 'portrait')
-    .map((category) => ({ params: { category: category.slug } }));
-}
+const { photos, site, galleryLayouts } = Astro.locals.editor.data;
 
 const { category } = Astro.params;
 const categoryConfig = getPhotoCategory(category);
+if (!categoryConfig || category === 'portrait') return new Response(null, { status: 404 });
 const title = categoryConfig?.title || '';
 const normalizedPhotos = migratePortfolioPhotos(photos);
 const allItems = normalizedPhotos.filter((photo) => photo.category === category);

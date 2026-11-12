@@ -3,12 +3,11 @@ import GalleryGrid from '../../../components/GalleryGrid.astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PhotoLightbox from '../../../components/PhotoLightbox.astro';
 import PortraitViewSwitch from '../../../components/PortraitViewSwitch.astro';
-import photos from '../../../data/photos.json';
-import site from '../../../data/site.json';
 import { getPhotoMeta } from '../../../utils/photo-metadata.js';
-import galleryLayouts from '../../../data/gallery-layouts.json';
 import { visibleCanvasPhotos } from '../../../utils/gallery-canvas.js';
 import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
+
+const { photos, site, galleryLayouts } = Astro.locals.editor.data;
 
 const portraitItems = migratePortfolioPhotos(photos).filter((photo) => photo.category === 'portrait');
 const selectedPortraits = sortPortfolioPhotos(

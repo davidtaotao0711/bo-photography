@@ -14,11 +14,10 @@
     "compress:images": "node scripts/compress-images.mjs"
   },
   "dependencies": {
+    "@astrojs/vercel": "^8.2.11",
+    "@aws-sdk/client-s3": "^3.1167.0",
     "@vercel/blob": "^2.7.0",
     "astro": "^5.0.0",
     "sharp": "^0.35.2"
-  },
-  "devDependencies": {
-    "@aws-sdk/client-s3": "^3.1167.0"
   }
 }

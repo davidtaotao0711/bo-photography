@@ -1,6 +1,4 @@
-import manifest from '../data/image-manifest.json';
-
-export function getResponsiveImage(src) {
+export function getResponsiveImage(src, manifest) {
   const entry = manifest[src];
   if (!entry) return null;
 

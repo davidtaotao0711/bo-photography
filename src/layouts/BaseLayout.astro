@@ -2,8 +2,9 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import BackToTop from '../components/BackToTop.astro';
-import site from '../data/site.json';
 import '../styles/global.css';
+
+const { site } = Astro.locals.editor.data;
 
 interface Props {
   title?: string;

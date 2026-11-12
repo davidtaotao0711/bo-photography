@@ -1,8 +1,9 @@
 ---
 import PhotoCard from './PhotoCard.astro';
-import imageManifest from '../data/image-manifest.json';
 import { resolveCanvasLayout, canvasRectStyle, canvasImageLayout } from '../utils/gallery-canvas.js';
 import '../styles/gallery-canvas.css';
+
+const { imageManifest } = Astro.locals.editor.data;
 
 const { photos, layout, galleryKey, reveal = true } = Astro.props;
 const resolved = resolveCanvasLayout(layout, photos, imageManifest);

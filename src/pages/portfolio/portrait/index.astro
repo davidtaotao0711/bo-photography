@@ -2,11 +2,10 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PortraitShelf from '../../../components/PortraitShelf.astro';
 import PortraitViewSwitch from '../../../components/PortraitViewSwitch.astro';
-import portraitBooksData from '../../../data/portrait-books.json';
-import photos from '../../../data/photos.json';
-import site from '../../../data/site.json';
 import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
 import { normalizePortraitBooks } from '../../../utils/portrait-layout.js';
+
+const { portraitBooks: portraitBooksData, photos, site } = Astro.locals.editor.data;
 
 const normalizedPhotos = migratePortfolioPhotos(photos);
 const selectedPortraits = sortPortfolioPhotos(

@@ -2,8 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CategoryCard from '../components/CategoryCard.astro';
 import FeaturedSeriesCard from '../components/FeaturedSeriesCard.astro';
-import categories from '../data/portfolio-categories.json';
-import site from '../data/site.json';
+
+const { portfolioCategories: categories, site } = Astro.locals.editor.data;
 
 const entries = categories
   .map((entry, index) => ({

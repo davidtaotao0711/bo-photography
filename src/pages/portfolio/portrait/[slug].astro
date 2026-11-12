@@ -2,21 +2,14 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PortraitBook from '../../../components/PortraitBook.astro';
 import PhotoLightbox from '../../../components/PhotoLightbox.astro';
-import portraitBooksData from '../../../data/portrait-books.json';
-import photos from '../../../data/photos.json';
-import site from '../../../data/site.json';
 import { getPhotoMeta } from '../../../utils/photo-metadata.js';
 import { getPortfolioStatus, migratePortfolioPhotos, sortPortfolioPhotos } from '../../../utils/portfolio-status.js';
 import { normalizePortraitBooks, portraitVisiblePhotoIds } from '../../../utils/portrait-layout.js';
 
-export function getStaticPaths() {
-  return normalizePortraitBooks(portraitBooksData).books.map((book) => ({
-    params: { slug: book.slug },
-    props: { book },
-  }));
-}
+const { portraitBooks: portraitBooksData, photos, site } = Astro.locals.editor.data;
 
-const { book } = Astro.props;
+const book = normalizePortraitBooks(portraitBooksData).books.find(entry => entry.slug === Astro.params.slug);
+if (!book) return new Response(null, { status: 404 });
 const migratedPhotos = migratePortfolioPhotos(photos);
 const selectedPortraits = sortPortfolioPhotos(
   migratedPhotos.filter((photo) => photo.category === 'portrait' && getPortfolioStatus(photo, 'portrait') === 'selected'),

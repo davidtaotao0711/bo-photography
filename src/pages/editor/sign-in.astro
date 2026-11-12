@@ -1,0 +1,26 @@
+---
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+const invalid = Astro.url.searchParams.has('invalid');
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Editor 登录</title></head>
+  <body>
+    <main>
+      <h1>Editor 登录</h1>
+      <form method="post" action="/__editor/session">
+        <label for="key">编辑口令</label>
+        <input id="key" name="key" type="password" required autocomplete="current-password" />
+        {invalid && <p role="alert">编辑口令不正确。</p>}
+        <button type="submit">登录</button>
+      </form>
+    </main>
+  </body>
+</html>
+<style>
+  body { background: #f4f2ee; color: #171717; font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 24rem; margin: 12vh auto; padding: 1.5rem; }
+  form { display: grid; gap: .8rem; }
+  input, button { font: inherit; padding: .65rem; }
+  button { background: #171717; color: white; border: 0; cursor: pointer; }
+</style>

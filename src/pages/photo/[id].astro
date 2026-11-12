@@ -1,15 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ResponsiveImage from '../../components/ResponsiveImage.astro';
-import photos from '../../data/photos.json';
-import site from '../../data/site.json';
 import { getPhotoMeta } from '../../utils/photo-metadata.js';
 
-export function getStaticPaths() {
-  return photos.map((photo) => ({ params: { id: photo.id }, props: { photo } }));
-}
+const { photos, site } = Astro.locals.editor.data;
 
-const { photo } = Astro.props;
+const photo = photos.find(entry => entry.id === Astro.params.id);
+if (!photo) return new Response(null, { status: 404 });
 const metadata = getPhotoMeta(photo);
 const categoryUrl = photo.series ? `/series/${photo.series}` : `/portfolio/${photo.category}`;
 const backLabel = photo.series || photo.category;

@@ -3,7 +3,6 @@ import { homedir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
 
-const endpoint = '/__editor/shared-library';
 function fail(message, status = 400) { return Object.assign(new Error(message), { status }); }
 
 export async function readSharedLibrary(root = process.env.BO_SHARED_LIBRARY_ROOT || path.join(homedir(), 'Desktop', 'translate project', 'work', 'bo-david-portfolio')) {
@@ -55,52 +54,4 @@ export async function sharedImportForm(library, ids, category, existing) {
   }
   form.set('metadata', JSON.stringify(metadata));
   return { form, skipped: selected.length - additions.length, count: additions.length };
-}
-
-export async function handleSharedLibrary(request, response, projectRoot, importPhotos, categories, importSeriesPhotos) {
-  const url = new URL(request.url, 'http://localhost');
-  if (url.pathname !== endpoint && url.pathname !== `${endpoint}/image`) return false;
-  const json = (status, data) => {
-    response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
-    response.end(JSON.stringify(data));
-  };
-  try {
-    if (request.headers.origin && new URL(request.headers.origin).host !== request.headers.host) throw fail('只允许从本地编辑器访问图库。', 403);
-    if (request.headers['sec-fetch-site'] === 'cross-site') throw fail('只允许从本地编辑器访问图库。', 403);
-    if (!['GET', 'POST'].includes(request.method) || (url.pathname.endsWith('/image') && request.method !== 'GET')) throw fail('请求方式无效。', 405);
-    const library = await readSharedLibrary();
-    if (url.pathname.endsWith('/image')) {
-      const photo = library.photos.find(photo => photo.id === url.searchParams.get('id'));
-      if (!photo) throw fail('照片不在共享图库中。', 404);
-      const file = await originalPath(library.root, photo);
-      const bytes = await sharp(file).rotate().resize(320, 320, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 75 }).toBuffer();
-      response.writeHead(200, { 'Content-Type': 'image/webp', 'Cache-Control': 'private, max-age=300', 'X-Content-Type-Options': 'nosniff' });
-      response.end(bytes);
-      return true;
-    }
-    const existing = JSON.parse(await readFile(path.join(projectRoot, 'src/data/photos.json'), 'utf8'));
-    async function validTarget(category) {
-      if (categories.has(category)) return true;
-      if (typeof category !== 'string' || !category.startsWith('series:')) return false;
-      const series = JSON.parse(await readFile(path.join(projectRoot, 'src/data/series.json'), 'utf8'));
-      return series.some(item => item.slug === category.slice(7));
-    }
-    if (request.method === 'GET') {
-      const category = url.searchParams.get('category');
-      if (!await validTarget(category)) throw fail('请先选择一个照片分类或具体系列。');
-      json(200, { photos: library.photos.map(photo => ({ id: photo.id, alt: photo.alt, width: photo.width, height: photo.height, added: alreadyAdded(photo, existing, category), thumbnail: `${endpoint}/image?id=${encodeURIComponent(photo.id)}` })) });
-      return true;
-    }
-    const chunks = [];
-    let length = 0;
-    for await (const chunk of request) { length += chunk.length; if (length > 32768) throw fail('选择内容过大。', 413); chunks.push(chunk); }
-    const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-    if (!await validTarget(body.category)) throw fail('照片分类或系列无效。');
-    const selection = await sharedImportForm(library, body.ids, body.category, existing);
-    const importer = body.category.startsWith('series:') ? importSeriesPhotos : importPhotos;
-    const result = selection.count ? await importer(null, projectRoot, selection.form) : { photos: [], photoData: existing };
-    if (!result.photoData) result.photoData = JSON.parse(await readFile(path.join(projectRoot, 'src/data/photos.json'), 'utf8'));
-    json(200, { ...result, skipped: selection.skipped });
-  } catch (error) { json(error.status || 500, { error: error.message || '读取共享图库失败。' }); }
-  return true;
 }

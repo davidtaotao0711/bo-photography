@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ResponsiveImage from '../components/ResponsiveImage.astro';
+
+const { site } = Astro.locals.editor.data;
 import SocialLinks from '../components/SocialLinks.astro';
-import site from '../data/site.json';
 ---
 
 <BaseLayout title={`About — ${site.name}`} description={site.about}>

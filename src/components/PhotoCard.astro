@@ -55,7 +55,7 @@ const homeTitle = explicitHomeTitle || photoTitle;
 const homeCaption = getPhotoCaption(photo);
 const hasHomeCaption = Boolean(homeTitle || homeCaption);
 const accessibleTitle = homeTitle || photoTitle;
-const responsiveMeta = getResponsiveImage(photo.image);
+const responsiveMeta = getResponsiveImage(photo.image, Astro.locals.editor.data.imageManifest);
 const naturalAspect = responsiveMeta?.width && responsiveMeta?.height
   ? `${responsiveMeta.width} / ${responsiveMeta.height}`
   : '4 / 3';

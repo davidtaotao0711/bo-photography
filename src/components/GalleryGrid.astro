@@ -1,8 +1,9 @@
 ---
 import PhotoCard from './PhotoCard.astro';
 import CanvasGallery from './CanvasGallery.astro';
-import galleryLayouts from '../data/gallery-layouts.json';
 import { normalizeCollageLayout } from '../utils/collage-layout.js';
+
+const { galleryLayouts } = Astro.locals.editor.data;
 
 interface Props {
   photos: any[];

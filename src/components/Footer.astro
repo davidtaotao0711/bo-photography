@@ -1,5 +1,6 @@
 ---
-import site from '../data/site.json';
+
+const { site } = Astro.locals.editor.data;
 
 const showReplayIntro = Astro.url.pathname.replace(/\/+$/, '') === '/about';
 ---

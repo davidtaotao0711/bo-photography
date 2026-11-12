@@ -1,5 +1,10 @@
-import { editorUploadPlugin } from './scripts/editor-upload-plugin.mjs';
+import vercel from '@astrojs/vercel';
 import { r2PublicDirectory } from './scripts/r2-public-directory.mjs';
+
+if (process.argv.includes('dev')) {
+  try { process.loadEnvFile('.env.local'); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; }
+}
 
 function stabilizeBuildOptimizeDeps() {
   const isBuildRun = process.argv.includes('build') || process.env.npm_lifecycle_event === 'build';
@@ -25,12 +30,20 @@ function stabilizeBuildOptimizeDeps() {
 }
 
 export default {
-  output: 'static',
-  integrations: [r2PublicDirectory()],
+  output: 'server',
+  adapter: vercel(),
+  integrations: [r2PublicDirectory(), {
+    name: 'bo-editor-api',
+    hooks: {
+      'astro:config:setup'({ injectRoute }) {
+        injectRoute({ pattern: '/__editor/[...route]', entrypoint: './src/server/editor-endpoint.js' });
+      },
+    },
+  }],
   devToolbar: {
     enabled: false,
   },
   vite: {
-    plugins: [stabilizeBuildOptimizeDeps(), editorUploadPlugin()],
+    plugins: [stabilizeBuildOptimizeDeps()],
   },
 };

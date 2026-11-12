@@ -1,3 +1,4 @@
+import { editorFetch } from './editor-requests.js';
 import { CANVAS_WIDTH, canvasImageLayout, canvasNudgeStep, canvasRectStyle, normalizeCanvasRect, panCanvasCrop, resizeCanvasRect, resolveCanvasLayout, snapCanvasRect } from '../utils/gallery-canvas.js';
 import '../styles/gallery-canvas.css';
 import '../styles/gallery-canvas-editor.css';
@@ -436,7 +437,7 @@ export function createGalleryCanvasEditor({ initial, manifest, onInspect, onMana
       await beforeSave?.();
       for (const key of [...dirty]) {
         const layout = copy(layouts.get(key));
-        const response = await fetch('/__editor/gallery-layouts/save', {
+        const response = await editorFetch('/__editor/gallery-layouts/save', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key, layout }),
         });
         const result = await response.json().catch(() => ({}));

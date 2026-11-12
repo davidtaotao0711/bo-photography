@@ -3,19 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import GalleryGrid from '../../components/GalleryGrid.astro';
 import PhotoCard from '../../components/PhotoCard.astro';
 import ScrollReveal from '../../components/ScrollReveal.astro';
-import photos from '../../data/photos.json';
-import series from '../../data/series.json';
-import site from '../../data/site.json';
 import { normalizeCollageLayout, sortPhotosByOrder } from '../../utils/collage-layout.js';
 import { buildOrientationRows } from '../../utils/photo-layout.js';
-import galleryLayouts from '../../data/gallery-layouts.json';
 import { visibleCanvasPhotos } from '../../utils/gallery-canvas.js';
 
-export function getStaticPaths() {
-  return series.map((item) => ({ params: { slug: item.slug }, props: { item } }));
-}
+const { photos, series, site, galleryLayouts } = Astro.locals.editor.data;
 
-const { item } = Astro.props;
+const item = series.find(entry => entry.slug === Astro.params.slug);
+if (!item) return new Response(null, { status: 404 });
 const galleryKey = `series:${item.slug}`;
 const items = visibleCanvasPhotos(galleryLayouts.galleries[galleryKey], sortPhotosByOrder(photos.filter((photo) => photo.series === item.slug)));
 const photosById = new Map(items.map((photo) => [photo.id, photo]));
