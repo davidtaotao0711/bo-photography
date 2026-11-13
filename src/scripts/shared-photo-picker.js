@@ -1,5 +1,5 @@
 import { editorPost, syncEditorImages } from './editor-requests.js';
-export function installSharedPhotoPicker({ canImport, onImported, anchor = '#add-photos', series = false, library = false, book = false, imageUrl }) {
+export function installSharedPhotoPicker({ canImport, onImported, onChoose, anchor = '#add-photos', series = false, library = false, book = false, imageUrl }) {
   const button = document.createElement('button');
   button.type = 'button'; button.className = 'add-photos'; button.hidden = true;
   button.textContent = library ? '云端图库' : '＋ 从云端图库添加';
@@ -8,7 +8,7 @@ export function installSharedPhotoPicker({ canImport, onImported, anchor = '#add
   dialog.className = 'shared-library-dialog';
   dialog.setAttribute('aria-label', '云端图库');
   dialog.innerHTML = `<header><h2>云端图库</h2><button type="button" data-close>关闭</button></header>
-    ${library ? '<p><label>上传到图库 <input type="file" accept="image/jpeg,image/png,image/webp" multiple data-upload></label></p>' : `<p>选择后加入${book ? '当前跨页' : series ? '当前系列' : '当前分类的 Archive'}。</p>`}
+    ${library || onChoose ? '<p><label>上传到图库 <input type="file" accept="image/jpeg,image/png,image/webp" multiple data-upload></label></p>' : `<p>选择后加入${book ? '当前跨页' : series ? '当前系列' : '当前分类的 Archive'}。</p>`}
     <div class="shared-library-tools"><input type="search" placeholder="搜索名称、标签或 ID" aria-label="搜索云端图库" />
     <select aria-label="照片方向" data-direction><option value="all">全部方向</option><option value="portrait">竖图</option><option value="landscape">横图</option><option value="square">方图</option></select>
     <select aria-label="所属作品" data-scope><option value="all">全部素材</option><option value="street">Street</option><option value="portrait">Portrait</option><option value="scenes">Scenes</option><option value="nature">Nature</option><option value="series">Series</option><option value="portrait-books">Portrait Books</option></select>
@@ -139,8 +139,9 @@ export function installSharedPhotoPicker({ canImport, onImported, anchor = '#add
     if (selected.size > 100) { status.textContent = '每次最多添加 100 张，请减少选择后重试。'; return; }
     busy = true; controls(); status.dataset.error = 'false'; status.textContent = '正在添加并保存…';
     try {
-      const result = await editorPost('/__editor/shared-library', { category: target, ids: [...selected], group });
-      onImported(result); dialog.close();
+      if (onChoose) await onChoose([...selected]);
+      else onImported(await editorPost('/__editor/shared-library', { category: target, ids: [...selected], group }));
+      dialog.close();
     } catch(error) { status.dataset.error = 'true'; status.textContent = error.message; }
     finally { busy = false; controls(); }
   });

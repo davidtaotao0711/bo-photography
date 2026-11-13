@@ -1,7 +1,7 @@
 import { readEditorData, writeEditorData } from './editor-data.mjs';
 import { editorAuthorized, signInEditor } from './editor-auth.mjs';
 import { addCatalogImageToBook, attachImages, CATEGORIES, editorHandlers } from './editor-service.mjs';
-import { imageUpload } from './editor-images.mjs';
+import { imageUpload, lookupImage } from './editor-images.mjs';
 import { browseCatalog, catalogHashes, tagCatalogAsset } from './editor-catalog.mjs';
 
 const json = (body, status = 200, revision) => Response.json(body, { status, headers: {
@@ -21,6 +21,13 @@ function sameOrigin(request, url) {
 
 async function sharedLibrary(context, route) {
   const post = context.request.method === 'POST';
+  if (route === 'shared-library/choose') {
+    if (!post) return json({ error: '请求方式无效。' }, 405);
+    const { ids } = await context.request.json();
+    const assets = await Promise.all(catalogHashes(ids).map(lookupImage));
+    if (assets.some(asset => !asset?.entry)) return json({ error: '部分照片已不在图库，请重新选择。' }, 404);
+    return json({ assets: assets.map(({ hash, image, entry }) => ({ hash, image, entry })) });
+  }
   if (route === 'shared-library/tags') {
     if (!post) return json({ error: '请求方式无效。' }, 405);
     const { id, tags } = await context.request.json();
@@ -63,7 +70,7 @@ export async function ALL(context) {
     }
     if (!editorAuthorized(context)) return json({ error: '请重新登录编辑器。' }, 401);
     if (route === 'health' && !post) return json({ editorApiVersion: 12 });
-    if (route === 'shared-library' || route === 'shared-library/tags') return await sharedLibrary(context, route);
+    if (['shared-library', 'shared-library/tags', 'shared-library/choose'].includes(route)) return await sharedLibrary(context, route);
     if (!post) return json({ error: '请求方式无效。' }, 405);
     const action = route.startsWith('upload/') ? route.slice(7) : '';
     if (uploadActions.has(action)) return json(await imageUpload(request, action));

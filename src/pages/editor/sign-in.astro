@@ -31,7 +31,11 @@ Astro.response.headers.set('Cache-Control', 'private, no-store');
         body: JSON.stringify({ key: new FormData(form).get('key') }),
       });
       if (response.ok) {
-        window.location.assign('/editor/');
+        const value = new URLSearchParams(window.location.search).get('next') ?? '';
+        const next = URL.parse(value, window.location.origin);
+        const destination = next?.origin === window.location.origin && next.pathname === '/editor/cloud-picker'
+          ? `${next.pathname}${next.search}` : '/editor/';
+        window.location.assign(destination);
         return;
       }
       const result = await response.json().catch(() => ({}));

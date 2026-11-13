@@ -1,0 +1,41 @@
+---
+import { editorAuthorized } from '../../server/editor-auth.mjs';
+import { publicImageBaseUrl } from '../../../scripts/image-origin.mjs';
+
+const opener = Astro.url.searchParams.get('origin') ?? '';
+const origin = URL.parse(opener);
+const zine = origin?.origin === opener && (opener === 'https://bo-david-portfolio-photographyy0711.vercel.app'
+  || (origin.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname)));
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+if (!zine) Astro.response.status = 403;
+if (zine && !editorAuthorized(Astro)) {
+  const next = `/editor/cloud-picker?${new URLSearchParams({ origin: opener })}`;
+  return Astro.redirect(`/editor/sign-in?${new URLSearchParams({ next })}`);
+}
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="robots" content="noindex,nofollow"/><title>云端图库</title></head>
+  <body>
+    {zine ? <main id="cloud-picker" data-origin={opener} data-image-base={publicImageBaseUrl()}><button id="open-catalog" type="button">打开云端图库</button></main> : <p>请从 Zine 编辑器打开云端图库。</p>}
+  </body>
+</html>
+<script>
+  import { installSharedPhotoPicker } from '../../scripts/shared-photo-picker.js';
+  import { editorPost } from '../../scripts/editor-requests.js';
+
+  const page = document.querySelector<HTMLElement>('#cloud-picker');
+  if (page && window.opener) {
+    const origin = page.dataset.origin!;
+    const base = page.dataset.imageBase!;
+    const picker = installSharedPhotoPicker({ anchor: null, canImport: () => true, imageUrl: (path: string) => `${base}${path}`,
+      onChoose: async (ids: string[]) => {
+        const { assets } = await editorPost('/__editor/shared-library/choose', { ids });
+        window.opener.postMessage({ type: 'bo-cloud-photos', assets }, origin);
+        window.close();
+      },
+    });
+    document.querySelector('#open-catalog')!.addEventListener('click', () => picker.open('library'));
+    picker.open('library');
+  }
+</script>
