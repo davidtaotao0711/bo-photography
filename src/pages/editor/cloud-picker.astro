@@ -4,7 +4,8 @@ import { publicImageBaseUrl } from '../../../scripts/image-origin.mjs';
 
 const opener = Astro.url.searchParams.get('origin') ?? '';
 const origin = URL.parse(opener);
-const zine = origin?.origin === opener && (opener === 'https://bo-david-portfolio-photographyy0711.vercel.app'
+const zineOrigins = ['https://bo-david-portfolio.vercel.app', 'https://bo-david-portfolio-photographyy0711.vercel.app'];
+const zine = origin?.origin === opener && (zineOrigins.includes(opener)
   || (origin.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname)));
 Astro.response.headers.set('Cache-Control', 'private, no-store');
 if (!zine) Astro.response.status = 403;
