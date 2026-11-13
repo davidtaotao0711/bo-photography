@@ -191,11 +191,7 @@ async function savePortfolioCategoryCovers(request, data) {
   return { entry: updatedEntry };
 }
 
-async function savePortraitBooks(request, data) {
-  const body = await request.json().catch(() => {
-    throw new RequestError(400, 'Portrait Books 内容不是有效 JSON。');
-  });
-  const collection = body?.books;
+function savePortraitBookCollection(collection, data) {
   if (!collection || typeof collection !== 'object' || Array.isArray(collection) || !Array.isArray(collection.books)) {
     throw new RequestError(400, 'Portrait Books 必须包含 books 数组。');
   }
@@ -258,6 +254,21 @@ async function savePortraitBooks(request, data) {
   const normalized = normalizePortraitBooks(collection);
   data.portraitBooks = normalized;
   return { books: normalized, removedPhotoReferences };
+}
+
+export async function addCatalogImageToBook(data, book, groupId, hash) {
+  const group = book.layout.groups.find(item => item.id === groupId);
+  const asset = await lookupImage(hash);
+  const matches = photo => asset && (photo.image === asset.image || asset.aliases?.includes(photo.image));
+  const photo = migratePortfolioPhotos(data.photos).find(item => item.category === 'portrait' && matches(item)
+    && ['selected', 'archive'].includes(getPortfolioStatus(item, 'portrait')));
+  if (!photo || !group) throw new RequestError(400, '这张照片无法加入跨页。');
+  const usedIds = new Set(data.photos.filter(matches).map(item => item.id));
+  if (book.layout.groups.some(item => item.items.some(entry => usedIds.has(entry.photoId)))) {
+    throw new RequestError(409, '此照片已经在这本摄影书中。');
+  }
+  group.items.push({ photoId: photo.id, cover: false });
+  return savePortraitBookCollection(data.portraitBooks, data);
 }
 
 function completeLayoutRows(rows, photos) {
@@ -445,5 +456,6 @@ export const editorHandlers = new Map([
   ['series/create', createSeries], ['series/cover', setSeriesCover], ['series/reorder', reorderSeries],
   ['series/update', updateSeries], ['series/delete', deleteSeries], ['series/layout', saveSeriesLayout],
   ['photos/save', savePhotos], ['gallery-layouts/save', saveGalleryLayout], ['site/save', saveSiteIntro],
-  ['portrait-books/save', savePortraitBooks], ['portfolio-categories/save', savePortfolioCategoryCovers],
+  ['portrait-books/save', async (request, data) => savePortraitBookCollection((await request.json())?.books, data)],
+  ['portfolio-categories/save', savePortfolioCategoryCovers],
 ]);

@@ -35,7 +35,7 @@ async function uploadPart(token, index, part) {
   }
 }
 
-export async function syncEditorImages(files, showProgress) {
+export async function syncEditorImages(files, showProgress, { willAttach = true } = {}) {
   if (files.length > 100) throw new Error('每次最多选择 100 张照片。');
   const images = [];
   for (const [index, file] of files.entries()) {
@@ -44,7 +44,7 @@ export async function syncEditorImages(files, showProgress) {
     showProgress(`检查重复 ${position}`);
     const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
     const hash = Array.from(new Uint8Array(digest), value => value.toString(16).padStart(2, '0')).join('');
-    const { token, reused } = await editorPost('/__editor/upload/begin', { hash, size: file.size });
+    const { token, reused } = await editorPost('/__editor/upload/begin', { hash, size: file.size, name: file.name });
     if (!reused) {
       const headers = { 'X-Editor-Upload': token };
       try {
@@ -61,6 +61,6 @@ export async function syncEditorImages(files, showProgress) {
     }
     images.push({ hash });
   }
-  showProgress('保存照片记录…');
+  showProgress(willAttach ? '保存照片记录…' : '照片已加入图库。');
   return images;
 }

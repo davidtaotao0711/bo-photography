@@ -1,9 +1,8 @@
-import sharp from 'sharp';
 import { readEditorData, writeEditorData } from './editor-data.mjs';
 import { editorAuthorized, signInEditor } from './editor-auth.mjs';
-import { attachImages, CATEGORIES, editorHandlers } from './editor-service.mjs';
-import { imageUpload, storeImage } from './editor-images.mjs';
-import { alreadyAdded, originalPath, readSharedLibrary, sharedImportForm } from '../../scripts/shared-photo-library.mjs';
+import { addCatalogImageToBook, attachImages, CATEGORIES, editorHandlers } from './editor-service.mjs';
+import { imageUpload } from './editor-images.mjs';
+import { browseCatalog, catalogHashes, tagCatalogAsset } from './editor-catalog.mjs';
 
 const json = (body, status = 200, revision) => Response.json(body, { status, headers: {
   'Cache-Control': 'private, no-store', ...(revision !== undefined && { 'X-Editor-Revision': revision || 'initial' }),
@@ -21,42 +20,32 @@ function sameOrigin(request, url) {
 }
 
 async function sharedLibrary(context, route) {
-  if (!import.meta.env.DEV) return json({ error: '共享图库仅在本地 Editor 可用。' }, 404);
-  const library = await readSharedLibrary();
-  if (route.endsWith('/image') && context.request.method === 'GET') {
-    const photo = library.photos.find(item => item.id === context.url.searchParams.get('id'));
-    if (!photo) return json({ error: '找不到图片。' }, 404);
-    const file = await originalPath(library.root, photo);
-    const bytes = await sharp(file).rotate().resize(320, 320, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 75 }).toBuffer();
-    return new Response(bytes, { headers: { 'Content-Type': 'image/webp', 'Cache-Control': 'private, max-age=300' } });
+  const post = context.request.method === 'POST';
+  if (route === 'shared-library/tags') {
+    if (!post) return json({ error: '请求方式无效。' }, 405);
+    const { id, tags } = await context.request.json();
+    return json(await tagCatalogAsset(id, tags));
   }
   const { data, revision } = await readEditorData();
-  const post = context.request.method === 'POST';
   if (post && context.request.headers.get('x-editor-revision') !== (revision || 'initial')) {
     return json({ error: '编辑内容已更新，请刷新后重试。' }, 409);
   }
   const body = post ? await context.request.json() : { category: context.url.searchParams.get('category') };
-  const category = String(body.category || '');
+  const target = String(body.category || 'library');
+  const book = target.startsWith('book:') ? data.portraitBooks.books.find(item => item.slug === target.slice(5)) : null;
+  const category = book ? 'portrait' : target;
   const isSeries = category.startsWith('series:');
   const slug = isSeries ? category.slice(7) : '';
-  if (isSeries ? !data.series.some(item => item.slug === slug) : !CATEGORIES.has(category)) {
+  if (isSeries ? !data.series.some(item => item.slug === slug) : !CATEGORIES.has(category) && (post || target !== 'library')) {
     return json({ error: '请先选择有效的照片分类或 Series。' }, 400);
   }
-  if (!post) return json({ photos: library.photos.map(photo => ({
-    id: photo.id, alt: photo.alt, width: photo.width, height: photo.height,
-    added: alreadyAdded(photo, data.photos, category), thumbnail: `/__editor/shared-library/image?id=${encodeURIComponent(photo.id)}`,
-  })) });
-  const selection = await sharedImportForm(library, body.ids, category, data.photos);
-  if (!selection.count) return json({ photos: [], photoData: data.photos, skipped: selection.skipped }, 200, revision);
-  const metadata = JSON.parse(selection.form.get('metadata'));
-  const images = [];
-  for (const [index, file] of selection.form.getAll('photos').entries()) {
-    const asset = await storeImage(Buffer.from(await file.arrayBuffer()));
-    images.push({ hash: asset.hash, sharedLibraryId: metadata[index].sharedLibraryId });
-  }
+  if (!post) return json(await browseCatalog(data, context.url.searchParams, target));
+  const images = catalogHashes(body.ids, book ? 1 : 100).map(hash => ({ hash }));
+  if (book && !book.layout.groups.some(group => group.id === body.group)) return json({ error: '找不到此跨页。' }, 404);
   const result = await attachImages({ category, slug, images }, data, isSeries);
-  const next = await writeEditorData(data, revision);
-  return json({ ...result, skipped: result.skipped + selection.skipped }, 200, next);
+  if (book) await addCatalogImageToBook(data, book, body.group, images[0].hash);
+  const next = book || result.photos.length ? await writeEditorData(data, revision) : revision;
+  return json({ ...result, ...(book && { books: data.portraitBooks }) }, 200, next);
 }
 
 export async function ALL(context) {
@@ -73,8 +62,8 @@ export async function ALL(context) {
       return signInEditor(context, key) ? json({ authenticated: true }) : json({ error: '编辑口令不正确。' }, 401);
     }
     if (!editorAuthorized(context)) return json({ error: '请重新登录编辑器。' }, 401);
-    if (route === 'health' && !post) return json({ editorApiVersion: 11 });
-    if (route === 'shared-library' || route === 'shared-library/image') return await sharedLibrary(context, route);
+    if (route === 'health' && !post) return json({ editorApiVersion: 12 });
+    if (route === 'shared-library' || route === 'shared-library/tags') return await sharedLibrary(context, route);
     if (!post) return json({ error: '请求方式无效。' }, 405);
     const action = route.startsWith('upload/') ? route.slice(7) : '';
     if (uploadActions.has(action)) return json(await imageUpload(request, action));

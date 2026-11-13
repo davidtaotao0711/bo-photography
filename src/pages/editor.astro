@@ -1,6 +1,7 @@
 ﻿---
 import { photoCategories as categoryConfig } from '../data/categories.js';
 import { editorAuthorized } from '../server/editor-auth.mjs';
+import { publicImageBaseUrl } from '../../scripts/image-origin.mjs';
 
 if (!editorAuthorized(Astro)) return Astro.redirect('/editor/sign-in');
 Astro.response.headers.set('Cache-Control', 'private, no-store');
@@ -25,6 +26,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
     <meta name="viewport" content="width=device-width" />
     <meta name="robots" content="noindex, nofollow" />
     <meta name="bo-editor-revision" content={editorRevision} />
+    <meta name="bo-editor-image-base" content={publicImageBaseUrl()} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>排版编辑器 · Bo David</title>
   </head>
@@ -41,7 +43,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
     <header class="editor-header">
       <a class="wordmark" href="/">BO DAVID</a>
       <div>
-        <span class="local-badge"><i></i> 本地编辑</span>
+        <span class="local-badge"><i></i> 云端编辑</span>
         <a class="site-link" href="/" target="_blank">查看网站 ↗</a>
       </div>
     </header>
@@ -51,7 +53,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
         <div class="sidebar-heading">
           <p class="eyebrow">Layout studio</p>
           <h1>排版<br />编辑器</h1>
-          <p>首页保持原有排版。普通作品页在「页面排版」中自由移动、缩放和按行安排照片；上传与属性在「照片管理」中编辑。所有操作只发生在你的电脑上。</p>
+          <p>在「云端图库」上传或复用照片，在「页面排版」中调整作品顺序和布局。</p>
         </div>
 
         <div class="field-group">
@@ -553,6 +555,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
           <span id="portrait-photo-picker-selection" aria-live="polite">Choose one photograph</span>
           <div>
             <button class="text-button" value="cancel" type="submit">取消</button>
+            <button class="text-button" id="choose-cloud-portrait-photo" type="button">从云端图库添加</button>
             <button class="button button--primary" id="confirm-portrait-photo" type="button" disabled>Add photograph</button>
           </div>
         </div>
@@ -643,7 +646,11 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
       const portfolioEntranceCards = document.querySelector('#portfolio-entrance-cards');
       const addPhotosButton = document.querySelector('#add-photos');
       const addPhotosLabel = document.querySelector('#add-photos-label');
+      const libraryBase = document.querySelector('meta[name="bo-editor-image-base"]').content;
+      const libraryImageUrl = (path) => `${libraryBase}${path}`;
+      installSharedPhotoPicker({ anchor: '.editor-header .site-link', library: true, imageUrl: libraryImageUrl, canImport: () => true });
       const sharedPicker = installSharedPhotoPicker({
+        imageUrl: libraryImageUrl,
         canImport: () => {
           if (dirty) { window.alert('请先保存当前修改，再从共享图库添加照片。'); return false; }
           return !addPhotosButton.disabled;
@@ -660,6 +667,7 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
       });
       const largeFileWarning = document.querySelector('#large-file-warning');
       const seriesSharedPicker = installSharedPhotoPicker({
+        imageUrl: libraryImageUrl,
         anchor: '#upload-series-photos',
         series: true,
         canImport: () => Boolean(activeSeriesSlug) && ensureSeriesActionReady() && ensureLayoutSaved() && !document.querySelector('#upload-series-photos').disabled,
@@ -682,6 +690,18 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
       const portraitBooksGrid = document.querySelector('#portrait-books-grid');
       const portraitBookDialog = document.querySelector('#portrait-book-dialog');
       const portraitPhotoPickerDialog = document.querySelector('#portrait-photo-picker-dialog');
+      const bookCloudPicker = installSharedPhotoPicker({ anchor: null, book: true, imageUrl: libraryImageUrl,
+        canImport: () => Boolean(activePortraitBook()),
+        onImported: (result) => {
+          Object.assign(imageManifest, result.manifestPatch);
+          photoData = migratePortfolioPhotos(result.photoData);
+          portraitBooksData = normalizePortraitBooks(result.books);
+          portraitBooksHistory.length = 0;
+          setPortraitBooksDirty(false);
+          renderPortraitLayout(activePortraitBook());
+          showToast('照片已加入跨页并保存。');
+        },
+      });
       const portraitCategoryCoverDialog = document.querySelector('#portrait-category-cover-dialog');
       const seriesListView = document.querySelector('#series-list-view');
       const seriesDetailView = document.querySelector('#series-detail-view');
@@ -3760,6 +3780,13 @@ const serializedGalleryLayouts = JSON.stringify(galleryLayouts).replace(/</g, '\
       });
       $('#portrait-photo-picker-search').addEventListener('input', (event) => {
         renderPortraitPhotoPicker(event.target.value);
+      });
+      $('#choose-cloud-portrait-photo').addEventListener('click', () => {
+        const book = activePortraitBook();
+        if (!book || !portraitPhotoPickerGroupId) return;
+        if (dirty || portraitBooksDirty) { window.alert('请先保存当前修改，再从云端图库加入跨页。'); return; }
+        bookCloudPicker.open(`book:${book.slug}`, portraitPhotoPickerGroupId);
+        portraitPhotoPickerDialog.close();
       });
       $('#portrait-photo-picker-grid').addEventListener('click', (event) => {
         const option = event.target.closest('[data-portrait-photo-picker-option]');
