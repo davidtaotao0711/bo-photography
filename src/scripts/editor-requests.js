@@ -47,15 +47,16 @@ export async function syncEditorImages(files, showProgress, { willAttach = true 
     const { token, reused } = await editorPost('/__editor/upload/begin', { hash, size: file.size, name: file.name });
     if (!reused) {
       const headers = { 'X-Editor-Upload': token };
+      const finishUpload = { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' }, body: '{}' };
       try {
         for (let offset = 0; offset < file.size; offset += partSize) {
           showProgress(`上传 ${position} · ${Math.floor(offset / file.size * 100)}%`);
           await uploadPart(token, offset / partSize, file.slice(offset, offset + partSize));
         }
         showProgress(`处理图片 ${position}`);
-        await readResult(await editorFetch('/__editor/upload/complete', { method: 'POST', headers }));
+        await readResult(await editorFetch('/__editor/upload/complete', finishUpload));
       } catch (error) {
-        await editorFetch('/__editor/upload/abort', { method: 'POST', headers }).catch(() => {});
+        await editorFetch('/__editor/upload/abort', finishUpload).catch(() => {});
         throw error;
       }
     }
